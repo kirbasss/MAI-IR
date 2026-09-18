@@ -1,0 +1,3 @@
+source,documents,parsed_ok,parse_errors,raw_bytes_total,text_bytes_total,avg_raw_bytes,avg_text_bytes,median_raw_bytes,median_text_bytes,min_text_bytes,max_text_bytes,words_total,avg_words,median_words,min_words,max_words,extraction_ratio,documents_with_hash,unique_texts,duplicate_documents
+ALL,2,2,0,471620,13732,235810.0,6866.0,235810.0,6866.0,2144,11588,1131,565.5,565.5,188,943,0.029116661719180696,2,2,0
+stopgame,2,2,0,471620,13732,235810.0,6866.0,235810.0,6866.0,2144,11588,1131,565.5,565.5,188,943,0.029116661719180696,2,2,0

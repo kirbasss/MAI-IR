@@ -1,0 +1,48 @@
+{
+  "all": {
+    "documents": 2,
+    "parsed_ok": 2,
+    "parse_errors": 0,
+    "raw_bytes_total": 471620,
+    "text_bytes_total": 13732,
+    "avg_raw_bytes": 235810.0,
+    "avg_text_bytes": 6866.0,
+    "median_raw_bytes": 235810.0,
+    "median_text_bytes": 6866.0,
+    "min_text_bytes": 2144,
+    "max_text_bytes": 11588,
+    "words_total": 1131,
+    "avg_words": 565.5,
+    "median_words": 565.5,
+    "min_words": 188,
+    "max_words": 943,
+    "extraction_ratio": 0.029116661719180696,
+    "documents_with_hash": 2,
+    "unique_texts": 2,
+    "duplicate_documents": 0
+  },
+  "sources": {
+    "stopgame": {
+      "documents": 2,
+      "parsed_ok": 2,
+      "parse_errors": 0,
+      "raw_bytes_total": 471620,
+      "text_bytes_total": 13732,
+      "avg_raw_bytes": 235810.0,
+      "avg_text_bytes": 6866.0,
+      "median_raw_bytes": 235810.0,
+      "median_text_bytes": 6866.0,
+      "min_text_bytes": 2144,
+      "max_text_bytes": 11588,
+      "words_total": 1131,
+      "avg_words": 565.5,
+      "median_words": 565.5,
+      "min_words": 188,
+      "max_words": 943,
+      "extraction_ratio": 0.029116661719180696,
+      "documents_with_hash": 2,
+      "unique_texts": 2,
+      "duplicate_documents": 0
+    }
+  }
+}
