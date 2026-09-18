@@ -1,12 +1,25 @@
 from __future__ import annotations
 
+from urllib.parse import urlsplit
+
 from src.model import ParsedDocument
-from src.parsers.common import article_metadata
+from src.parsers.common import article_metadata, unique_strings
 from src.utils import clean_text, readable_article_text, soup
 
 
 def _unique(values: list[str]) -> list[str]:
-    return list(dict.fromkeys(value for value in values if value))
+    return unique_strings(values)
+
+
+def _category(url: str, schema_type: str | None, title: str | None) -> tuple[str, str]:
+    source_category = next(
+        (part for part in urlsplit(url).path.split("/") if part), "unknown"
+    )
+    if schema_type == "NewsArticle" or source_category == "newsdata":
+        return "news", source_category
+    if source_category == "show" and title and "обзор" in title.lower():
+        return "review", source_category
+    return "article", source_category
 
 
 def parse_stopgame(html: bytes, url: str) -> ParsedDocument:
@@ -24,6 +37,10 @@ def parse_stopgame(html: bytes, url: str) -> ParsedDocument:
             for link in body.select("a.game-link[data-gamelink-game]")
         ])
     text = readable_article_text(body) if body else ""
+    tags = _unique(data["tags"] + [
+        link.get_text(" ")
+        for link in page.select("a[class*='_tag_']")
+    ])
 
     title_tag = page.select_one("h1")
     title = data["title"]
@@ -32,6 +49,10 @@ def parse_stopgame(html: bytes, url: str) -> ParsedDocument:
 
     if body:
         metadata["body_selector"] = "article#material_content"
+    category, source_category = _category(
+        url, metadata.get("structured_data_type"), title if isinstance(title, str) else None
+    )
+    metadata["source_category"] = source_category
     error = None if text else "Не найден article#material_content: проверьте сохранённый HTML."
     return ParsedDocument(
         source="stopgame",
@@ -39,8 +60,8 @@ def parse_stopgame(html: bytes, url: str) -> ParsedDocument:
         title=clean_text(str(title)) if title else None,
         author=data["author"],
         published_at=str(data["published_at"]) if data["published_at"] else None,
-        category=data["category"] or "news",
-        tags=data["tags"],
+        category=category,
+        tags=tags,
         games=games,
         text=text,
         metadata=metadata,

@@ -1,0 +1,44 @@
+User-Agent: *
+Disallow: /preview/
+
+Clean-param: yclid&gclid&fbclid&_openstat&sort
+
+Sitemap: https://ixbt.games/export/sitemapindex.xml
+Sitemap: https://ixbt.games/en/export/sitemapindex.xml
+Sitemap: https://ixbt.games/es/export/sitemapindex.xml
+
+User-agent: Googlebot-News
+Allow: /news/2025/
+Allow: /news/2026/
+Allow: /news/2027/
+Allow: /news/2028/
+Allow: /news/2029/
+Allow: /news/203*/
+Allow: /en/news/2025/
+Allow: /en/news/2026/
+Allow: /en/news/2027/
+Allow: /en/news/2028/
+Allow: /en/news/2029/
+Allow: /en/news/203*/
+Allow: /es/news/2025/
+Allow: /es/news/2026/
+Allow: /es/news/2027/
+Allow: /es/news/2028/
+Allow: /es/news/2029/
+Allow: /es/news/203*/
+Allow: /articles/
+Allow: /reviews/
+Allow: /tools/
+Allow: /results/
+Allow: /export/
+Allow: /en/articles/
+Allow: /en/reviews/
+Allow: /en/tools/
+Allow: /en/results/
+Allow: /en/export/
+Allow: /es/articles/
+Allow: /es/reviews/
+Allow: /es/tools/
+Allow: /es/results/
+Allow: /es/export/
+Disallow: /

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -26,7 +27,7 @@ SOURCE_HOSTS = {
     "igromania": {"igromania.ru", "www.igromania.ru"},
 }
 CHALLENGE_MARKERS = (
-    "captcha", "verify you are human", "checking your browser", "ddos-guard",
+    "captcha", "verify you are human", "checking your browser",
     "cloudflare ray id", "access denied", "just a moment",
 )
 
@@ -59,7 +60,14 @@ def _valid_source_url(source: str, url: str) -> bool:
 
 def _response_class(status: int, html: str) -> str:
     lowered = html.lower()
-    if any(marker in lowered for marker in CHALLENGE_MARKERS):
+    title_match = re.search(r"<title[^>]*>(.*?)</title>", lowered, re.DOTALL)
+    title = title_match.group(1) if title_match else ""
+    # A site's JavaScript can legitimately contain words such as CAPTCHA or
+    # ddos-guard. A challenge is recognised only from the page title or from
+    # a very short, marker-only response.
+    if any(marker in title for marker in CHALLENGE_MARKERS):
+        return "anti_bot_or_challenge"
+    if len(html) < 10_000 and any(marker in lowered for marker in CHALLENGE_MARKERS):
         return "anti_bot_or_challenge"
     if status == 404:
         return "not_found"
@@ -294,3 +302,54 @@ def parse_fixture_manifest(
             ) from exc
         result = parse_saved_html(source, url, Path(raw_file), data_dir)
         print(f"[fixture] {source:11s} words={len(result.get('text', '').split()):5d} {url}")
+
+
+def reparse_saved_documents(
+    parsed_root: Path = Path("data/parsed"),
+) -> None:
+    """Re-run parsers over saved raw files without touching the network.
+
+    It is intended for parser development: collection diagnostics (HTTP status,
+    final URL and fetch time) are retained, while text and parse metadata are
+    regenerated from the raw HTML that was actually received.
+    """
+    for document_path in sorted(parsed_root.rglob("*.json")):
+        try:
+            previous = json.loads(document_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"[WARN] Не удалось прочитать {document_path}: {exc}")
+            continue
+
+        source = previous.get("source")
+        url = previous.get("url")
+        raw_file = previous.get("raw_file")
+        if source not in PARSERS or not isinstance(url, str) or not isinstance(raw_file, str):
+            print(f"[SKIP] Нет source, URL или raw_file: {document_path}")
+            continue
+        raw_path = Path(raw_file)
+        if not raw_path.is_file():
+            print(f"[SKIP] Raw HTML не найден: {raw_path}")
+            continue
+
+        raw = raw_path.read_bytes()
+        try:
+            result = PARSERS[source](raw, url).to_dict()
+        except Exception as exc:
+            result = _error_document(source, url, f"{type(exc).__name__}: {exc}")
+
+        text = str(result.get("text", ""))
+        result.update({
+            "http_status": previous.get("http_status", 200),
+            "response_class": "valid_content_page",
+            "raw_size_bytes": len(raw),
+            "text_size_bytes": len(text.encode("utf-8")),
+            "text_sha256": sha256_text(text) if text else None,
+            "raw_file": str(raw_path),
+            "reparsed_at": datetime.now(UTC).isoformat(),
+        })
+        for key in ("final_url", "redirect_chain", "content_type", "fetched_at"):
+            if key in previous:
+                result[key] = previous[key]
+        dump_json(document_path, result)
+        state = "OK" if text and not result.get("parse_error") else "PARSE ERROR"
+        print(f"[reparse] {source:11s} words={len(text.split()):5d} {state:11s} {url}")

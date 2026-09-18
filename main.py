@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.downloader import collect_file, parse_fixture_manifest
+from src.downloader import collect_file, parse_fixture_manifest, reparse_saved_documents
 from src.statistics import build_statistics
 
 
@@ -27,6 +27,13 @@ def main() -> None:
     fixtures.add_argument("manifest", type=Path, help="source<TAB>url<TAB>raw_file")
     fixtures.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR)
 
+    reparse = sub.add_parser(
+        "reparse", help="повторно распарсить сохранённый raw HTML без сети"
+    )
+    reparse.add_argument(
+        "--parsed-root", type=Path, default=DEFAULT_DATA_DIR / "parsed"
+    )
+
     stats = sub.add_parser("stats", help="посчитать статистику игрового корпуса")
     stats.add_argument("--parsed-root", type=Path, default=DEFAULT_DATA_DIR / "parsed")
     stats.add_argument("--results-dir", type=Path, default=DEFAULT_RESULTS_DIR)
@@ -36,6 +43,8 @@ def main() -> None:
         collect_file(args.urls, data_dir=args.data_dir, delay_seconds=args.delay)
     elif args.command == "parse-fixtures":
         parse_fixture_manifest(args.manifest, data_dir=args.data_dir)
+    elif args.command == "reparse":
+        reparse_saved_documents(args.parsed_root)
     elif args.command == "stats":
         print(json.dumps(
             build_statistics(args.parsed_root, args.results_dir),

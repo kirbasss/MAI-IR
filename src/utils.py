@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+from html import unescape
 import json
 import re
 from pathlib import Path
@@ -18,7 +19,7 @@ TRACKING_PARAMETERS = {"fbclid", "gclid", "yclid", "_ga", "_gl"}
 def clean_text(text: str) -> str:
     """Normalise whitespace while keeping paragraph and line boundaries."""
     lines = []
-    for line in text.replace("\r\n", "\n").replace("\r", "\n").split("\n"):
+    for line in unescape(text).replace("\r\n", "\n").replace("\r", "\n").split("\n"):
         lines.append(SPACE_RE.sub(" ", line).strip())
     return BLANK_RE.sub("\n\n", "\n".join(lines)).strip()
 

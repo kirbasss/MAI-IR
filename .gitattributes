@@ -1,0 +1,3 @@
+# Raw HTTP responses are evidence for parser validation.  Do not let Git
+# rewrite their line endings on checkout, otherwise raw_size_bytes changes.
+data/raw/** -text

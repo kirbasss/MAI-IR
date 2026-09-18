@@ -1,0 +1,41 @@
+{
+  "author": "Аня Канцер",
+  "category": "news",
+  "content_type": "text/html; charset=utf-8",
+  "fetched_at": "2026-09-18T18:17:19.922744+00:00",
+  "final_url": "https://www.igromania.ru/news/150532/vtoroj-trejler-gta-vi-nabral-rekordnyie-475-mln-prosmotrov-za-sutki/",
+  "games": [],
+  "http_status": 200,
+  "metadata": {
+    "body_selector": "div[class*=\"material-content_\"]",
+    "date_modified": "2025-05-08T11:56:01.625125+03:00",
+    "description": "Второй трейлер Grand Theft Auto VI собрал более 475 миллионов просмотров на всех площадках за первые сутки после релиза.",
+    "schema_about": [
+      "индустрия",
+      "игры",
+      "GTA 6",
+      "GTA VI",
+      "трейлер"
+    ],
+    "source_category": "Индустрия",
+    "structured_data_type": "NewsArticle"
+  },
+  "parse_error": null,
+  "published_at": "2025-05-08T03:41:00+03:00",
+  "raw_file": "data\\raw\\igromania\\news__150532__vtoroj-trejler-gta-vi-nabral-rekordnyie-475-mln-prosmotrov-za-sutki__dd76f90ac8.html",
+  "raw_size_bytes": 140487,
+  "redirect_chain": [],
+  "reparsed_at": "2026-09-18T18:31:21.362951+00:00",
+  "response_class": "valid_content_page",
+  "source": "igromania",
+  "tags": [
+    "индустрия",
+    "игры",
+    "GTA 6"
+  ],
+  "text": "Второй трейлер Grand Theft Auto VI собрал более 475 миллионов просмотров на всех площадках за первые сутки после релиза. Это абсолютный рекорд для видеоигр и, по словам студии, крупнейший запуск видео за всю историю. Для сравнения, первый трейлер GTA VI, вышедший в 2023 году, набрал 93 миллиона просмотров за аналогичный период.\n\nРезкий всплеск интереса затронул и музыку из ролика. Композиция «Hot Together» от The Pointer Sisters, прозвучавшая в трейлере, увеличила количество прослушиваний на Spotify на 182000%. По словам главы музыкального направления Spotify, серия GTA с самого начала ассоциируется с музыкой, и новая волна интереса подчёркивает культурное влияние франшизы.\n\nGrand Theft Auto VI выйдет 26 мая 2026 года на PS5 и Xbox Series, а изначально релиз был запланирован на 2025 год. Действие игры развернётся в Вайс-Сити — версии Майами в мире GTA. Разработка проекта обошлась Rockstar Games в более чем 1 миллиард долларов. К слову, вполне скоро могут открыться предзаказы на игру.\n\nВторой трейлер GTA 6: разбираем увиденное и делимся мыслями",
+  "text_sha256": "81e43ef1f17c55c90ecf9f252780a76174860c4ea09e0a4eda5dfa0b40490734",
+  "text_size_bytes": 1792,
+  "title": "Второй трейлер GTA VI набрал рекордные 475 млн просмотров за сутки",
+  "url": "https://www.igromania.ru/news/150532/vtoroj-trejler-gta-vi-nabral-rekordnyie-475-mln-prosmotrov-za-sutki/"
+}

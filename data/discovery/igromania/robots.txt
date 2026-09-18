@@ -1,0 +1,42 @@
+User-agent: *
+Allow: /*?years=
+Allow: /*?page=
+Allow: ?p=
+Allow: *.css
+Allow: *.js
+Allow: *.gif
+Allow: *.jpg
+Allow: *.jpeg
+Allow: *.png
+Allow: *.svg
+Allow: *.woff
+
+Disallow: /sse/
+Disallow: /accounts/
+Disallow: /flowplayer/
+Disallow: /video_converter/
+Disallow: /search/
+Disallow: /api/
+Disallow: /select2/
+Disallow: /autocomplete/
+Disallow: /oembed
+Disallow: /oauth/
+
+User-agent: YandexNews
+Allow: /rss/yandex.rss
+Allow: /rss/yandex_new.xml
+
+User-agent: Mediapartners-Google
+Disallow:
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Bytespider
+Disallow: /
+
+Clean-param: PreferDesktop&cpage&preview&date&ondate&clear_cache&type&ID&nw&v
+Sitemap: https://www.igromania.ru/sitemap.xml

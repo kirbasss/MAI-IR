@@ -35,6 +35,33 @@ def _string_list(value: Any) -> list[str]:
     return []
 
 
+def unique_strings(values: list[str]) -> list[str]:
+    """Keep first occurrences and remove empty, whitespace-only values."""
+    result: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        text = clean_text(value)
+        if text and text not in seen:
+            seen.add(text)
+            result.append(text)
+    return result
+
+
+def schema_names(value: Any) -> list[str]:
+    """Extract human-readable names from schema.org ``about`` values."""
+    if isinstance(value, dict):
+        name = value.get("name")
+        return unique_strings([str(name)]) if name else []
+    if isinstance(value, list):
+        values: list[str] = []
+        for item in value:
+            values.extend(schema_names(item))
+        return unique_strings(values)
+    if isinstance(value, str):
+        return unique_strings([value])
+    return []
+
+
 def article_metadata(page: Any) -> tuple[dict[str, Any], dict[str, Any]]:
     """Return known structured article data and source-preserving metadata."""
     structured = find_json_ld(page, *ARTICLE_TYPES) or {}
@@ -58,6 +85,7 @@ def article_metadata(page: Any) -> tuple[dict[str, Any], dict[str, Any]]:
         or meta_content(page, name="description"),
         "date_modified": structured.get("dateModified")
         or meta_content(page, property_="article:modified_time"),
+        "schema_about": structured.get("about"),
     }
     return data, {key: value for key, value in metadata.items() if value is not None}
 
@@ -77,6 +105,10 @@ def _clean_node(node: Any) -> Any:
     for bad in result.select("script, style, noscript, form, nav, footer, aside, iframe"):
         bad.decompose()
     for descendant in result.find_all(True):
+        # ``find_all`` returns a snapshot. A child whose parent was just
+        # decomposed remains in that snapshot but no longer has attributes.
+        if descendant.attrs is None:
+            continue
         if _is_noise(descendant):
             descendant.decompose()
     return result
