@@ -10,8 +10,8 @@ from src.utils import canonicalize_url
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SAMPLE_1 = ROOT / "data/gaming/raw/stopgame/sample_1.html"
-SAMPLE_2 = ROOT / "data/gaming/raw/stopgame/sample_2.html"
+SAMPLE_1 = ROOT / "data/raw/stopgame/sample_1.html"
+SAMPLE_2 = ROOT / "data/raw/stopgame/sample_2.html"
 URL_1 = (
     "https://stopgame.ru/newsdata/19062/"
     "rockstar_o_planah_na_buduschee_i_video_o_krasotah_gta_5"

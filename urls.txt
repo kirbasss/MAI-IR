@@ -2,9 +2,16 @@
 # Перед каждым запросом программа получает и применяет актуальный robots.txt.
 playground	https://www.playground.ru/elden_ring/opinion/obzor_elden_ring_pole_chudes-1182049
 playground	https://www.playground.ru/elden_ring_nightreign/opinion/obzor_elden_ring_nightreign_glavnoe_razocharovanie_goda-1773754
+playground	https://www.playground.ru/marvels_wolverine/news/nesmotrya_na_bagi_i_kritiku_marvels_wolverine_stala_uspeshnym_relizom_prodazhi_ekshena_uzhe_dostigli_1_9_milliona_kopij-1875346
 stopgame	https://stopgame.ru/newsdata/19062/rockstar_o_planah_na_buduschee_i_video_o_krasotah_gta_5
 stopgame	https://stopgame.ru/newsdata/68145/boss_take_two_obsudil_cennik_gta_vi_i_poobeschal_ne_otmenyat_bioshock_4_i_drugoe_iz_otcheta
+stopgame	https://stopgame.ru/newsdata/72890/glava_twitch_zayavil_chto_multipleer_gta_vi_vyydet_v_2027_godu
+stopgame	https://stopgame.ru/blogs/topic/121969/muzyka_nochnogo_goroda
+stopgame	https://stopgame.ru/show/164606/the_blood_of_dawnwalker_review_vampirskogo_vedmaka
 ixbt_games	https://ixbt.games/news/2026/07/15/423721-eto-oni-ne-iz-vrednosti-byvsii-prodiuser-gta-v-obieiasnil-pocemu-gta-vi-ne-vyidet-na-pk-odnovremenno-s-konsoliami.html
 ixbt_games	https://ixbt.games/news/2026/08/24/429976-3-dnia-do-pokaza-oficialnogo-geimpleia-gta-vi-utecki-raskryli-lavinu-podrobnostei.html
+ixbt_games	https://ixbt.games/reviews/2026/09/14/the-blood-of-dawnwalker-obzor.html
+ixbt_games	https://ixbt.games/articles/2026/08/26/razbiraem-pretenzii-k-marvels-wolverine-kak-promo-materialy-sdelali-igre-negativnyi-obraz.html
 igromania	https://www.igromania.ru/news/150532/vtoroj-trejler-gta-vi-nabral-rekordnyie-475-mln-prosmotrov-za-sutki/
 igromania	https://www.igromania.ru/article/29029/Obzor_Prey_Nauka-yeto_veselo.html
+igromania	https://www.igromania.ru/review/34159/obzor-the-blood-of-dawnwalker-dostojnoe-nachalo-vampirskoj-sagi/

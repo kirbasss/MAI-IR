@@ -8,8 +8,8 @@ from src.downloader import collect_file, parse_fixture_manifest
 from src.statistics import build_statistics
 
 
-DEFAULT_DATA_DIR = Path("data/gaming")
-DEFAULT_RESULTS_DIR = Path("results/gaming")
+DEFAULT_DATA_DIR = Path("data")
+DEFAULT_RESULTS_DIR = Path("results")
 
 
 def main() -> None:

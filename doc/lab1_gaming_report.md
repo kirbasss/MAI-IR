@@ -41,8 +41,8 @@ python main.py collect urls.txt --delay 2
 anti-bot/challenge или запрет `robots.txt`; диагностическая JSON-запись
 создаётся и при ошибке. CAPTCHA и WAF не обходятся.
 
-Сырой HTML хранится в `data/gaming/raw/<source>/`, результат разбора — в
-`data/gaming/parsed/<source>/`. Игровые данные вынесены в отдельный каталог,
+Сырой HTML хранится в `data/raw/<source>/`, результат разбора — в
+`data/parsed/<source>/`. Игровые данные вынесены в отдельный каталог,
 поэтому не смешиваются с прежней темой lyrics.
 
 Все источники приводятся к модели:
@@ -74,7 +74,7 @@ anti-bot/challenge или запрет `robots.txt`; диагностическ�
 ## Robots.txt и доступность
 
 Актуальный `robots.txt` StopGame сохранён в
-`data/gaming/discovery/stopgame/robots.txt`: для `User-agent: *` запрещены,
+`data/discovery/stopgame/robots.txt`: для `User-agent: *` запрещены,
 в частности, `/search`, `/admin`, `/pm` и личные страницы; путь `newsdata`
 не запрещён. Поэтому две новости ниже допустимо было скачать обычным
 HTTP-клиентом с собственным User-Agent.
@@ -134,12 +134,12 @@ HTTP-клиентом с собственным User-Agent.
 Разбор сохранённых файлов повторяется без сети:
 
 ```powershell
-python main.py parse-fixtures data/gaming/fixtures.tsv
+python main.py parse-fixtures data/fixtures.tsv
 python main.py stats
 ```
 
-Результат находится в `results/gaming/statistics.json` и
-`results/gaming/statistics.csv`.
+Результат находится в `results/statistics.json` и
+`results/statistics.csv`.
 
 | Показатель | Значение |
 |---|---:|

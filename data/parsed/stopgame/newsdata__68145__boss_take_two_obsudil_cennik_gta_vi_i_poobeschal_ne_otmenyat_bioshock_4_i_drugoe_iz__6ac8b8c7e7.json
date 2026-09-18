@@ -21,7 +21,7 @@
   },
   "parse_error": null,
   "published_at": "2025-08-08T13:05:55+03:00",
-  "raw_file": "data\\gaming\\raw\\stopgame\\sample_2.html",
+  "raw_file": "data\\raw\\stopgame\\sample_2.html",
   "raw_size_bytes": 268147,
   "response_class": "valid_content_page",
   "source": "stopgame",

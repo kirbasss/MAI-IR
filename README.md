@@ -4,7 +4,7 @@
 статьи, обзоры, превью и аналитика. Исходные сайты — PlayGround.ru,
 StopGame.ru, IXBT.games и Игромания. Список прежних lyrics-URL сохранён в
 `urls_lyrics_legacy.txt` только для справки; новый корпус изолирован в
-`data/gaming`.
+`data`.
 
 ## Установка
 
@@ -33,7 +33,7 @@ python main.py collect urls.txt --delay 2
 Перед запросом к каждому источнику сборщик:
 
 1. загружает и сохраняет актуальный `robots.txt` в
-   `data/gaming/discovery/<source>/`;
+   `data/discovery/<source>/`;
 2. проверяет URL для собственного User-Agent;
 3. сохраняет каждый полученный ответ как сырой HTML;
 4. классифицирует результат: документ, редирект, 404, 429, 5xx, challenge
@@ -49,7 +49,7 @@ python main.py collect urls.txt --delay 2
 Для повторяемой проверки HTML без нового сетевого обращения:
 
 ```powershell
-python main.py parse-fixtures data/gaming/fixtures.tsv
+python main.py parse-fixtures data/fixtures.tsv
 ```
 
 В манифесте используются строки `source<TAB>url<TAB>raw_file`. В репозитории
@@ -69,19 +69,19 @@ python main.py parse-fixtures data/gaming/fixtures.tsv
 python main.py stats
 ```
 
-Результаты находятся в `results/gaming/statistics.json` и
-`results/gaming/statistics.csv`. В них есть требуемые для ЛР показатели и
+Результаты находятся в `results/statistics.json` и
+`results/statistics.csv`. В них есть требуемые для ЛР показатели и
 диагностика: медиана/минимум/максимум, слова, коэффициент извлечения,
 успехи/ошибки разбора и точные дубликаты.
 
 ## Текущая структура
 
 ```text
-data/gaming/
+data/
   discovery/<source>/robots.txt
   raw/<source>/*.html
   parsed/<source>/*.json
-results/gaming/
+results/
 src/parsers/
 ```
 

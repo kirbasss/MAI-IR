@@ -234,7 +234,7 @@ def _read_urls(urls_path: Path) -> list[tuple[str, str]]:
 
 def collect_file(
     urls_path: Path,
-    data_dir: Path = Path("data/gaming"),
+    data_dir: Path = Path("data"),
     delay_seconds: float = 2.0,
 ) -> None:
     session = requests.Session()
@@ -256,7 +256,7 @@ def parse_saved_html(
     source: str,
     url: str,
     raw_path: Path,
-    data_dir: Path = Path("data/gaming"),
+    data_dir: Path = Path("data"),
 ) -> dict:
     """Parse a locally saved verified fixture without making a network request."""
     raw = raw_path.read_bytes()
@@ -280,7 +280,7 @@ def parse_saved_html(
 
 def parse_fixture_manifest(
     manifest_path: Path,
-    data_dir: Path = Path("data/gaming"),
+    data_dir: Path = Path("data"),
 ) -> None:
     for line_no, raw_line in enumerate(manifest_path.read_text(encoding="utf-8").splitlines(), 1):
         line = raw_line.strip()

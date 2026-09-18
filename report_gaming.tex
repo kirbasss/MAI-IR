@@ -69,8 +69,8 @@ python main.py collect urls.txt --delay 2
 Ответ классифицируется как документ, редирект, 404, 429, 5xx,
 anti-bot/challenge или запрет robots.txt. CAPTCHA и WAF не обходятся.
 
-Сырой HTML хранится в \code{data/gaming/raw/<source>/}, JSON с результатом
-разбора --- в \code{data/gaming/parsed/<source>/}. Игровой корпус вынесен в
+Сырой HTML хранится в \code{data/raw/<source>/}, JSON с результатом
+разбора --- в \code{data/parsed/<source>/}. Игровой корпус вынесен в
 отдельный каталог и не смешивается с прежней темой lyrics.
 
 \section{Единая модель документа}
@@ -121,7 +121,7 @@ anti-bot/challenge или запрет robots.txt. CAPTCHA и WAF не обхо�
 Разбор повторяется без обращения к сети:
 
 \begin{verbatim}
-python main.py parse-fixtures data/gaming/fixtures.tsv
+python main.py parse-fixtures data/fixtures.tsv
 python main.py stats
 \end{verbatim}
 

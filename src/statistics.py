@@ -68,8 +68,8 @@ def load_documents(parsed_root: Path) -> list[dict]:
 
 
 def build_statistics(
-    parsed_root: Path = Path("data/gaming/parsed"),
-    results_dir: Path = Path("results/gaming"),
+    parsed_root: Path = Path("data/parsed"),
+    results_dir: Path = Path("results"),
 ) -> dict:
     docs = load_documents(parsed_root)
     groups: dict[str, list[dict]] = defaultdict(list)
