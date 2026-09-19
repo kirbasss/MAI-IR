@@ -48,6 +48,11 @@ SITEMAP_ROOTS = {
     "eurogamer": SitemapRoot(
         "https://www.eurogamer.net/sitemap.xml", "eurogamer_sitemap.xml"
     ),
+    # GameSpot publishes a Yoast sitemap index.  Only post maps are selected:
+    # pages, tags, authors and video maps are not corpus documents.
+    "gamespot": SitemapRoot(
+        "https://www.gamespot.com/sitemap_index.xml", "gamespot_sitemap_index.xml"
+    ),
 }
 
 
@@ -58,6 +63,7 @@ DISCOVERY_HOSTS = {
     **SOURCE_HOSTS,
     "pcgamer": {"pcgamer.com", "www.pcgamer.com"},
     "eurogamer": {"eurogamer.net", "www.eurogamer.net"},
+    "gamespot": {"gamespot.com", "www.gamespot.com"},
 }
 
 
@@ -137,6 +143,15 @@ def sitemap_category(source: str, sitemap_url: str) -> str | None:
         # exact section labels are resolved later from validated HTML samples.
         hostname = urlsplit(sitemap_url).hostname
         return "publication" if hostname in DISCOVERY_HOSTS[source] else None
+
+    if source == "gamespot":
+        # Yoast uses post-sitemap.xml (and numbered variants) for articles;
+        # the other maps describe taxonomy or service pages.
+        return (
+            "publication"
+            if re.search(r"/(?:post|article)-sitemap\d*\.xml$", path)
+            else None
+        )
 
     raise ValueError(f"Неизвестный source: {source}")
 
