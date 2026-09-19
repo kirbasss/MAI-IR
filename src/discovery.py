@@ -36,6 +36,21 @@ SITEMAP_ROOTS = {
     "igromania": SitemapRoot(
         "https://www.igromania.ru/sitemap.xml", "igromania_sitemap.xml"
     ),
+    # PC Gamer is an English-language specialist gaming outlet.  The sitemap
+    # URL is declared in its robots.txt; collection is intentionally added
+    # only after the site's article selector is validated on saved fixtures.
+    "pcgamer": SitemapRoot(
+        "https://www.pcgamer.com/sitemap.xml", "pcgamer_sitemap.xml"
+    ),
+}
+
+
+# Discovery may precede a source-specific HTML parser.  Keep its host allow
+# list separate from downloader.SOURCE_HOSTS so ``collect`` does not pretend
+# that an unvalidated source is ready for corpus collection.
+DISCOVERY_HOSTS = {
+    **SOURCE_HOSTS,
+    "pcgamer": {"pcgamer.com", "www.pcgamer.com"},
 }
 
 
@@ -103,6 +118,13 @@ def sitemap_category(source: str, sitemap_url: str) -> str | None:
             return "review"
         return None
 
+    if source == "pcgamer":
+        # PC Gamer is a specialised gaming publication.  Its sitemap layout
+        # may be a URL set or a nested index, therefore child maps are kept
+        # under one provisional publication category until sampled.
+        hostname = urlsplit(sitemap_url).hostname
+        return "publication" if hostname in DISCOVERY_HOSTS[source] else None
+
     raise ValueError(f"Неизвестный source: {source}")
 
 
@@ -122,7 +144,7 @@ def document_category(source: str, url: str, sitemap_type: str) -> str | None:
 
 
 def _matches_source(source: str, url: str) -> bool:
-    return urlsplit(url).hostname in SOURCE_HOSTS[source]
+    return urlsplit(url).hostname in DISCOVERY_HOSTS[source]
 
 
 def _root_path(data_dir: Path, source: str) -> Path:

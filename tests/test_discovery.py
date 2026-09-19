@@ -57,6 +57,13 @@ class SitemapDiscoveryTests(unittest.TestCase):
             sitemap_category("igromania", "https://www.igromania.ru/sitemap-news.xml?p=2"),
             "news",
         )
+        self.assertEqual(
+            sitemap_category("pcgamer", "https://www.pcgamer.com/sitemap.xml"),
+            "publication",
+        )
+        self.assertIsNone(
+            sitemap_category("pcgamer", "https://example.org/sitemap.xml")
+        )
 
     def test_ixbt_document_category_is_read_from_url(self) -> None:
         self.assertEqual(
