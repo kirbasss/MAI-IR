@@ -48,6 +48,15 @@ SITEMAP_ROOTS = {
     "eurogamer": SitemapRoot(
         "https://www.eurogamer.net/sitemap.xml", "eurogamer_sitemap.xml"
     ),
+    "gamemag": SitemapRoot(
+        "https://gamemag.ru/sitemap.xml", "gamemag_sitemap.xml"
+    ),
+    "gamingonlinux": SitemapRoot(
+        "https://www.gamingonlinux.com/sitemap.xml", "gamingonlinux_sitemap.xml"
+    ),
+    "siliconera": SitemapRoot(
+        "https://www.siliconera.com/sitemap_index.xml", "siliconera_sitemap_index.xml"
+    ),
 }
 
 
@@ -58,6 +67,9 @@ DISCOVERY_HOSTS = {
     **SOURCE_HOSTS,
     "pcgamer": {"pcgamer.com", "www.pcgamer.com"},
     "eurogamer": {"eurogamer.net", "www.eurogamer.net"},
+    "gamemag": {"gamemag.ru", "www.gamemag.ru"},
+    "gamingonlinux": {"gamingonlinux.com", "www.gamingonlinux.com"},
+    "siliconera": {"siliconera.com", "www.siliconera.com"},
 }
 
 
@@ -138,15 +150,41 @@ def sitemap_category(source: str, sitemap_url: str) -> str | None:
         hostname = urlsplit(sitemap_url).hostname
         return "publication" if hostname in DISCOVERY_HOSTS[source] else None
 
+    if source in {"gamemag", "gamingonlinux"}:
+        # The sites' own sitemaps are publication maps or nested indexes.  URL
+        # classification below removes GameMAG's game, profile and taxonomy pages.
+        hostname = urlsplit(sitemap_url).hostname
+        return "publication" if hostname in DISCOVERY_HOSTS[source] else None
+
+    if source == "siliconera":
+        # Siliconera uses a Yoast index; only post maps contain publications.
+        return (
+            "publication"
+            if re.search(r"/(?:post|article)-sitemap\d*\.xml$", path)
+            else None
+        )
+
     raise ValueError(f"Неизвестный source: {source}")
 
 
 def document_category(source: str, url: str, sitemap_type: str) -> str | None:
     """Map a document URL to the corpus taxonomy used in the URL inventory."""
+    path = urlsplit(url).path.lower()
+
+    if source == "gamemag":
+        for prefix, category in (
+            ("/news/", "news"),
+            ("/reviews/", "review"),
+            ("/articles/", "article"),
+            ("/specials/", "article"),
+        ):
+            if path.startswith(prefix):
+                return category
+        return None
+
     if source != "ixbt_games":
         return sitemap_type
 
-    path = urlsplit(url).path.lower()
     if path.startswith("/news/"):
         return "news"
     if path.startswith("/articles/"):

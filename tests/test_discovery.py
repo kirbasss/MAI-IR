@@ -68,6 +68,17 @@ class SitemapDiscoveryTests(unittest.TestCase):
             sitemap_category("eurogamer", "https://www.eurogamer.net/sitemap.xml"),
             "publication",
         )
+        self.assertEqual(
+            sitemap_category("gamingonlinux", "https://www.gamingonlinux.com/sitemap.xml"),
+            "publication",
+        )
+        self.assertEqual(
+            sitemap_category("siliconera", "https://www.siliconera.com/post-sitemap3.xml"),
+            "publication",
+        )
+        self.assertIsNone(
+            sitemap_category("siliconera", "https://www.siliconera.com/category-sitemap.xml")
+        )
 
     def test_ixbt_document_category_is_read_from_url(self) -> None:
         self.assertEqual(
@@ -76,6 +87,19 @@ class SitemapDiscoveryTests(unittest.TestCase):
         )
         self.assertIsNone(
             document_category("ixbt_games", "https://ixbt.games/tags/rpg", "publication")
+        )
+
+    def test_gamemag_document_category_is_read_from_url(self) -> None:
+        self.assertEqual(
+            document_category("gamemag", "https://gamemag.ru/news/137784/example", "publication"),
+            "news",
+        )
+        self.assertEqual(
+            document_category("gamemag", "https://gamemag.ru/specials/24557/example", "publication"),
+            "article",
+        )
+        self.assertIsNone(
+            document_category("gamemag", "https://gamemag.ru/games/example", "publication")
         )
 
 
