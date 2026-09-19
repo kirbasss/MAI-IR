@@ -5,35 +5,64 @@
 \usepackage[english,russian]{babel}
 \usepackage{array}
 \usepackage{booktabs}
+\usepackage{caption}
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{indentfirst}
 \usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{tocloft}
 \geometry{margin=25mm}
 \hypersetup{unicode=true,colorlinks=true,urlcolor=blue,linkcolor=black}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{1em}
+\setcounter{tocdepth}{2}
+\setlength{\cftbeforesecskip}{5pt}
+\setlength{\cftbeforesubsecskip}{1pt}
+\renewcommand{\cftsecfont}{\bfseries}
+\renewcommand{\cftsecpagefont}{\bfseries}
+\renewcommand{\cftsubsecfont}{\normalfont}
+\renewcommand{\cftsubsecpagefont}{\normalfont}
+\renewcommand{\cftdotsep}{1}
+\DeclareCaptionLabelSeparator{emdash}{\space---\space}
+\captionsetup[figure]{
+  justification=centering,
+  singlelinecheck=false,
+  labelsep=emdash
+}
+\addto\captionsrussian{\renewcommand{\figurename}{Рис.}}
 \newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
 
 \begin{document}
 
 \begin{titlepage}
 \begin{center}
-{\large Московский авиационный институт\\
-(национальный исследовательский университет)}
+{\large МОСКОВСКИЙ АВИАЦИОННЫЙ ИНСТИТУТ\\ (НАЦИОНАЛЬНЫЙ ИССЛЕДОВАТЕЛЬСКИЙ УНИВЕРСИТЕТ)}
+
+\vspace{18pt}
+
+{\large Факультет информационных технологий и прикладной математики}
+
+{\large Кафедра вычислительной математики и~программирования}
 
 \vfill
-Лабораторная работа по курсу «Информационный поиск»
+{\large \textbf{Лабораторная работа №1 по курсу\\ «Информационный поиск»}}
 
 \vspace{12mm}
-{\Large \textbf{Лабораторная работа №1}}\\
 {\large \textbf{Добыча корпуса документов}}
 
 \vfill
 \begin{flushright}
-Студент: К.\,А. Арусланов\\
-Группа: \underline{\hspace{45mm}}\\
-Преподаватель: А.\,А. Кухтичев\\
-Дата: \underline{\hspace{45mm}}\\
-Оценка: \underline{\hspace{45mm}}
+\begin{tabular}{@{}r@{:\hspace{0.6em}}l@{}}
+Студент & К.\,А. Арусланов\\
+Группа & \underline{\hspace{45mm}}\\
+Преподаватель & А.\,А. Кухтичев\\
+Дата & \underline{\hspace{45mm}}\\
+Оценка & \underline{\hspace{45mm}}
+\end{tabular}
 \end{flushright}
 
 \vfill
@@ -46,17 +75,42 @@
 
 \section{Постановка задачи}
 
-Необходимо скачать примеры документов будущего корпуса, изучить их разметку
-и метаданные, выделить основной текст, найти внешние средства поиска и
-посчитать характеристики выборки. Темой корпуса выбраны русскоязычные
-редакционные публикации о видеоиграх и игровой индустрии: новости, статьи,
-обзоры, превью и аналитика.
+Необходимо проанализировать корпус документов, который будет использован при
+выполнении остальных лабораторных работ:
 
-\section{Источники и метод}
+\begin{itemize}
+  \item Скачать примеры документов к себе на компьютер. В отчёте нужно
+  указать источник данных. Источников в итоговом индексе должно быть не
+  менее двух;
+  \item Ознакомиться с ним, изучить его характеристики. Из чего состоит
+  текст? Есть ли дополнительная мета-информация? Если разметка текста, какая
+  она?
+  \item Выделить текст.
+  \item Найти существующие поисковики, которые уже можно использовать для
+  поиска по выбранному набору документов (встроенный поиск Википедии, поиск
+  Google с использованием ограничений на URL или на сайт). Если такого поиска
+  найти невозможно, то использовать корпус для выполнения лабораторных работ
+  нельзя!
+  \item Привести несколько примеров запросов к существующим поисковикам,
+  указать недостатки в полученной поисковой выдаче.
+\end{itemize}
+
+В результатах работы должна быть указаны статистическая информация о корпусе:
+
+\begin{itemize}
+  \item Размер примеров «сырых» документов.
+  \item Количество документов.
+  \item Размер текста, выделенного из «сырых» данных.
+  \item Средний размер документа, средний объём текста в документе.
+\end{itemize}
+
+\section{Метод решения}
+
+\subsection{Источники и хранение}
 
 Кандидатами являются PlayGround.ru, StopGame.ru, IXBT.games и Игромания.
-В окончательном корпусе будет не менее двух независимых источников. В
-\code{urls.txt} подготовлено 15 репрезентативных страниц: 3 PlayGround, 5
+В окончательном корпусе будет не менее двух независимых источников. Файл
+\code{urls.txt} содержит проверочную выборку из 15 страниц: 3 PlayGround, 5
 StopGame, 4 IXBT.games и 3 Игромании. Массовый обход на этапе лабораторной
 работы не выполняется.
 
@@ -76,7 +130,7 @@ anti-bot/challenge или запрет robots.txt. CAPTCHA и WAF не обхо�
 в JSON, поэтому после изменения парсера возможен повторный разбор без сети:
 \code{python main.py reparse}.
 
-\section{Единая модель документа}
+\subsection{Формат документа}
 
 Все парсеры возвращают источник, URL, заголовок, автора, дату публикации,
 категорию, теги, связанные игры, основной текст и исходные метаданные. Также
@@ -85,14 +139,16 @@ anti-bot/challenge или запрет robots.txt. CAPTCHA и WAF не обхо�
 выдумываются. Удаляются только tracking-параметры URL, а содержательные
 параметры сохраняются.
 
-\section{Разметка и выделение текста}
+\subsection{Разметка и выделение текста}
 
-Правила ниже проверены на 15 сохранённых HTML: по 3 страницам PlayGround и
-Игромании, 4 IXBT.games и 5 StopGame. В каждом случае найден ровно один
-контейнер основного текста и выделено более 100 слов.
+Проверка проведена на 15 сохранённых HTML. В выборку вошли по 3 страницы
+PlayGround и Игромании, 4 IXBT.games и 5 StopGame. В каждом документе найден
+ровно один контейнер основного текста и выделено более 100 слов.
 
 \begin{center}
-\begin{tabular}{p{0.19\linewidth}p{0.34\linewidth}p{0.34\linewidth}}
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{@{}P{0.16\textwidth}P{0.33\textwidth}X@{}}
 \toprule
 Источник & Основной текст & Категория и таксономия \\
 \midrule
@@ -102,16 +158,17 @@ games \\
 StopGame & \code{article#material_content} & \code{newsdata} $\rightarrow$
 news; \code{show} с «обзор» $\rightarrow$ review; теги и игры извлекаются из
 ссылок \\
-IXBT.games & \code{div[id^="publication-"].prose} & JSON-LD
+IXBT.games & \code{div[id^="publication-"]}\\\code{.prose} & JSON-LD
 \code{articleSection}: новости, статьи, обзоры $\rightarrow$ news, article,
 review \\
-Игромания & \code{div[class*="material-content_"]} & JSON-LD \code{@type}:
+Игромания & \code{div[class*="material-}\\\code{content_"]} & JSON-LD \code{@type}:
 \code{NewsArticle}, \code{Article}, \code{Review}; блок тегов $\rightarrow$
 tags \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
+\normalsize
 Для всех сайтов заголовок и служебные поля берутся из \code{h1} и JSON-LD
 \code{headline}, \code{author}, \code{datePublished}. У PlayGround внешний
 \code{article} включает комментарии и рекомендации. В IXBT.games числовая
@@ -122,7 +179,9 @@ desktop/mobile-блоках и дедуплицируются. В StopGame бл�
 страницах IXBT.games нет надёжных тегов или имён игр, поэтому эти поля не
 заполняются догадками.
 
-\section{Статистика проверочной выборки}
+\section{Результаты}
+
+\subsection{Статистика проверочной выборки}
 
 Локально сохранены и разобраны все 15 страниц из \code{urls.txt}. Повторный
 разбор выполняется без обращения к сети:
@@ -169,7 +228,7 @@ IXBT.games & 4 & 1\,238\,733 & 59\,505 & 14\,876 & 4\,671 \\
 \end{tabular}
 \end{center}
 
-\section{Существующий поиск}
+\subsection{Существующий поиск}
 
 Корпус доступен во встроенных поисках сайтов и во внешних поисковиках с
 ограничением \code{site:}. Проверка проведена 19 сентября 2026 года. Для
@@ -177,7 +236,10 @@ IXBT.games & 4 & 1\,238\,733 & 59\,505 & 14\,876 & 4\,671 \\
 недостатки выдачи проверяются сравнением результатов с сохранёнными HTML и
 выделенным текстом.
 
-\begin{longtable}{p{0.26\linewidth}p{0.34\linewidth}p{0.27\linewidth}}
+{\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{@{}P{0.25\textwidth}P{0.39\textwidth}P{0.30\textwidth}@{}}
 \toprule
 Запрос и ожидаемый документ & Наблюдение & Недостаток \\
 \midrule
@@ -212,6 +274,7 @@ StopGame «Музыка Ночного Города» & Внутренний п�
 фильтры и зонный поиск. \\
 \bottomrule
 \end{longtable}
+}
 
 \begin{figure}[htbp]
 \centering
@@ -246,26 +309,13 @@ StopGame (слева) и релевантные результаты Google с �
 контекст совпадения внутри слова «Косплемания» (справа).}
 \end{figure}
 
-Таким образом, существующие поиски достаточны как внешний ориентир, но не как
-замена собственного индекса: у них нет контролируемой полноты, единой
-нормализации русских слов и доступа к выделенному основному тексту или
-метаданным корпуса.
-
-\section{Тестирование}
-
-Запуск тестов:
-
-\begin{verbatim}
-python -m unittest discover -s tests -v
-\end{verbatim}
-
-Выполненный прогон содержит пять успешных тестов: проверку селектора StopGame
-и исключения связанных блоков, статистику fixtures без дубликатов,
-канонизацию URL, а также повторный разбор всех 15 HTML с подтверждёнными
-селекторами и проверку таксономии. Далее полезно добавить fixtures для 404,
-429, robots.txt и challenge-страницы.
+\clearpage
 
 \section{Вывод}
+
+Существующие поиски достаточны как внешний ориентир, но не как замена
+собственного индекса: у них нет контролируемой полноты, единой нормализации
+русских слов и доступа к выделенному основному тексту или метаданным корпуса.
 
 Подготовлена воспроизводимая основа игрового корпуса: общий формат документа,
 сохранение raw HTML, диагностика ответов, повторный разбор без сети,
