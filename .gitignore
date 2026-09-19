@@ -1,5 +1,6 @@
 .venv/
 __pycache__/
+data/
 *.py[cod]
 *.aux
 *.log

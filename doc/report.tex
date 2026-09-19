@@ -161,10 +161,10 @@ games \\
 StopGame & \code{article#material_content} & \code{newsdata} $\rightarrow$
 news; \code{show} с «обзор» $\rightarrow$ review; теги и игры извлекаются из
 ссылок \\
-IXBT.games & \code{div[id^="publication-"]}\\\code{.prose} & JSON-LD
+IXBT.games & \code{div[id^="publication-"]}\newline\code{.prose} & JSON-LD
 \code{articleSection}: новости, статьи, обзоры $\rightarrow$ news, article,
 review \\
-Игромания & \code{div[class*="material-}\\\code{content_"]} & JSON-LD \code{@type}:
+Игромания & \code{div[class*="material-}\newline\code{content_"]} & JSON-LD \code{@type}:
 \code{NewsArticle}, \code{Article}, \code{Review}; блок тегов $\rightarrow$
 tags \\
 \bottomrule
@@ -227,6 +227,16 @@ IXBT.games & 4 & 1,24 & 59,5 & 14,9 & 4\,671 \\
 Игромания & 3 & 0,77 & 60,1 & 20,0 & 4\,717 \\
 \bottomrule
 \end{tabular}
+\end{center}
+
+\subsection{Исходный код}
+
+Исходный код, проверочная выборка URL и отчёт размещены в ветке \code{lab1}
+репозитория: \url{https://github.com/kirbasss/MAI-IR/tree/lab1}.
+
+\begin{center}
+\href{https://github.com/kirbasss/MAI-IR/tree/lab1}{\includegraphics[width=28mm]{img/qr_lab1.png}}\\[2pt]
+\small QR-код ведёт на ветку \code{lab1} репозитория.
 \end{center}
 
 \subsection{Существующий поиск}
