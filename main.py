@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.discovery import SITEMAP_ROOTS, discover_sitemaps
+from src.discovery import SITEMAP_ROOTS, discover_sitemaps, merge_inventories
 from src.downloader import collect_file, parse_fixture_manifest, reparse_saved_documents
 from src.statistics import build_statistics
 
@@ -59,9 +59,23 @@ def main() -> None:
         "--refresh-roots", action="store_true",
         help="скачать корневые sitemap заново вместо использования сохранённых",
     )
-    discover.add_argument(
+    offline_mode = discover.add_mutually_exclusive_group()
+    offline_mode.add_argument(
         "--roots-only", action="store_true",
         help="без сети: подготовить список подходящих дочерних sitemap",
+    )
+    offline_mode.add_argument(
+        "--cache-only", action="store_true",
+        help="без сети: восстановить URL-инвентарь из сохранённых sitemap",
+    )
+
+    merge = sub.add_parser(
+        "merge-inventories", help="объединить инвентари URL без загрузки HTML"
+    )
+    merge.add_argument("input_dirs", type=Path, nargs="+", help="каталоги с url_inventory.tsv")
+    merge.add_argument(
+        "--output-dir", type=Path, default=DEFAULT_DATA_DIR / "discovery" / "inventory_all",
+        help="каталог объединённого инвентаря",
     )
 
     args = parser.parse_args()
@@ -86,7 +100,14 @@ def main() -> None:
                 delay_seconds=args.delay,
                 refresh_roots=args.refresh_roots,
                 roots_only=args.roots_only,
+                cache_only=args.cache_only,
             ),
+            ensure_ascii=False,
+            indent=2,
+        ))
+    elif args.command == "merge-inventories":
+        print(json.dumps(
+            merge_inventories(args.input_dirs, args.output_dir),
             ensure_ascii=False,
             indent=2,
         ))

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import csv
 import re
+import sqlite3
+import tempfile
 import time
 from collections import Counter
 from dataclasses import dataclass
@@ -247,6 +249,104 @@ def _write_tsv(path: Path, fieldnames: list[str], rows: list[dict[str, str]]) ->
         writer.writerows(rows)
 
 
+def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
+    """Merge URL inventories using a temporary on-disk database.
+
+    A corpus-scale inventory can contain over a million rows, so deduplication
+    is done by SQLite rather than by loading every URL into a Python set.
+    """
+    if not input_dirs:
+        raise ValueError("Нужен хотя бы один каталог инвентаря")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    rows_seen = 0
+    inserted = 0
+
+    with tempfile.TemporaryDirectory(prefix="mai-ir-inventory-") as temporary_dir:
+        database_path = Path(temporary_dir) / "inventory.sqlite3"
+        connection = sqlite3.connect(database_path)
+        try:
+            connection.executescript("""
+                PRAGMA journal_mode = OFF;
+                PRAGMA synchronous = OFF;
+                CREATE TABLE documents (
+                    url TEXT PRIMARY KEY,
+                    source TEXT NOT NULL,
+                    category TEXT NOT NULL,
+                    sitemap_url TEXT NOT NULL
+                );
+            """)
+
+            for directory in input_dirs:
+                inventory_path = directory / "url_inventory.tsv"
+                if not inventory_path.is_file():
+                    raise FileNotFoundError(f"Не найден URL-инвентарь: {inventory_path}")
+                with inventory_path.open(encoding="utf-8", newline="") as stream:
+                    reader = csv.DictReader(stream, delimiter="\t")
+                    required = {"source", "category", "url", "sitemap_url"}
+                    if not reader.fieldnames or not required.issubset(reader.fieldnames):
+                        raise ValueError(f"Некорректный TSV-инвентарь: {inventory_path}")
+                    for row in reader:
+                        rows_seen += 1
+                        source = row["source"].strip()
+                        category = row["category"].strip()
+                        url = canonicalize_url(row["url"])
+                        sitemap_url = canonicalize_url(row["sitemap_url"])
+                        if not all((source, category, url, sitemap_url)):
+                            raise ValueError(f"Пустое обязательное поле: {inventory_path}")
+                        cursor = connection.execute(
+                            "INSERT OR IGNORE INTO documents VALUES (?, ?, ?, ?)",
+                            (url, source, category, sitemap_url),
+                        )
+                        inserted += cursor.rowcount
+            connection.commit()
+
+            sources: dict[str, dict] = {}
+            output_path = output_dir / "url_inventory.tsv"
+            with output_path.open("w", encoding="utf-8", newline="") as stream:
+                writer = csv.DictWriter(
+                    stream,
+                    fieldnames=["source", "category", "url", "sitemap_url"],
+                    delimiter="\t",
+                )
+                writer.writeheader()
+                for source, category, url, sitemap_url in connection.execute(
+                    "SELECT source, category, url, sitemap_url "
+                    "FROM documents ORDER BY source, category, url"
+                ):
+                    source_summary = sources.setdefault(
+                        source, {"urls": 0, "categories": Counter()}
+                    )
+                    source_summary["urls"] += 1
+                    source_summary["categories"][category] += 1
+                    writer.writerow({
+                        "source": source,
+                        "category": category,
+                        "url": url,
+                        "sitemap_url": sitemap_url,
+                    })
+        finally:
+            connection.close()
+
+    summary = {
+        "generated_at": datetime.now(UTC).isoformat(),
+        "input_inventories": [str(directory) for directory in input_dirs],
+        "input_rows": rows_seen,
+        "duplicate_urls_removed": rows_seen - inserted,
+        "total_unique_urls": inserted,
+        "sources": {
+            source: {
+                "urls": values["urls"],
+                "categories": dict(sorted(values["categories"].items())),
+            }
+            for source, values in sorted(sources.items())
+        },
+        "errors": [],
+    }
+    dump_json(output_dir / "summary.json", summary)
+    return summary
+
+
 def discover_sitemaps(
     data_dir: Path = Path("data"),
     output_dir: Path | None = None,
@@ -254,13 +354,16 @@ def discover_sitemaps(
     delay_seconds: float = 0.5,
     refresh_roots: bool = False,
     roots_only: bool = False,
+    cache_only: bool = False,
 ) -> dict:
     """Build a deduplicated inventory of publication URLs listed in sitemaps.
 
     In ``roots_only`` mode no network requests are made: locally saved root
     sitemap indexes are parsed to prepare an auditable list of child maps.
-    Normal mode refreshes robots.txt, reads cached root maps (or downloads
-    them), and requests only child sitemaps that can contain publications.
+    In ``cache_only`` mode the saved robots.txt, root map and child maps are
+    used to rebuild the full URL inventory without network access.  Normal
+    mode refreshes robots.txt, reads cached root maps (or downloads them),
+    and requests only child sitemaps that can contain publications.
     """
     selected_sources = sources or list(SITEMAP_ROOTS)
     invalid = set(selected_sources) - set(SITEMAP_ROOTS)
@@ -283,9 +386,18 @@ def discover_sitemaps(
     for source in selected_sources:
         root = SITEMAP_ROOTS[source]
         try:
-            if roots_only:
+            if roots_only or cache_only:
                 root_path = _root_path(data_dir, source)
                 root_xml = root_path.read_bytes()
+                if cache_only and not _allowed_by_saved_robots(
+                    data_dir, source, root.url
+                ):
+                    errors.append({
+                        "source": source,
+                        "url": root.url,
+                        "error": "Корневой sitemap запрещён сохранённым robots.txt",
+                    })
+                    continue
             else:
                 robots = fetch_robots(session, source, root.url, data_dir)
                 if not robots.allowed:
@@ -321,6 +433,21 @@ def discover_sitemaps(
                     "error": "Дочерний sitemap запрещён robots.txt",
                 })
                 continue
+            cached_xml = None
+            if cache_only:
+                try:
+                    cached_xml = (
+                        root_xml
+                        if canonical_sitemap == canonicalize_url(root.url)
+                        else _leaf_path(data_dir, source, canonical_sitemap).read_bytes()
+                    )
+                except OSError as exc:
+                    errors.append({
+                        "source": source,
+                        "url": canonical_sitemap,
+                        "error": f"Сохранённый sitemap не найден: {exc}",
+                    })
+                    continue
             if canonical_sitemap in seen_sitemaps:
                 continue
             seen_sitemaps.add(canonical_sitemap)
@@ -329,7 +456,7 @@ def discover_sitemaps(
                 "category": category,
                 "sitemap_url": canonical_sitemap,
             })
-            queue.append((canonical_sitemap, category, None))
+            queue.append((canonical_sitemap, category, cached_xml))
 
         if roots_only:
             print(f"[{source}] maps={len(queue):3d} (без сетевых запросов)")
@@ -339,10 +466,15 @@ def discover_sitemaps(
         while queue:
             sitemap_url, sitemap_type, cached_xml = queue.pop(0)
             try:
-                xml = cached_xml or _download_sitemap(session, sitemap_url)
-                local_path = _leaf_path(data_dir, source, sitemap_url)
-                local_path.parent.mkdir(parents=True, exist_ok=True)
-                local_path.write_bytes(xml)
+                if cached_xml is not None:
+                    xml = cached_xml
+                elif cache_only:
+                    raise OSError("Сохранённый sitemap не найден")
+                else:
+                    xml = _download_sitemap(session, sitemap_url)
+                    local_path = _leaf_path(data_dir, source, sitemap_url)
+                    local_path.parent.mkdir(parents=True, exist_ok=True)
+                    local_path.write_bytes(xml)
                 kind, child_locations = parse_sitemap(xml)
             except (OSError, requests.RequestException, ValueError) as exc:
                 errors.append({"source": source, "url": sitemap_url, "error": str(exc)})
@@ -362,13 +494,26 @@ def discover_sitemaps(
                         continue
                     if canonical_child in seen_sitemaps:
                         continue
+                    cached_child_xml = None
+                    if cache_only:
+                        try:
+                            cached_child_xml = _leaf_path(
+                                data_dir, source, canonical_child
+                            ).read_bytes()
+                        except OSError as exc:
+                            errors.append({
+                                "source": source,
+                                "url": canonical_child,
+                                "error": f"Сохранённый sitemap не найден: {exc}",
+                            })
+                            continue
                     seen_sitemaps.add(canonical_child)
                     candidates.append({
                         "source": source,
                         "category": sitemap_type,
                         "sitemap_url": canonical_child,
                     })
-                    queue.append((canonical_child, sitemap_type, None))
+                    queue.append((canonical_child, sitemap_type, cached_child_xml))
             else:
                 for document_url in child_locations:
                     if not _matches_source(source, document_url):
@@ -387,7 +532,7 @@ def discover_sitemaps(
                         "sitemap_url": sitemap_url,
                     })
 
-            if queue:
+            if queue and not cache_only:
                 time.sleep(delay_seconds)
 
         print(f"[{source}] maps={sum(row['source'] == source for row in candidates):3d} "
@@ -418,6 +563,7 @@ def discover_sitemaps(
     summary = {
         "generated_at": datetime.now(UTC).isoformat(),
         "roots_only": roots_only,
+        "cache_only": cache_only,
         "total_selected_sitemaps": len(candidates),
         "total_unique_urls": len(inventory),
         "sources": by_source,
