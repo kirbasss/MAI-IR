@@ -65,7 +65,7 @@ class SitemapDiscoveryTests(unittest.TestCase):
             sitemap_category("pcgamer", "https://example.org/sitemap.xml")
         )
         self.assertEqual(
-            sitemap_category("pcgamesn", "https://www.pcgamesn.com/sitemap.xml"),
+            sitemap_category("eurogamer", "https://www.eurogamer.net/sitemap.xml"),
             "publication",
         )
 

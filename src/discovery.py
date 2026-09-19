@@ -42,11 +42,11 @@ SITEMAP_ROOTS = {
     "pcgamer": SitemapRoot(
         "https://www.pcgamer.com/sitemap.xml", "pcgamer_sitemap.xml"
     ),
-    # PCGamesN is another English-language specialist gaming outlet.  As with
-    # PC Gamer, this entry is deliberately limited to URL discovery until a
-    # source-specific article-body selector is validated on fixtures.
-    "pcgamesn": SitemapRoot(
-        "https://www.pcgamesn.com/sitemap.xml", "pcgamesn_sitemap.xml"
+    # Eurogamer is an English-language specialist gaming outlet.  Its sitemap
+    # is declared in robots.txt; as with PC Gamer, this entry is limited to
+    # URL discovery until the article-body selector is validated on fixtures.
+    "eurogamer": SitemapRoot(
+        "https://www.eurogamer.net/sitemap.xml", "eurogamer_sitemap.xml"
     ),
 }
 
@@ -57,7 +57,7 @@ SITEMAP_ROOTS = {
 DISCOVERY_HOSTS = {
     **SOURCE_HOSTS,
     "pcgamer": {"pcgamer.com", "www.pcgamer.com"},
-    "pcgamesn": {"pcgamesn.com", "www.pcgamesn.com"},
+    "eurogamer": {"eurogamer.net", "www.eurogamer.net"},
 }
 
 
@@ -125,10 +125,16 @@ def sitemap_category(source: str, sitemap_url: str) -> str | None:
             return "review"
         return None
 
-    if source in {"pcgamer", "pcgamesn"}:
-        # Both sources are specialised gaming publications.  Their sitemap
-        # layouts may be a URL set or a nested index, therefore child maps
-        # are kept under one provisional publication category until sampled.
+    if source == "pcgamer":
+        # PC Gamer is a specialised gaming publication.  Its sitemap layout
+        # may be a URL set or a nested index, therefore child maps are kept
+        # under one provisional publication category until sampled.
+        hostname = urlsplit(sitemap_url).hostname
+        return "publication" if hostname in DISCOVERY_HOSTS[source] else None
+
+    if source == "eurogamer":
+        # Eurogamer's main sitemap covers gaming editorial material.  The
+        # exact section labels are resolved later from validated HTML samples.
         hostname = urlsplit(sitemap_url).hostname
         return "publication" if hostname in DISCOVERY_HOSTS[source] else None
 
