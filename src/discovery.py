@@ -7,6 +7,7 @@ from collections import Counter
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from urllib import robotparser
 from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
 
@@ -138,6 +139,15 @@ def _download_sitemap(session: requests.Session, sitemap_url: str) -> bytes:
     return response.content
 
 
+def _allowed_by_saved_robots(data_dir: Path, source: str, url: str) -> bool:
+    robots_path = data_dir / "discovery" / source / "robots.txt"
+    if not robots_path.is_file():
+        return False
+    parser = robotparser.RobotFileParser()
+    parser.parse(robots_path.read_text(encoding="utf-8", errors="replace").splitlines())
+    return parser.can_fetch(USER_AGENT, url)
+
+
 def _load_root(
     session: requests.Session,
     data_dir: Path,
@@ -229,6 +239,15 @@ def discover_sitemaps(
             if category is None:
                 continue
             canonical_sitemap = canonicalize_url(location)
+            if not roots_only and not _allowed_by_saved_robots(
+                data_dir, source, canonical_sitemap
+            ):
+                errors.append({
+                    "source": source,
+                    "url": canonical_sitemap,
+                    "error": "Дочерний sitemap запрещён robots.txt",
+                })
+                continue
             if canonical_sitemap in seen_sitemaps:
                 continue
             seen_sitemaps.add(canonical_sitemap)
@@ -261,6 +280,13 @@ def discover_sitemaps(
                     if not _matches_source(source, child_url):
                         continue
                     canonical_child = canonicalize_url(child_url)
+                    if not _allowed_by_saved_robots(data_dir, source, canonical_child):
+                        errors.append({
+                            "source": source,
+                            "url": canonical_child,
+                            "error": "Дочерний sitemap запрещён robots.txt",
+                        })
+                        continue
                     if canonical_child in seen_sitemaps:
                         continue
                     seen_sitemaps.add(canonical_child)
