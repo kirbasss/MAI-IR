@@ -32,6 +32,23 @@ def saved_documents() -> list[dict]:
 
 
 class SourceParserFixtureTests(unittest.TestCase):
+    def test_new_sources_use_explicitly_marked_semantic_fallback(self) -> None:
+        html = b"""
+        <html><head><title>Example</title></head><body><article>
+        This is a deliberately long article sample. It contains enough words
+        for the conservative semantic fallback to recognise an article body.
+        The fallback is used only until a source-specific selector has been
+        validated on a saved HTML fixture from the actual publication.
+        </article></body></html>
+        """
+        for source in ("gamemag", "gamingonlinux", "pcgamer", "eurogamer"):
+            parsed = PARSERS[source](html, f"https://example.org/{source}").to_dict()
+            self.assertIsNone(parsed["parse_error"])
+            self.assertEqual(
+                parsed["metadata"]["parser_mode"],
+                "semantic_fallback_requires_fixture_validation",
+            )
+
     def test_all_saved_html_uses_confirmed_source_selector(self) -> None:
         documents = saved_documents()
         counts = {source: 0 for source in EXPECTED_COUNTS}

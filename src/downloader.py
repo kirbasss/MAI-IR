@@ -25,6 +25,10 @@ SOURCE_HOSTS = {
     "stopgame": {"stopgame.ru", "www.stopgame.ru"},
     "ixbt_games": {"ixbt.games", "www.ixbt.games"},
     "igromania": {"igromania.ru", "www.igromania.ru"},
+    "gamemag": {"gamemag.ru", "www.gamemag.ru"},
+    "gamingonlinux": {"gamingonlinux.com", "www.gamingonlinux.com"},
+    "pcgamer": {"pcgamer.com", "www.pcgamer.com"},
+    "eurogamer": {"eurogamer.net", "www.eurogamer.net"},
 }
 CHALLENGE_MARKERS = (
     "captcha", "verify you are human", "checking your browser",
