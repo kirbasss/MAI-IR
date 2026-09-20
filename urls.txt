@@ -15,3 +15,14 @@ ixbt_games	https://ixbt.games/articles/2026/08/26/razbiraem-pretenzii-k-marvels-
 igromania	https://www.igromania.ru/news/150532/vtoroj-trejler-gta-vi-nabral-rekordnyie-475-mln-prosmotrov-za-sutki/
 igromania	https://www.igromania.ru/article/29029/Obzor_Prey_Nauka-yeto_veselo.html
 igromania	https://www.igromania.ru/review/34159/obzor-the-blood-of-dawnwalker-dostojnoe-nachalo-vampirskoj-sagi/
+
+# Новые источники: образцы для проверки DOM и настройки селекторов.
+gamemag	https://gamemag.ru/articles/143020/fallout-3--prohojdenie-poetapno-polnostyu
+gamemag	https://gamemag.ru/news/10000/ufo-aftermath-otlozhena
+gamemag	https://gamemag.ru/reviews/007-first-light-pc-review
+gamingonlinux	https://www.gamingonlinux.com/2026/09/factorio-gets-a-full-arm64-linux-port-to-play-anywhere-especially-nice-for-the-steam-frame/
+gamingonlinux	https://www.gamingonlinux.com/2026/09/extraction-shooter-eve-vanguard-starts-alpha-in-november-linux-supported-with-the-anti-cheat/
+pcgamer	https://www.pcgamer.com/games/grand-theft-auto/evidence-of-canceled-grand-theft-auto-5-liberty-city-and-agent-trevor-dlc-plus-early-version-of-gta6s-map-surface-online/
+pcgamer	https://www.pcgamer.com/games/action/control-resonant-review/
+eurogamer	https://www.eurogamer.net/007-everything-or-nothing-is-the-best-james-bond-film-we-never-had
+eurogamer	https://www.eurogamer.net/007-first-light-against-the-odds-walkthrough
