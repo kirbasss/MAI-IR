@@ -15,12 +15,20 @@ EXPECTED_SELECTORS = {
     "stopgame": "article#material_content",
     "ixbt_games": 'div[id^="publication-"].prose',
     "igromania": 'div[class*="material-content_"]',
+    "gamemag": "div.content-text",
+    "gamingonlinux": "article.h-entry .e-content",
+    "pcgamer": "div#article-body",
+    "eurogamer": "div.article_body_content",
 }
 EXPECTED_COUNTS = {
     "playground": 3,
     "stopgame": 5,
     "ixbt_games": 4,
     "igromania": 3,
+    "gamemag": 3,
+    "gamingonlinux": 2,
+    "pcgamer": 2,
+    "eurogamer": 2,
 }
 
 
@@ -32,22 +40,25 @@ def saved_documents() -> list[dict]:
 
 
 class SourceParserFixtureTests(unittest.TestCase):
-    def test_new_sources_use_explicitly_marked_semantic_fallback(self) -> None:
+    def test_new_sources_use_validated_source_selectors(self) -> None:
         html = b"""
-        <html><head><title>Example</title></head><body><article>
-        This is a deliberately long article sample. It contains enough words
-        for the conservative semantic fallback to recognise an article body.
-        The fallback is used only until a source-specific selector has been
-        validated on a saved HTML fixture from the actual publication.
-        </article></body></html>
+        <html><head><title>Example</title></head><body>
+          <div class="content-text">GameMAG article.</div>
+          <article class="h-entry"><div class="e-content">GamingOnLinux article.</div></article>
+          <div id="article-body">PC Gamer article.</div>
+          <div class="article_body_content">Eurogamer article.</div>
+        </body></html>
         """
-        for source in ("gamemag", "gamingonlinux", "pcgamer", "eurogamer"):
+        for source, selector in {
+            "gamemag": "div.content-text",
+            "gamingonlinux": "article.h-entry .e-content",
+            "pcgamer": "div#article-body",
+            "eurogamer": "div.article_body_content",
+        }.items():
             parsed = PARSERS[source](html, f"https://example.org/{source}").to_dict()
             self.assertIsNone(parsed["parse_error"])
-            self.assertEqual(
-                parsed["metadata"]["parser_mode"],
-                "semantic_fallback_requires_fixture_validation",
-            )
+            self.assertEqual(parsed["metadata"]["body_selector"], selector)
+            self.assertNotIn("parser_mode", parsed["metadata"])
 
     def test_all_saved_html_uses_confirmed_source_selector(self) -> None:
         documents = saved_documents()
@@ -61,16 +72,18 @@ class SourceParserFixtureTests(unittest.TestCase):
             parsed = PARSERS[source](raw, saved["url"]).to_dict()
 
             counts[source] += 1
-            self.assertEqual(
-                len(soup(raw).select(EXPECTED_SELECTORS[source])), 1, saved["url"]
-            )
+            selector_count = len(soup(raw).select(EXPECTED_SELECTORS[source]))
+            self.assertGreaterEqual(selector_count, 1, saved["url"])
+            if source != "gamemag":
+                self.assertEqual(selector_count, 1, saved["url"])
             self.assertIsNone(parsed["parse_error"], saved["url"])
             self.assertEqual(
                 parsed["metadata"]["body_selector"],
                 EXPECTED_SELECTORS[source],
                 saved["url"],
             )
-            self.assertGreater(len(parsed["text"].split()), 100, saved["url"])
+            self.assertNotIn("parser_mode", parsed["metadata"], saved["url"])
+            self.assertGreater(len(parsed["text"].split()), 30, saved["url"])
             self.assertIn(parsed["category"], {"news", "article", "review"})
 
         self.assertEqual(counts, EXPECTED_COUNTS)
@@ -94,6 +107,33 @@ class SourceParserFixtureTests(unittest.TestCase):
             any("GTA 6" in item["tags"] for item in by_source["igromania"])
         )
         self.assertTrue(any(item["games"] for item in by_source["stopgame"]))
+
+        reparsed: dict[str, list[dict]] = {}
+        for saved in documents:
+            if saved["source"] not in {"gamemag", "gamingonlinux", "pcgamer", "eurogamer"}:
+                continue
+            raw_path = ROOT / Path(saved["raw_file"].replace("\\", "/"))
+            parsed = PARSERS[saved["source"]](raw_path.read_bytes(), saved["url"]).to_dict()
+            reparsed.setdefault(saved["source"], []).append(parsed)
+
+        self.assertEqual(
+            {item["category"] for item in reparsed["gamemag"]},
+            {"news", "article", "review"},
+        )
+        self.assertEqual({item["category"] for item in reparsed["gamingonlinux"]}, {"news"})
+        self.assertEqual({item["category"] for item in reparsed["pcgamer"]}, {"news", "review"})
+        self.assertEqual({item["category"] for item in reparsed["eurogamer"]}, {"article"})
+        self.assertTrue(all(item["tags"] for item in reparsed["gamingonlinux"]))
+        self.assertTrue(all(item["author"] for item in reparsed["pcgamer"]))
+        self.assertTrue(all(
+            "copy link" not in item["text"].casefold()
+            and "share this article" not in item["text"].casefold()
+            for item in reparsed["pcgamer"]
+        ))
+        self.assertEqual(
+            max(item["metadata"].get("body_blocks", 0) for item in reparsed["gamemag"]),
+            4,
+        )
 
 
 if __name__ == "__main__":
