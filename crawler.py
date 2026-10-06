@@ -22,7 +22,7 @@ def main() -> int:
             client.admin.command("ping")
             Crawler(config, client[config.db_name]).run()
     except KeyboardInterrupt:
-        print("[crawler] Остановлен; незавершённый URL будет доступен после окончания lease.")
+        print("[crawler] Остановлен; незавершённый URL вернётся в очередь при следующем запуске.")
         return 130
     except (OSError, ValueError, RuntimeError, PyMongoError, yaml.YAMLError) as exc:
         print(f"[crawler] {exc}", file=sys.stderr)

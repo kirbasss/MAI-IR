@@ -132,6 +132,10 @@ class RobotsDenied(RuntimeError):
     pass
 
 
+class RobotsUnavailable(RobotsDenied):
+    """The rules could not be verified, so the whole source must wait."""
+
+
 class HttpGate:
     """Check robots.txt for every target and space requests to each host."""
 
@@ -169,16 +173,16 @@ class HttpGate:
                         break
                     location = response.headers.get("Location")
                     if not location:
-                        raise RobotsDenied(f"robots.txt перенаправлен без Location: {robots_url}")
+                        raise RobotsUnavailable(f"robots.txt перенаправлен без Location: {robots_url}")
                     robots_url = urljoin(robots_url, location)
                     destination = urlsplit(robots_url)
                     if destination.hostname not in SOURCE_HOSTS[source] or destination.scheme not in {"http", "https"}:
-                        raise RobotsDenied(f"robots.txt перенаправлен за пределы источника: {robots_url}")
+                        raise RobotsUnavailable(f"robots.txt перенаправлен за пределы источника: {robots_url}")
                 else:
-                    raise RobotsDenied(f"Слишком много редиректов robots.txt: {robots_url}")
+                    raise RobotsUnavailable(f"Слишком много редиректов robots.txt: {robots_url}")
                 response.raise_for_status()
                 if response.status_code != 200:
-                    raise RobotsDenied(f"Некорректный robots.txt: {robots_url}")
+                    raise RobotsUnavailable(f"Некорректный robots.txt: {robots_url}")
                 # robots.txt is plain text, not an HTML page. The HTML challenge
                 # heuristic would misread valid Clean-param rules containing
                 # words like "captcha" as an anti-bot page.
@@ -186,13 +190,13 @@ class HttpGate:
                 if "html" in content_type or response.text.lstrip().lower().startswith(
                     ("<!doctype html", "<html")
                 ):
-                    raise RobotsDenied(f"robots.txt вернул HTML вместо правил: {robots_url}")
+                    raise RobotsUnavailable(f"robots.txt вернул HTML вместо правил: {robots_url}")
                 rules = robotparser.RobotFileParser()
                 rules.set_url(robots_url)
                 rules.parse(response.text.splitlines())
                 self.rules[host] = rules
             except requests.RequestException as exc:
-                raise RobotsDenied(f"robots.txt недоступен для {host}: {exc}") from exc
+                raise RobotsUnavailable(f"robots.txt недоступен для {host}: {exc}") from exc
         if not self.rules[host].can_fetch(USER_AGENT, url):
             raise RobotsDenied(f"robots.txt запрещает {url}")
 
@@ -223,9 +227,12 @@ class Crawler:
         self.session.headers.update({"User-Agent": USER_AGENT, "Accept-Language": "ru,en;q=0.8"})
         self.gate = HttpGate(self.session, config)
         self.now = now or time.time
+        self.source_cooldowns: dict[str, int] = {}
 
     def prepare(self) -> None:
-        self.frontier.create_index("available_at")
+        # claim() sorts by all three fields. A single-field index would still
+        # need to sort a large set of equally available sitemap URLs in memory.
+        self.frontier.create_index([("available_at", 1), ("queue_order", 1), ("_id", 1)])
         self.frontier.create_index([("state", 1), ("source", 1)])
         # The laboratory robot has one worker. A restarted process owns all
         # items left in progress by its predecessor and picks them first.
@@ -234,6 +241,11 @@ class Crawler:
             {"$set": {"state": "pending", "available_at": -1},
              "$unset": {"lease_token": ""}},
         )
+        self.source_cooldowns = {}
+        for source in SOURCE_HOSTS:
+            pause = self.meta.find_one({"_id": f"cooldown:{source}"}, {"until": 1})
+            if pause:
+                self.source_cooldowns[source] = int(pause.get("until", 0))
 
     def seed(self) -> int:
         """Populate the durable frontier without loading the inventory into RAM."""
@@ -248,6 +260,11 @@ class Crawler:
                 "_id": url, "url": url, "source": source,
                 "category_hint": category, "state": "pending",
                 "available_at": 0, "attempts": 0,
+                # Stable shuffle distributes a batch across sites rather
+                # than exhausting one alphabetically sorted sitemap first.
+                "queue_order": int.from_bytes(
+                    hashlib.sha256(url.encode("utf-8")).digest()[:8], "big"
+                ) & 0x7fff_ffff_ffff_ffff,
             }
             if len(batch) >= self.config.seed_batch_size:
                 added += self._insert_batch(list(batch.values()))
@@ -273,13 +290,17 @@ class Crawler:
 
     def claim(self, now: int):
         token = uuid.uuid4().hex
+        query = {"available_at": {"$lte": now}}
+        cooling = [source for source, until in self.source_cooldowns.items() if until > now]
+        if cooling:
+            query["source"] = {"$nin": cooling}
         return self.frontier.find_one_and_update(
-            {"available_at": {"$lte": now}},
+            query,
             {"$set": {
                 "state": "in_progress", "available_at": now + self.config.lease_seconds,
                 "lease_token": token,
             }, "$inc": {"attempts": 1}},
-            sort=[("available_at", 1), ("_id", 1)],
+            sort=[("available_at", 1), ("queue_order", 1), ("_id", 1)],
             return_document=ReturnDocument.AFTER,
         )
 
@@ -296,7 +317,7 @@ class Crawler:
 
     def _retry_delay(self, response, now: int) -> int:
         delay = self.config.retry_seconds
-        if response.status_code != 429:
+        if response.status_code not in {429, 503}:
             return delay
         value = response.headers.get("Retry-After", "").strip()
         try:
@@ -307,6 +328,13 @@ class Crawler:
             except (TypeError, ValueError, OverflowError):
                 return delay
             return max(delay, int(date.timestamp()) - now)
+
+    def _cooldown_source(self, source: str, until: int) -> None:
+        until = max(self.source_cooldowns.get(source, 0), until)
+        self.source_cooldowns[source] = until
+        self.meta.update_one(
+            {"_id": f"cooldown:{source}"}, {"$max": {"until": until}}, upsert=True,
+        )
 
     def process(self, task: dict) -> str:
         url, source = task["url"], task["source"]
@@ -321,7 +349,18 @@ class Crawler:
             response = self.gate.get(source, url, headers)
             if response.status_code == 304 and not previous:
                 response = self.gate.get(source, url, {})
-        except (requests.RequestException, RobotsDenied) as exc:
+        except RobotsUnavailable as exc:
+            now = int(self.now())
+            self._cooldown_source(source, now + self.config.retry_seconds)
+            self._finish(task, now, state="retry", delay=self.config.retry_seconds,
+                         fields={"last_error": str(exc)})
+            return "retry"
+        except RobotsDenied as exc:
+            now = int(self.now())
+            self._finish(task, now, state="blocked", delay=self.config.revisit_seconds,
+                         fields={"last_error": str(exc)})
+            return "blocked"
+        except requests.RequestException as exc:
             now = int(self.now())
             self._finish(task, now, state="retry", delay=self.config.retry_seconds,
                          fields={"last_error": str(exc)})
@@ -337,12 +376,20 @@ class Crawler:
             self._finish(task, now, state="done", delay=self.config.revisit_seconds,
                          fields={"last_http_status": 304, "last_error": None})
             return "unchanged"
+        if response.status_code in {404, 410}:
+            self._finish(task, now, state="gone", delay=self.config.revisit_seconds,
+                         fields={"last_http_status": response.status_code,
+                                 "last_error": f"HTTP {response.status_code}"})
+            return "gone"
         response_class = _response_class(response.status_code, response.text[:100_000])
         content_type = response.headers.get("Content-Type", "").lower()
         if response_class != "valid_content_page" or (
             content_type and "html" not in content_type
         ):
-            self._finish(task, now, state="retry", delay=self._retry_delay(response, now),
+            delay = self._retry_delay(response, now)
+            if response.status_code in {403, 429, 503} or response_class == "anti_bot_or_challenge":
+                self._cooldown_source(source, now + delay)
+            self._finish(task, now, state="retry", delay=delay,
                          fields={"last_http_status": response.status_code,
                                  "last_error": response_class if "html" in content_type or not content_type
                                  else f"Не HTML: {content_type}"})
@@ -385,13 +432,19 @@ class Crawler:
         self.prepare()
         added = self.seed()
         print(f"[crawler] Очередь пополнена: {added} URL")
-        counters = {"changed": 0, "unchanged": 0, "retry": 0}
+        counters = {"changed": 0, "unchanged": 0, "retry": 0,
+                    "blocked": 0, "gone": 0}
         processed = 0
         while self.config.max_documents is None or processed < self.config.max_documents:
-            task = self.claim(int(self.now()))
+            now = int(self.now())
+            task = self.claim(now)
             if task is None:
                 if self.config.run_forever:
-                    time.sleep(self.config.poll_seconds)
+                    next_cooldown = min(
+                        (until for until in self.source_cooldowns.values() if until > now),
+                        default=now + self.config.poll_seconds,
+                    )
+                    time.sleep(min(self.config.poll_seconds, max(1, next_cooldown - now)))
                     continue
                 break
             result = self.process(task)

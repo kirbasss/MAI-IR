@@ -53,10 +53,10 @@ def config(inventory: Path, *, max_documents: int = 1) -> CrawlerConfig:
     )
 
 
-def responses(body=HTML_1, *, status=200, headers=None):
+def responses(body=HTML_1, *, status=200, headers=None, url=URL):
     return FakeSession([
         FakeResponse("https://stopgame.ru/robots.txt", 200, b"User-agent: *\nAllow: /"),
-        FakeResponse(URL, status, body, headers),
+        FakeResponse(url, status, body, headers),
     ])
 
 
@@ -96,6 +96,12 @@ class CrawlerTests(unittest.TestCase):
     def test_partial_inventory_import_is_idempotent(self):
         crawler = self.crawler(FakeSession([]))
         crawler.prepare()
+        self.assertTrue(any(
+            list(index["key"].items()) == [
+                ("available_at", 1), ("queue_order", 1), ("_id", 1)
+            ]
+            for index in self.db.frontier.list_indexes()
+        ))
         self.assertEqual(crawler.seed(), 1)
         self.db.crawler_meta.delete_one({"_id": "inventory"})
         self.assertEqual(crawler.seed(), 0)
@@ -103,7 +109,8 @@ class CrawlerTests(unittest.TestCase):
 
     def test_resume_and_change_detection(self):
         first = self.crawler(responses(headers={"ETag": '"v1"'}))
-        self.assertEqual(first.run(), {"changed": 1, "unchanged": 0, "retry": 0})
+        self.assertEqual(first.run(), {"changed": 1, "unchanged": 0, "retry": 0,
+                                       "blocked": 0, "gone": 0})
         document = self.db.documents.find_one({"_id": URL})
         self.assertEqual(document["html"], HTML_1.decode("utf-8"))
         self.assertEqual(document["source"], "stopgame")
@@ -112,7 +119,8 @@ class CrawlerTests(unittest.TestCase):
 
         # Restarting immediately does not re-fetch completed work or re-seed it.
         idle = self.crawler(FakeSession([]))
-        self.assertEqual(idle.run(), {"changed": 0, "unchanged": 0, "retry": 0})
+        self.assertEqual(idle.run(), {"changed": 0, "unchanged": 0, "retry": 0,
+                                      "blocked": 0, "gone": 0})
 
         self.clock[0] = 1010
         unchanged_session = responses(status=304)
@@ -141,12 +149,15 @@ class CrawlerTests(unittest.TestCase):
         self.assertEqual(worker.seed(), 2)
         claimed = worker.claim(1000)
         self.assertEqual(claimed["state"], "in_progress")
-        self.assertEqual(claimed["url"], URL)
+        claimed_url = claimed["url"]
         self.clock[0] = 1001
-        restarted = self.crawler(responses())
+        restarted = self.crawler(responses(url=claimed_url))
         self.assertEqual(restarted.run()["changed"], 1)
-        self.assertEqual(self.db.frontier.find_one({"_id": URL})["attempts"], 2)
-        self.assertEqual(self.db.frontier.find_one({"_id": "https://stopgame.ru/newsdata/2/another"})["attempts"], 0)
+        self.assertEqual(self.db.frontier.find_one({"_id": claimed_url})["attempts"], 2)
+        other_url = next(url for url in (
+            URL, "https://stopgame.ru/newsdata/2/another"
+        ) if url != claimed_url)
+        self.assertEqual(self.db.frontier.find_one({"_id": other_url})["attempts"], 0)
 
     def test_retry_after_and_retry_state(self):
         session = responses(status=429, headers={"Retry-After": "120"})
@@ -155,13 +166,91 @@ class CrawlerTests(unittest.TestCase):
         self.assertEqual(item["available_at"], 1120)
         self.assertEqual(item["state"], "retry")
         self.assertEqual(self.db.documents.count_documents({}), 0)
+        self.assertEqual(self.db.crawler_meta.find_one({"_id": "cooldown:stopgame"})["until"], 1120)
+
+    def test_rate_limit_pause_survives_restart(self):
+        other_url = "https://stopgame.ru/newsdata/2/another"
+        self.inventory.write_text(
+            f"stopgame\t{URL}\nstopgame\t{other_url}\n", encoding="utf-8"
+        )
+        worker = self.crawler(FakeSession([]), max_documents=2)
+        worker.prepare()
+        worker.seed()
+        self.db.frontier.update_one({"_id": URL}, {"$set": {"queue_order": 0}})
+        self.db.frontier.update_one({"_id": other_url}, {"$set": {"queue_order": 1}})
+        self.assertEqual(self.crawler(
+            responses(status=429, headers={"Retry-After": "120"}), max_documents=2
+        ).run()["retry"], 1)
+        self.assertEqual(self.db.frontier.find_one({"_id": other_url})["attempts"], 0)
+        self.clock[0] = 1001
+        self.assertEqual(self.crawler(FakeSession([]), max_documents=2).run(),
+                         {"changed": 0, "unchanged": 0, "retry": 0,
+                          "blocked": 0, "gone": 0})
+        self.assertEqual(self.db.frontier.find_one({"_id": other_url})["attempts"], 0)
+
+    def test_rate_limited_source_does_not_stop_other_sites(self):
+        other_url = "https://gamemag.ru/news/1/example"
+        self.inventory.write_text(
+            f"stopgame\t{URL}\ngamemag\t{other_url}\n", encoding="utf-8"
+        )
+        session = FakeSession([
+            FakeResponse("https://stopgame.ru/robots.txt", 200, b"User-agent: *\nAllow: /"),
+            FakeResponse(URL, 429, headers={"Retry-After": "120"}),
+            FakeResponse("https://gamemag.ru/robots.txt", 200, b"User-agent: *\nAllow: /"),
+            FakeResponse(other_url, 200, HTML_1),
+        ])
+        worker = self.crawler(session, max_documents=2)
+        worker.prepare()
+        worker.seed()
+        self.db.frontier.update_one({"_id": URL}, {"$set": {"queue_order": 0}})
+        self.db.frontier.update_one({"_id": other_url}, {"$set": {"queue_order": 1}})
+        self.assertEqual(worker.run(), {"changed": 1, "unchanged": 0, "retry": 1,
+                                        "blocked": 0, "gone": 0})
+        self.assertEqual(self.db.frontier.find_one({"_id": other_url})["state"], "done")
+
+    def test_forbidden_response_cools_source(self):
+        self.assertEqual(self.crawler(responses(status=403)).run()["retry"], 1)
+        self.assertEqual(self.db.crawler_meta.find_one({"_id": "cooldown:stopgame"})["until"], 1010)
+
+    def test_service_unavailable_respects_retry_after(self):
+        self.assertEqual(self.crawler(
+            responses(status=503, headers={"Retry-After": "120"})
+        ).run()["retry"], 1)
+        self.assertEqual(self.db.crawler_meta.find_one({"_id": "cooldown:stopgame"})["until"], 1120)
+
+    def test_unavailable_robots_cools_only_its_source(self):
+        other_url = "https://gamemag.ru/news/1/example"
+        self.inventory.write_text(
+            f"stopgame\t{URL}\ngamemag\t{other_url}\n", encoding="utf-8"
+        )
+        session = FakeSession([
+            FakeResponse("https://stopgame.ru/robots.txt", 503),
+            FakeResponse("https://gamemag.ru/robots.txt", 200, b"User-agent: *\nAllow: /"),
+            FakeResponse(other_url, 200, HTML_1),
+        ])
+        worker = self.crawler(session, max_documents=2)
+        worker.prepare()
+        worker.seed()
+        self.db.frontier.update_one({"_id": URL}, {"$set": {"queue_order": 0}})
+        self.db.frontier.update_one({"_id": other_url}, {"$set": {"queue_order": 1}})
+        self.assertEqual(worker.run(), {"changed": 1, "unchanged": 0, "retry": 1,
+                                        "blocked": 0, "gone": 0})
+        self.assertEqual(self.db.crawler_meta.find_one({"_id": "cooldown:stopgame"})["until"], 1010)
 
     def test_robots_disallow_prevents_document_request(self):
         session = FakeSession([
             FakeResponse("https://stopgame.ru/robots.txt", 200, b"User-agent: *\nDisallow: /"),
         ])
-        self.assertEqual(self.crawler(session).run()["retry"], 1)
+        self.assertEqual(self.crawler(session).run()["blocked"], 1)
         self.assertEqual([url for url, _ in session.calls], ["https://stopgame.ru/robots.txt"])
+        self.assertEqual(self.db.documents.count_documents({}), 0)
+        self.assertEqual(self.db.frontier.find_one({"_id": URL})["available_at"], 1010)
+
+    def test_not_found_is_not_retried_hourly(self):
+        self.assertEqual(self.crawler(responses(status=404)).run()["gone"], 1)
+        item = self.db.frontier.find_one({"_id": URL})
+        self.assertEqual(item["state"], "gone")
+        self.assertEqual(item["available_at"], 1010)
         self.assertEqual(self.db.documents.count_documents({}), 0)
 
     def test_robots_clean_param_captcha_is_valid_rules(self):
