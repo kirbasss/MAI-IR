@@ -1,20 +1,36 @@
 # Лабораторная работа №2: запуск робота
 
 Требуются Python 3.11+ и MongoDB, доступная по адресу из секции `db` в
-`crawler.example.yaml`. Для локального запуска можно использовать MongoDB
-Community Server или Docker. Docker Desktop нужно запустить заранее:
+`crawler.example.yaml`. Для локального запуска MongoDB откройте Docker Desktop
+и выполните из корня проекта:
 
 ```powershell
-docker run -d --name mai-ir-mongo -p 127.0.0.1:27017:27017 -v mai-ir-mongo:/data/db mongo:8.0
+docker compose up -d
+docker compose ps
 ```
 
-Из корня проекта:
+Если раньше был запущен контейнер `mai-ir-mongo` отдельной командой
+`docker run`, сначала остановите его командой `docker stop mai-ir-mongo`,
+иначе порт 27017 будет занят. Compose использует тот же именованный том
+`mai-ir-mongo`, поэтому сохранённые данные останутся доступными.
+
+С активированной `.venv` запустите робота:
+
+```powershell
+python -m pip install -r requirements.txt
+python crawler.py crawler.example.yaml
+```
+
+Тесты запускаются отдельно (для них нужны дополнительные зависимости):
 
 ```powershell
 python -m pip install -r requirements-dev.txt
-python crawler.py crawler.example.yaml
 python run_tests.py
 ```
+
+Остановить сервис можно командой `docker compose down`: именованный том при
+этом сохраняется. Команду `docker compose down -v` не используйте, если хотите
+сохранить базу данных.
 
 Единственный аргумент `crawler.py` — путь к YAML. Относительный путь
 `logic.inventory` отсчитывается от расположения этого YAML. Пример конфигурации
