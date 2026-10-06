@@ -23,6 +23,7 @@ URL_2 = (
 
 
 class Lab1Tests(unittest.TestCase):
+    @unittest.skipUnless(SAMPLE_2.is_file(), "Локальные HTML-образцы не входят в Git")
     def test_stopgame_parser_extracts_only_material(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             document = parse_saved_html(
@@ -36,6 +37,7 @@ class Lab1Tests(unittest.TestCase):
         self.assertNotIn("Читай также", document["text"])
         self.assertIn("Grand Theft Auto VI", document["games"])
 
+    @unittest.skipUnless(SAMPLE_1.is_file() and SAMPLE_2.is_file(), "Локальные HTML-образцы не входят в Git")
     def test_statistics_for_saved_fixtures(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             data_dir = Path(directory) / "data"

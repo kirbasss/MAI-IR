@@ -62,6 +62,8 @@ class SourceParserFixtureTests(unittest.TestCase):
 
     def test_all_saved_html_uses_confirmed_source_selector(self) -> None:
         documents = saved_documents()
+        if not documents:
+            self.skipTest("Локальные HTML-образцы не входят в Git")
         counts = {source: 0 for source in EXPECTED_COUNTS}
 
         for saved in documents:
@@ -90,6 +92,8 @@ class SourceParserFixtureTests(unittest.TestCase):
 
     def test_source_specific_categories_and_taxonomy(self) -> None:
         documents = saved_documents()
+        if not documents:
+            self.skipTest("Локальные HTML-образцы не входят в Git")
         by_source: dict[str, list[dict]] = {}
         for document in documents:
             by_source.setdefault(document["source"], []).append(document)

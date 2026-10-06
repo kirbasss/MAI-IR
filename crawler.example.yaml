@@ -1,0 +1,17 @@
+db:
+  uri: mongodb://127.0.0.1:27017
+  name: mai_ir
+
+logic:
+  # Start with the 24 inspected examples. Change to
+  # data/discovery/inventory_all/url_inventory.tsv for the larger inventory.
+  inventory: urls.txt
+  delay_seconds: 2
+  revisit_seconds: 2592000
+  retry_seconds: 3600
+  lease_seconds: 600
+  request_timeout_seconds: 30
+  seed_batch_size: 500
+  max_documents: 10
+  run_forever: false
+  poll_seconds: 60
