@@ -177,9 +177,15 @@ class HttpGate:
                 else:
                     raise RobotsDenied(f"Слишком много редиректов robots.txt: {robots_url}")
                 response.raise_for_status()
-                if response.status_code != 200 or _response_class(200, response.text) != "valid_content_page":
+                if response.status_code != 200:
                     raise RobotsDenied(f"Некорректный robots.txt: {robots_url}")
-                if response.text.lstrip().lower().startswith(("<!doctype html", "<html")):
+                # robots.txt is plain text, not an HTML page. The HTML challenge
+                # heuristic would misread valid Clean-param rules containing
+                # words like "captcha" as an anti-bot page.
+                content_type = response.headers.get("Content-Type", "").lower()
+                if "html" in content_type or response.text.lstrip().lower().startswith(
+                    ("<!doctype html", "<html")
+                ):
                     raise RobotsDenied(f"robots.txt вернул HTML вместо правил: {robots_url}")
                 rules = robotparser.RobotFileParser()
                 rules.set_url(robots_url)

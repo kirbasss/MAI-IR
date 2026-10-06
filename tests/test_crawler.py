@@ -164,6 +164,31 @@ class CrawlerTests(unittest.TestCase):
         self.assertEqual([url for url, _ in session.calls], ["https://stopgame.ru/robots.txt"])
         self.assertEqual(self.db.documents.count_documents({}), 0)
 
+    def test_robots_clean_param_captcha_is_valid_rules(self):
+        session = FakeSession([
+            FakeResponse(
+                "https://stopgame.ru/robots.txt", 200,
+                b"User-agent: *\nDisallow: /search/\n"
+                b"Clean-param: __cf_chl_captcha_tk__\n",
+                {"Content-Type": "text/plain; charset=utf-8"},
+            ),
+            FakeResponse(URL, 200, HTML_1),
+        ])
+        self.assertEqual(self.crawler(session).run()["changed"], 1)
+        self.assertEqual(self.db.documents.count_documents({}), 1)
+
+    def test_robots_html_challenge_is_rejected(self):
+        session = FakeSession([
+            FakeResponse(
+                "https://stopgame.ru/robots.txt", 200,
+                b"<!doctype html><html><title>Just a moment</title></html>",
+                {"Content-Type": "text/html"},
+            ),
+        ])
+        self.assertEqual(self.crawler(session).run()["retry"], 1)
+        self.assertEqual(len(session.calls), 1)
+        self.assertIn("HTML вместо правил", self.db.frontier.find_one({"_id": URL})["last_error"])
+
 
 if __name__ == "__main__":
     unittest.main()
