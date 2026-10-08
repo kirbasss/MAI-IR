@@ -39,6 +39,7 @@ def main() -> int:
             print(json.dumps({
                 "database": config.db_name,
                 "documents": db.documents.estimated_document_count(),
+                "raw_pages": db.raw_pages.estimated_document_count(),
                 "queued_urls": db.frontier.estimated_document_count(),
                 "states": states,
                 "due_now": db.frontier.count_documents({"available_at": {"$lte": now}}),

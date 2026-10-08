@@ -3,8 +3,9 @@ db:
   name: mai_ir
 
 logic:
-  # First regenerate this file with at least 5000 URLs per source.
-  inventory: data/discovery/inventory_batch/url_inventory.tsv
+  # The entire sitemap inventory is seeded into MongoDB at startup.
+  # max_documents limits requests in this run, not the number of queued URLs.
+  inventory: data/discovery/inventory_all/url_inventory.tsv
   delay_seconds: 3
   revisit_seconds: 2592000
   retry_seconds: 21600

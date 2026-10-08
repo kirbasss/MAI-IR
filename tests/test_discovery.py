@@ -99,6 +99,30 @@ class SitemapDiscoveryTests(unittest.TestCase):
             document_category("ixbt_games", "https://ixbt.games/tags/rpg", "publication")
         )
 
+    def test_stopgame_sitemap_news_alias_is_normalized(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            data_dir = Path(temporary_directory) / "data"
+            source_dir = data_dir / "discovery" / "stopgame"
+            source_dir.mkdir(parents=True)
+            (source_dir / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8")
+            (source_dir / "stopgame_sitemap.xml").write_text(
+                "<sitemapindex><sitemap><loc>https://stopgame.ru/sitemap/news_1.xml</loc>"
+                "</sitemap></sitemapindex>", encoding="utf-8",
+            )
+            from src.downloader import safe_name
+            leaf = source_dir / "sitemaps" / f"{safe_name('https://stopgame.ru/sitemap/news_1.xml')}.xml"
+            leaf.parent.mkdir()
+            leaf.write_text(
+                "<urlset><url><loc>https://stopgame.ru/news/17915/example</loc></url>"
+                "</urlset>", encoding="utf-8",
+            )
+            with redirect_stdout(io.StringIO()):
+                summary = discover_sitemaps(data_dir=data_dir, sources=["stopgame"], cache_only=True)
+            self.assertEqual(summary["total_unique_urls"], 1)
+            inventory = (data_dir / "discovery" / "inventory" / "url_inventory.tsv").read_text()
+            self.assertIn("https://stopgame.ru/newsdata/17915/example", inventory)
+            self.assertNotIn("https://stopgame.ru/news/17915/example", inventory)
+
     def test_gamemag_document_category_is_read_from_url(self) -> None:
         self.assertEqual(
             document_category("gamemag", "https://gamemag.ru/news/137784/example", "publication"),
@@ -165,6 +189,21 @@ class SitemapDiscoveryTests(unittest.TestCase):
             self.assertEqual(summary["duplicate_urls_removed"], 1)
             merged = (root / "merged" / "url_inventory.tsv").read_text(encoding="utf-8")
             self.assertEqual(len(merged.splitlines()), 4)
+
+    def test_merge_inventories_collapses_stopgame_aliases(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            source = root / "source"
+            source.mkdir()
+            (source / "url_inventory.tsv").write_text(
+                "source\tcategory\turl\tsitemap_url\n"
+                "stopgame\tnews\thttps://stopgame.ru/news/10/example\thttps://stopgame.ru/sitemap.xml\n"
+                "stopgame\tnews\thttps://stopgame.ru/newsdata/10/example\thttps://stopgame.ru/sitemap.xml\n",
+                encoding="utf-8",
+            )
+            summary = merge_inventories([source], root / "merged")
+            self.assertEqual(summary["total_unique_urls"], 1)
+            self.assertEqual(summary["normalized_urls"], 1)
 
 
 if __name__ == "__main__":

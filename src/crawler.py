@@ -20,7 +20,7 @@ from pymongo.errors import BulkWriteError, DocumentTooLarge
 
 from src.downloader import SOURCE_HOSTS, _response_class
 from src.parsers import PARSERS
-from src.utils import canonicalize_url
+from src.utils import canonicalize_source_url, canonicalize_url
 
 
 USER_AGENT = "MAI-IR-Crawler/1.0 (educational search project)"
@@ -119,7 +119,8 @@ def inventory_rows(path: Path):
                 source, category, url, _ = fields
             else:
                 raise ValueError(f"{path}:{line_no}: ожидаются 2 или 4 поля TSV.")
-            source, url = source.strip().lower(), canonicalize_url(url.strip())
+            source = source.strip().lower()
+            url = canonicalize_source_url(source, url.strip())
             host = urlsplit(url).hostname
             if source not in PARSERS or host not in SOURCE_HOSTS[source]:
                 raise ValueError(f"{path}:{line_no}: неизвестный источник или хост: {source} {url}")
@@ -222,6 +223,7 @@ class Crawler:
         self.config = config
         self.frontier = db["frontier"]
         self.documents = db["documents"]
+        self.raw_pages = db["raw_pages"]
         self.meta = db["crawler_meta"]
         self.session = session or requests.Session()
         self.session.headers.update({"User-Agent": USER_AGENT, "Accept-Language": "ru,en;q=0.8"})
@@ -229,11 +231,14 @@ class Crawler:
         self.now = now or time.time
         self.source_cooldowns: dict[str, int] = {}
 
-    def prepare(self) -> None:
+    def ensure_indexes(self) -> None:
         # claim() sorts by all three fields. A single-field index would still
         # need to sort a large set of equally available sitemap URLs in memory.
         self.frontier.create_index([("available_at", 1), ("queue_order", 1), ("_id", 1)])
         self.frontier.create_index([("state", 1), ("source", 1)])
+
+    def prepare(self) -> None:
+        self.ensure_indexes()
         # The laboratory robot has one worker. A restarted process owns all
         # items left in progress by its predecessor and picks them first.
         self.frontier.update_many(
@@ -338,7 +343,14 @@ class Crawler:
 
     def process(self, task: dict) -> str:
         url, source = task["url"], task["source"]
-        previous = self.documents.find_one({"_id": url}, {"content_sha256": 1})
+        previous = self.documents.find_one(
+            {"_id": url}, {"content_sha256": 1, "raw_page_id": 1}
+        )
+        raw_previous = self.raw_pages.find_one({"_id": url}, {"content_sha256": 1})
+        raw_matches_previous = bool(
+            previous and raw_previous and previous.get("raw_page_id") == url
+            and previous.get("content_sha256") == raw_previous.get("content_sha256")
+        )
         headers = {}
         if previous:
             if task.get("etag"):
@@ -347,7 +359,7 @@ class Crawler:
                 headers["If-Modified-Since"] = task["last_modified"]
         try:
             response = self.gate.get(source, url, headers)
-            if response.status_code == 304 and not previous:
+            if response.status_code == 304 and not raw_matches_previous:
                 response = self.gate.get(source, url, {})
         except RobotsUnavailable as exc:
             now = int(self.now())
@@ -368,9 +380,9 @@ class Crawler:
 
         now = int(self.now())
         if response.status_code == 304:
-            if not previous:
+            if not raw_matches_previous:
                 self._finish(task, now, state="retry", delay=self.config.retry_seconds,
-                             fields={"last_error": "304 без сохранённого HTML"},
+                             fields={"last_error": "304 без согласованного HTML и разбора"},
                              unset={"etag": "", "last_modified": ""})
                 return "retry"
             self._finish(task, now, state="done", delay=self.config.revisit_seconds,
@@ -402,7 +414,7 @@ class Crawler:
             "last_modified": response.headers.get("Last-Modified"),
             "last_http_status": response.status_code, "last_error": None,
         }
-        if previous and previous.get("content_sha256") == digest:
+        if raw_matches_previous and previous.get("content_sha256") == digest:
             self._finish(task, now, state="done", delay=self.config.revisit_seconds,
                          fields=validators)
             return "unchanged"
@@ -410,15 +422,22 @@ class Crawler:
             parsed = PARSERS[source](raw, url).to_dict()
         except Exception as exc:
             parsed = {"parse_error": f"{type(exc).__name__}: {exc}"}
-        document = {
+        raw_page = {
             "_id": url, "url": url, "source": source, "html": response.text,
             "fetched_at": now, "content_sha256": digest,
             "final_url": canonicalize_url(response.url), "http_status": response.status_code,
+            "content_type": content_type,
+        }
+        document = {
+            "_id": url, "url": url, "source": source, "raw_page_id": url,
+            "fetched_at": now, "content_sha256": digest,
+            "final_url": raw_page["final_url"], "http_status": response.status_code,
             "content_type": content_type, "parsed": parsed,
         }
-        # Keep a successful download durable before marking its frontier item done.
-        # Replaying a crashed item is safe: _id is the normalized URL.
+        # Save raw HTML before its parsed counterpart. If the process crashes
+        # between writes, the hash check above forces a fresh response next time.
         try:
+            self.raw_pages.replace_one({"_id": url}, raw_page, upsert=True)
             self.documents.replace_one({"_id": url}, document, upsert=True)
         except DocumentTooLarge:
             self._finish(task, now, state="retry", delay=self.config.revisit_seconds,

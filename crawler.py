@@ -1,7 +1,8 @@
-"""Lab 2 search robot: its only argument is a YAML configuration file."""
+"""Lab 2 search robot and URL inventory importer."""
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -13,14 +14,21 @@ from src.crawler import Crawler, load_config
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("Использование: python crawler.py <config.yaml>", file=sys.stderr)
-        return 2
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("config", type=Path, help="YAML-конфигурация краулера")
+    parser.add_argument("--seed-only", action="store_true",
+                        help="добавить URL в MongoDB без скачивания страниц")
+    args = parser.parse_args()
     try:
-        config = load_config(Path(sys.argv[1]))
+        config = load_config(args.config)
         with MongoClient(config.db_uri, serverSelectionTimeoutMS=5000) as client:
             client.admin.command("ping")
-            Crawler(config, client[config.db_name]).run()
+            crawler = Crawler(config, client[config.db_name])
+            if args.seed_only:
+                crawler.ensure_indexes()
+                print(f"[crawler] Очередь пополнена: {crawler.seed()} URL")
+            else:
+                crawler.run()
     except KeyboardInterrupt:
         print("[crawler] Остановлен; незавершённый URL вернётся в очередь при следующем запуске.")
         return 130

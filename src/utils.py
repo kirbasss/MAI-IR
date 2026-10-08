@@ -121,3 +121,15 @@ def canonicalize_url(url: str) -> str:
         parsed.scheme.lower(), parsed.netloc.lower(), parsed.path or "/",
         urlencode(parameters, doseq=True), "",
     ))
+
+
+def canonicalize_source_url(source: str, url: str) -> str:
+    """Resolve source-specific sitemap aliases before using a URL as an ID."""
+    url = canonicalize_url(url)
+    parsed = urlsplit(url)
+    if source == "stopgame" and parsed.hostname in {"stopgame.ru", "www.stopgame.ru"}:
+        # StopGame's news sitemaps publish /news/<id>/..., while the actual
+        # publication pages (and our fixtures) live at /newsdata/<id>/....
+        path = re.sub(r"^/news/(?=\d+(?:/|$))", "/newsdata/", parsed.path)
+        return urlunsplit((parsed.scheme, parsed.netloc, path, parsed.query, ""))
+    return url

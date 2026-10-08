@@ -18,7 +18,7 @@ from src.utils import canonicalize_url, dump_json, sha256_text
 
 USER_AGENT = (
     "MAI-IR-Lab/1.0 "
-    "(educational corpus analysis; small sample; contact: local student project)"
+    "(educational corpus collection)"
 )
 SOURCE_HOSTS = {
     "playground": {"playground.ru", "www.playground.ru"},

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import tempfile
 import unittest
 from pathlib import Path
@@ -92,6 +93,16 @@ class CrawlerTests(unittest.TestCase):
             encoding="utf-8",
         )
         self.assertEqual(list(inventory_rows(self.inventory)), [("stopgame", URL, "news")])
+        self.inventory.write_text(
+            "source\tcategory\turl\tsitemap_url\n"
+            "stopgame\tnews\thttps://stopgame.ru/news/1/example\thttps://stopgame.ru/sitemap.xml\n"
+            "gamemag\tnews\thttps://gamemag.ru/news/1/example\thttps://gamemag.ru/sitemap.xml\n",
+            encoding="utf-8",
+        )
+        self.assertEqual(list(inventory_rows(self.inventory)), [
+            ("stopgame", URL, "news"),
+            ("gamemag", "https://gamemag.ru/news/1/example", "news"),
+        ])
 
     def test_partial_inventory_import_is_idempotent(self):
         crawler = self.crawler(FakeSession([]))
@@ -107,12 +118,26 @@ class CrawlerTests(unittest.TestCase):
         self.assertEqual(crawler.seed(), 0)
         self.assertEqual(self.db.frontier.count_documents({}), 1)
 
+    def test_seed_only_does_not_requeue_active_download(self):
+        crawler = self.crawler(FakeSession([]))
+        crawler.prepare()
+        crawler.seed()
+        claimed = crawler.claim(1000)
+        crawler.ensure_indexes()
+        self.assertEqual(crawler.seed(), 0)
+        self.assertEqual(
+            self.db.frontier.find_one({"_id": claimed["_id"]})["state"],
+            "in_progress",
+        )
+
     def test_resume_and_change_detection(self):
         first = self.crawler(responses(headers={"ETag": '"v1"'}))
         self.assertEqual(first.run(), {"changed": 1, "unchanged": 0, "retry": 0,
                                        "blocked": 0, "gone": 0})
         document = self.db.documents.find_one({"_id": URL})
-        self.assertEqual(document["html"], HTML_1.decode("utf-8"))
+        self.assertNotIn("html", document)
+        self.assertEqual(document["raw_page_id"], URL)
+        self.assertEqual(self.db.raw_pages.find_one({"_id": URL})["html"], HTML_1.decode("utf-8"))
         self.assertEqual(document["source"], "stopgame")
         self.assertEqual(document["fetched_at"], 1000)
         self.assertEqual(self.db.frontier.count_documents({}), 1)
@@ -135,8 +160,40 @@ class CrawlerTests(unittest.TestCase):
         self.clock[0] = 1030
         self.assertEqual(self.crawler(responses(HTML_2, headers={"ETag": '"v2"'})).run()["changed"], 1)
         self.assertEqual(self.db.documents.find_one({"_id": URL})["fetched_at"], 1030)
-        self.assertIn("Changed text.", self.db.documents.find_one({"_id": URL})["html"])
+        self.assertIn("Changed text.", self.db.raw_pages.find_one({"_id": URL})["html"])
         self.assertEqual(self.db.frontier.count_documents({}), 1)
+
+    def test_missing_raw_page_is_restored_before_marking_done(self):
+        self.assertEqual(self.crawler(responses()).run()["changed"], 1)
+        self.db.raw_pages.delete_one({"_id": URL})
+        self.clock[0] = 1010
+        self.assertEqual(self.crawler(responses()).run()["changed"], 1)
+        self.assertIsNotNone(self.db.raw_pages.find_one({"_id": URL}))
+
+    def test_304_without_raw_page_falls_back_to_unconditional_request(self):
+        self.assertEqual(self.crawler(responses(headers={"ETag": '"v1"'})).run()["changed"], 1)
+        self.db.raw_pages.delete_one({"_id": URL})
+        self.clock[0] = 1010
+        session = FakeSession([
+            FakeResponse("https://stopgame.ru/robots.txt", 200, b"User-agent: *\nAllow: /"),
+            FakeResponse(URL, 304),
+            FakeResponse(URL, 200, HTML_1),
+        ])
+        self.assertEqual(self.crawler(session).run()["changed"], 1)
+        self.assertEqual(len(session.calls), 3)
+        self.assertIsNotNone(self.db.raw_pages.find_one({"_id": URL}))
+
+    def test_legacy_document_is_rewritten_in_split_format(self):
+        digest = hashlib.sha256(HTML_1).hexdigest()
+        self.db.documents.insert_one({
+            "_id": URL, "url": URL, "html": HTML_1.decode("utf-8"),
+            "content_sha256": digest,
+        })
+        self.db.raw_pages.insert_one({"_id": URL, "content_sha256": digest})
+        self.assertEqual(self.crawler(responses()).run()["changed"], 1)
+        document = self.db.documents.find_one({"_id": URL})
+        self.assertNotIn("html", document)
+        self.assertEqual(document["raw_page_id"], URL)
 
     def test_interrupted_url_is_reclaimed_first_on_restart(self):
         self.inventory.write_text(

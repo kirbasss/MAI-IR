@@ -16,7 +16,7 @@ from xml.etree import ElementTree as ET
 import requests
 
 from src.downloader import SOURCE_HOSTS, USER_AGENT, fetch_robots, safe_name
-from src.utils import canonicalize_url, dump_json
+from src.utils import canonicalize_source_url, canonicalize_url, dump_json
 
 
 @dataclass(frozen=True)
@@ -261,6 +261,7 @@ def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
     rows_seen = 0
     inserted = 0
+    normalized_urls = 0
 
     with tempfile.TemporaryDirectory(prefix="mai-ir-inventory-") as temporary_dir:
         database_path = Path(temporary_dir) / "inventory.sqlite3"
@@ -290,7 +291,8 @@ def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
                         rows_seen += 1
                         source = row["source"].strip()
                         category = row["category"].strip()
-                        url = canonicalize_url(row["url"])
+                        url = canonicalize_source_url(source, row["url"])
+                        normalized_urls += url != canonicalize_url(row["url"])
                         sitemap_url = canonicalize_url(row["sitemap_url"])
                         if not all((source, category, url, sitemap_url)):
                             raise ValueError(f"Пустое обязательное поле: {inventory_path}")
@@ -333,6 +335,7 @@ def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
         "input_inventories": [str(directory) for directory in input_dirs],
         "input_rows": rows_seen,
         "duplicate_urls_removed": rows_seen - inserted,
+        "normalized_urls": normalized_urls,
         "total_unique_urls": inserted,
         "sources": {
             source: {
@@ -521,7 +524,7 @@ def discover_sitemaps(
                     category = document_category(source, document_url, sitemap_type)
                     if category is None:
                         continue
-                    canonical_url = canonicalize_url(document_url)
+                    canonical_url = canonicalize_source_url(source, document_url)
                     if canonical_url in seen_urls:
                         continue
                     seen_urls.add(canonical_url)
