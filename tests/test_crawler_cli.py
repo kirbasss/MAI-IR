@@ -28,6 +28,22 @@ class CrawlerCliTests(unittest.TestCase):
         crawler_type.return_value.seed.assert_called_once_with()
         crawler_type.return_value.run.assert_not_called()
 
+    def test_revisit_runs_without_seeding(self) -> None:
+        client = MagicMock()
+        config = SimpleNamespace(db_uri="mongodb://unused", db_name="test")
+        with (
+            patch("sys.argv", ["revisit.py", "crawler.batch.yaml"]),
+            patch.object(crawler_cli, "load_config", return_value=config),
+            patch.object(crawler_cli, "MongoClient", return_value=client),
+            patch.object(crawler_cli, "Crawler") as crawler_type,
+            redirect_stdout(io.StringIO()),
+        ):
+            result = crawler_cli.main(mode="revisit")
+
+        self.assertEqual(result, 0)
+        crawler_type.return_value.seed.assert_not_called()
+        crawler_type.return_value.run.assert_called_once_with(mode="revisit")
+
 
 if __name__ == "__main__":
     unittest.main()

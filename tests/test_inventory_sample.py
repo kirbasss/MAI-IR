@@ -42,6 +42,21 @@ class InventorySampleTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 sample_inventory(path, path, per_source=5)
 
+    def test_sample_skips_known_listing_urls(self):
+        with tempfile.TemporaryDirectory() as temp:
+            source = Path(temp) / "all.tsv"
+            output = Path(temp) / "sample.tsv"
+            source.write_text(
+                "source\tcategory\turl\tsitemap_url\n"
+                "pcgamer\tpublication\thttps://www.pcgamer.com/games/adventure/\thttps://www.pcgamer.com/sitemap.xml\n"
+                "pcgamer\tpublication\thttps://www.pcgamer.com/games/action/example/\thttps://www.pcgamer.com/sitemap.xml\n",
+                encoding="utf-8",
+            )
+            summary = sample_inventory(source, output, per_source=10)
+            self.assertEqual(summary["input_rows"], 2)
+            self.assertEqual(summary["excluded_urls"], 1)
+            self.assertEqual(summary["selected_rows"], 1)
+
     def test_refuses_empty_inventory(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

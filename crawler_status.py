@@ -11,7 +11,7 @@ from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 import yaml
 
-from src.crawler import load_config
+from src.crawler import due_query, load_config
 from src.downloader import SOURCE_HOSTS
 
 
@@ -39,10 +39,17 @@ def main() -> int:
             print(json.dumps({
                 "database": config.db_name,
                 "documents": db.documents.estimated_document_count(),
+                "indexable_documents": db.documents.count_documents({"indexable": {"$ne": False}}),
+                "title_only_documents": db.documents.count_documents({
+                    "indexable": {"$ne": False}, "parsed.text": ""
+                }),
+                "excluded_documents": db.documents.count_documents({"indexable": False}),
                 "raw_pages": db.raw_pages.estimated_document_count(),
                 "queued_urls": db.frontier.estimated_document_count(),
                 "states": states,
                 "due_now": db.frontier.count_documents({"available_at": {"$lte": now}}),
+                "new_due_now": db.frontier.count_documents(due_query(now, "normal")),
+                "revisit_due_now": db.frontier.count_documents(due_query(now, "revisit")),
                 "source_cooldowns": cooldowns,
                 "data_mib": round(db_stats["dataSize"] / 1048576, 1),
                 "storage_mib": round(db_stats["storageSize"] / 1048576, 1),

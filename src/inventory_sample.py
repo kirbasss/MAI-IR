@@ -10,6 +10,7 @@ from collections import Counter
 from pathlib import Path
 
 from src.downloader import SOURCE_HOSTS
+from src.url_policy import is_listing_url
 
 
 FIELDS = ["source", "category", "url", "sitemap_url"]
@@ -28,6 +29,7 @@ def sample_inventory(input_path: Path, output_path: Path, *, per_source: int,
 
     rng = random.Random(seed)
     seen: Counter[str] = Counter()
+    excluded_urls = 0
     samples: dict[str, list[dict[str, str]]] = {}
     with input_path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle, delimiter="\t")
@@ -38,6 +40,9 @@ def sample_inventory(input_path: Path, output_path: Path, *, per_source: int,
             if (source not in SOURCE_HOSTS or not row.get("url") or None in row
                     or any(row.get(field) is None for field in FIELDS)):
                 raise ValueError(f"Некорректная строка инвентаря: {input_path}:{line_no}")
+            if is_listing_url(source, row["url"]):
+                excluded_urls += 1
+                continue
             seen[source] += 1
             bucket = samples.setdefault(source, [])
             if len(bucket) < per_source:
@@ -69,7 +74,8 @@ def sample_inventory(input_path: Path, output_path: Path, *, per_source: int,
 
     return {
         "input": str(input_path), "output": str(output_path), "seed": seed,
-        "per_source": per_source, "input_rows": sum(seen.values()),
+        "per_source": per_source, "input_rows": sum(seen.values()) + excluded_urls,
+        "excluded_urls": excluded_urls,
         "selected_rows": sum(map(len, samples.values())),
         "sources": {
             source: {"available": seen[source], "selected": len(samples[source])}

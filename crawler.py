@@ -10,25 +10,28 @@ from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 import yaml
 
-from src.crawler import Crawler, load_config
+from src.crawler import Crawler, RunMode, load_config
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+def main(*, mode: RunMode = "normal") -> int:
+    parser = argparse.ArgumentParser(description=(
+        "Повторная проверка ранее обработанных URL" if mode == "revisit" else __doc__
+    ))
     parser.add_argument("config", type=Path, help="YAML-конфигурация краулера")
-    parser.add_argument("--seed-only", action="store_true",
-                        help="добавить URL в MongoDB без скачивания страниц")
+    if mode == "normal":
+        parser.add_argument("--seed-only", action="store_true",
+                            help="добавить URL в MongoDB без скачивания страниц")
     args = parser.parse_args()
     try:
         config = load_config(args.config)
         with MongoClient(config.db_uri, serverSelectionTimeoutMS=5000) as client:
             client.admin.command("ping")
             crawler = Crawler(config, client[config.db_name])
-            if args.seed_only:
+            if mode == "normal" and args.seed_only:
                 crawler.ensure_indexes()
                 print(f"[crawler] Очередь пополнена: {crawler.seed()} URL")
             else:
-                crawler.run()
+                crawler.run(mode=mode)
     except KeyboardInterrupt:
         print("[crawler] Остановлен; незавершённый URL вернётся в очередь при следующем запуске.")
         return 130

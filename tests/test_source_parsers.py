@@ -40,6 +40,44 @@ def saved_documents() -> list[dict]:
 
 
 class SourceParserFixtureTests(unittest.TestCase):
+    def test_pcgamer_gallery_uses_captions_without_duplicate_slides(self) -> None:
+        html = b"""
+        <html><body><h1>Gallery story</h1>
+        <div id="article-body"><div id="utility-bar">Share this article</div></div>
+        <div id="gallery-body">
+          <div class="gallery-image"><div class="gallery-text"><p>Nvidia 's image description.</p></div></div>
+          <div class="gallery-image"><div class="gallery-text"><p>Nvidia's image description.</p></div></div>
+          <div class="gallery-image"><div class="gallery-text"><p>A second, different caption.</p></div></div>
+        </div></body></html>"""
+        parsed = PARSERS["pcgamer"](html, "https://www.pcgamer.com/gallery/").to_dict()
+        self.assertIsNone(parsed["parse_error"])
+        self.assertEqual(parsed["metadata"]["content_kind"], "gallery")
+        self.assertEqual(parsed["metadata"]["body_selector"],
+                         "#gallery-body .gallery-image .gallery-text")
+        self.assertEqual(parsed["text"].count("image description"), 1)
+        self.assertIn("A second, different caption.", parsed["text"])
+        self.assertNotIn("Share this article", parsed["text"])
+
+    def test_media_only_pages_keep_title_without_parser_error(self) -> None:
+        examples = (
+            ("gamemag", "https://gamemag.ru/news/1/pictures",
+             b'<h1>Screenshots</h1><div class="content-text"><img src="a.jpg"></div>'),
+            ("playground", "https://www.playground.ru/game/opinion/video-123",
+             b'<h1>Video review</h1><div class="article-content"><pg-embed src="1"></pg-embed></div>'),
+        )
+        for source, url, html in examples:
+            parsed = PARSERS[source](html, url).to_dict()
+            self.assertEqual(parsed["text"], "")
+            self.assertIsNone(parsed["parse_error"])
+            self.assertEqual(parsed["metadata"]["content_kind"], "media_only")
+
+    def test_empty_article_without_media_is_still_parser_error(self) -> None:
+        parsed = PARSERS["playground"](
+            b'<h1>Empty</h1><div class="article-content"></div>',
+            "https://www.playground.ru/game/opinion/empty-123",
+        ).to_dict()
+        self.assertIsNotNone(parsed["parse_error"])
+
     def test_new_sources_use_validated_source_selectors(self) -> None:
         html = b"""
         <html><head><title>Example</title></head><body>

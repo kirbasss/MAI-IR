@@ -118,6 +118,44 @@ class CrawlerTests(unittest.TestCase):
         self.assertEqual(crawler.seed(), 0)
         self.assertEqual(self.db.frontier.count_documents({}), 1)
 
+    def test_inventory_import_skips_known_listing_urls(self):
+        article = "https://www.pcgamer.com/games/action/example/"
+        self.inventory.write_text(
+            "pcgamer\thttps://www.pcgamer.com/games/adventure/\n"
+            f"pcgamer\t{article}\n", encoding="utf-8",
+        )
+        crawler = self.crawler(FakeSession([]))
+        crawler.prepare()
+        self.assertEqual(crawler.seed(), 1)
+        self.assertIsNotNone(self.db.frontier.find_one({"_id": article}))
+        self.assertIsNone(self.db.frontier.find_one({"_id": "https://www.pcgamer.com/games/adventure/"}))
+
+    def test_existing_listing_task_is_excluded_without_request(self):
+        url = "https://www.pcgamer.com/games/adventure/"
+        self.db.frontier.insert_one({
+            "_id": url, "url": url, "source": "pcgamer",
+            "state": "in_progress", "available_at": 1300, "lease_token": "test",
+        })
+        self.db.documents.insert_one({"_id": url, "url": url, "indexable": True})
+        self.assertEqual(self.crawler(FakeSession([])).process(
+            self.db.frontier.find_one({"_id": url})
+        ), "excluded")
+        self.assertEqual(self.db.frontier.find_one({"_id": url})["state"], "excluded")
+        self.assertNotIn("available_at", self.db.frontier.find_one({"_id": url}))
+        self.assertFalse(self.db.documents.find_one({"_id": url})["indexable"])
+
+    def test_redirect_to_listing_is_excluded(self):
+        article = "https://www.pcgamer.com/old-article/"
+        self.inventory.write_text(f"pcgamer\t{article}\n", encoding="utf-8")
+        session = FakeSession([
+            FakeResponse("https://www.pcgamer.com/robots.txt", 200, b"User-agent: *\nAllow: /"),
+            FakeResponse(article, 301, headers={"Location": "/news/"}),
+            FakeResponse("https://www.pcgamer.com/news/", 200, b"<html><h1>News</h1></html>"),
+        ])
+        self.assertEqual(self.crawler(session).run()["excluded"], 1)
+        self.assertEqual(self.db.frontier.find_one({"_id": article})["state"], "excluded")
+        self.assertIsNone(self.db.documents.find_one({"_id": article}))
+
     def test_seed_only_does_not_requeue_active_download(self):
         crawler = self.crawler(FakeSession([]))
         crawler.prepare()
@@ -133,7 +171,7 @@ class CrawlerTests(unittest.TestCase):
     def test_resume_and_change_detection(self):
         first = self.crawler(responses(headers={"ETag": '"v1"'}))
         self.assertEqual(first.run(), {"changed": 1, "unchanged": 0, "retry": 0,
-                                       "blocked": 0, "gone": 0})
+                                       "blocked": 0, "gone": 0, "excluded": 0})
         document = self.db.documents.find_one({"_id": URL})
         self.assertNotIn("html", document)
         self.assertEqual(document["raw_page_id"], URL)
@@ -145,29 +183,72 @@ class CrawlerTests(unittest.TestCase):
         # Restarting immediately does not re-fetch completed work or re-seed it.
         idle = self.crawler(FakeSession([]))
         self.assertEqual(idle.run(), {"changed": 0, "unchanged": 0, "retry": 0,
-                                      "blocked": 0, "gone": 0})
+                                      "blocked": 0, "gone": 0, "excluded": 0})
 
         self.clock[0] = 1010
+        # New-document mode must not claim scheduled rechecks.
+        self.assertEqual(self.crawler(FakeSession([])).run()["changed"], 0)
         unchanged_session = responses(status=304)
-        self.assertEqual(self.crawler(unchanged_session).run()["unchanged"], 1)
+        self.assertEqual(self.crawler(unchanged_session).run(mode="revisit")["unchanged"], 1)
         self.assertEqual(unchanged_session.calls[1][1]["If-None-Match"], '"v1"')
         self.assertEqual(self.db.documents.find_one({"_id": URL})["fetched_at"], 1000)
+        self.assertEqual(self.db.frontier.find_one({"_id": URL})["available_at"], 1020)
 
         self.clock[0] = 1020
-        self.assertEqual(self.crawler(responses(HTML_1, headers={"ETag": '"v1"'})).run()["unchanged"], 1)
+        self.assertEqual(self.crawler(responses(HTML_1, headers={"ETag": '"v1"'})).run(mode="revisit")["unchanged"], 1)
         self.assertEqual(self.db.documents.find_one({"_id": URL})["fetched_at"], 1000)
 
         self.clock[0] = 1030
-        self.assertEqual(self.crawler(responses(HTML_2, headers={"ETag": '"v2"'})).run()["changed"], 1)
+        self.assertEqual(self.crawler(responses(HTML_2, headers={"ETag": '"v2"'})).run(mode="revisit")["changed"], 1)
         self.assertEqual(self.db.documents.find_one({"_id": URL})["fetched_at"], 1030)
         self.assertIn("Changed text.", self.db.raw_pages.find_one({"_id": URL})["html"])
         self.assertEqual(self.db.frontier.count_documents({}), 1)
+
+    def test_revisit_does_not_seed_or_check_early(self):
+        self.assertEqual(self.crawler(FakeSession([])).run(mode="revisit")["changed"], 0)
+        self.assertEqual(self.db.frontier.count_documents({}), 0)
+        self.assertIsNone(self.db.crawler_meta.find_one({"_id": "inventory"}))
+        self.assertEqual(self.crawler(responses()).run()["changed"], 1)
+        self.clock[0] = 1009
+        self.assertEqual(self.crawler(FakeSession([])).run(mode="revisit")["changed"], 0)
+        self.assertEqual(self.db.frontier.find_one({"_id": URL})["attempts"], 1)
+
+    def test_revisit_retry_is_not_stolen_by_normal_mode(self):
+        self.assertEqual(self.crawler(responses()).run()["changed"], 1)
+        self.clock[0] = 1010
+        self.assertEqual(self.crawler(responses(status=503)).run(mode="revisit")["retry"], 1)
+        task = self.db.frontier.find_one({"_id": URL})
+        self.assertTrue(task["revisit_job"])
+        self.assertEqual(task["available_at"], 1020)
+        self.clock[0] = 1020
+        self.assertEqual(self.crawler(FakeSession([])).run()["changed"], 0)
+        self.assertEqual(self.crawler(responses(HTML_2)).run(mode="revisit")["changed"], 1)
+        self.assertEqual(self.db.documents.find_one({"_id": URL})["fetched_at"], 1020)
+
+    def test_interrupted_revisit_stays_in_revisit_queue(self):
+        self.assertEqual(self.crawler(responses()).run()["changed"], 1)
+        self.clock[0] = 1010
+        worker = self.crawler(FakeSession([]))
+        worker.prepare()
+        claimed = worker.claim(1010, mode="revisit")
+        self.assertEqual(claimed["state"], "in_progress")
+        self.assertTrue(claimed["revisit_job"])
+        self.clock[0] = 1011
+        self.assertEqual(self.crawler(FakeSession([])).run()["changed"], 0)
+        self.assertEqual(self.crawler(responses(HTML_2)).run(mode="revisit")["changed"], 1)
+        self.assertEqual(self.db.frontier.find_one({"_id": URL})["attempts"], 3)
+
+    def test_gone_page_can_return_on_revisit(self):
+        self.assertEqual(self.crawler(responses(status=404)).run()["gone"], 1)
+        self.clock[0] = 1010
+        self.assertEqual(self.crawler(responses()).run(mode="revisit")["changed"], 1)
+        self.assertIsNotNone(self.db.documents.find_one({"_id": URL}))
 
     def test_missing_raw_page_is_restored_before_marking_done(self):
         self.assertEqual(self.crawler(responses()).run()["changed"], 1)
         self.db.raw_pages.delete_one({"_id": URL})
         self.clock[0] = 1010
-        self.assertEqual(self.crawler(responses()).run()["changed"], 1)
+        self.assertEqual(self.crawler(responses()).run(mode="revisit")["changed"], 1)
         self.assertIsNotNone(self.db.raw_pages.find_one({"_id": URL}))
 
     def test_304_without_raw_page_falls_back_to_unconditional_request(self):
@@ -179,7 +260,7 @@ class CrawlerTests(unittest.TestCase):
             FakeResponse(URL, 304),
             FakeResponse(URL, 200, HTML_1),
         ])
-        self.assertEqual(self.crawler(session).run()["changed"], 1)
+        self.assertEqual(self.crawler(session).run(mode="revisit")["changed"], 1)
         self.assertEqual(len(session.calls), 3)
         self.assertIsNotNone(self.db.raw_pages.find_one({"_id": URL}))
 
@@ -242,7 +323,7 @@ class CrawlerTests(unittest.TestCase):
         self.clock[0] = 1001
         self.assertEqual(self.crawler(FakeSession([]), max_documents=2).run(),
                          {"changed": 0, "unchanged": 0, "retry": 0,
-                          "blocked": 0, "gone": 0})
+                          "blocked": 0, "gone": 0, "excluded": 0})
         self.assertEqual(self.db.frontier.find_one({"_id": other_url})["attempts"], 0)
 
     def test_rate_limited_source_does_not_stop_other_sites(self):
@@ -262,7 +343,7 @@ class CrawlerTests(unittest.TestCase):
         self.db.frontier.update_one({"_id": URL}, {"$set": {"queue_order": 0}})
         self.db.frontier.update_one({"_id": other_url}, {"$set": {"queue_order": 1}})
         self.assertEqual(worker.run(), {"changed": 1, "unchanged": 0, "retry": 1,
-                                        "blocked": 0, "gone": 0})
+                                        "blocked": 0, "gone": 0, "excluded": 0})
         self.assertEqual(self.db.frontier.find_one({"_id": other_url})["state"], "done")
 
     def test_forbidden_response_cools_source(self):
@@ -291,7 +372,7 @@ class CrawlerTests(unittest.TestCase):
         self.db.frontier.update_one({"_id": URL}, {"$set": {"queue_order": 0}})
         self.db.frontier.update_one({"_id": other_url}, {"$set": {"queue_order": 1}})
         self.assertEqual(worker.run(), {"changed": 1, "unchanged": 0, "retry": 1,
-                                        "blocked": 0, "gone": 0})
+                                        "blocked": 0, "gone": 0, "excluded": 0})
         self.assertEqual(self.db.crawler_meta.find_one({"_id": "cooldown:stopgame"})["until"], 1010)
 
     def test_robots_disallow_prevents_document_request(self):

@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from datetime import UTC
 from email.utils import parsedate_to_datetime
 from pathlib import Path
+from typing import Literal
 from urllib import robotparser
 from urllib.parse import urljoin, urlsplit, urlunsplit
 
@@ -21,10 +22,26 @@ from pymongo.errors import BulkWriteError, DocumentTooLarge
 from src.downloader import SOURCE_HOSTS, _response_class
 from src.parsers import PARSERS
 from src.utils import canonicalize_source_url, canonicalize_url
+from src.url_policy import is_listing_url
 
 
 USER_AGENT = "MAI-IR-Crawler/1.0 (educational search project)"
 MAX_REDIRECTS = 5
+RunMode = Literal["normal", "revisit"]
+
+
+def due_query(now: int, mode: RunMode) -> dict:
+    """Select either new work or scheduled checks without mixing their retries."""
+    due = {"available_at": {"$lte": now}}
+    if mode == "normal":
+        return {**due, "state": {"$in": ["pending", "retry"]},
+                "revisit_job": {"$ne": True}}
+    if mode == "revisit":
+        return {**due, "$or": [
+            {"state": {"$in": ["done", "gone", "blocked"]}},
+            {"state": {"$in": ["pending", "retry"]}, "revisit_job": True},
+        ]}
+    raise ValueError(f"Неизвестный режим работы робота: {mode}")
 
 
 @dataclass(frozen=True)
@@ -126,6 +143,8 @@ def inventory_rows(path: Path):
                 raise ValueError(f"{path}:{line_no}: неизвестный источник или хост: {source} {url}")
             if urlsplit(url).scheme not in {"http", "https"}:
                 raise ValueError(f"{path}:{line_no}: нужен HTTP(S) URL: {url}")
+            if is_listing_url(source, url):
+                continue
             yield source, url, category
 
 
@@ -236,6 +255,9 @@ class Crawler:
         # need to sort a large set of equally available sitemap URLs in memory.
         self.frontier.create_index([("available_at", 1), ("queue_order", 1), ("_id", 1)])
         self.frontier.create_index([("state", 1), ("source", 1)])
+        self.frontier.create_index([
+            ("state", 1), ("available_at", 1), ("queue_order", 1), ("_id", 1)
+        ])
 
     def prepare(self) -> None:
         self.ensure_indexes()
@@ -293,18 +315,22 @@ class Crawler:
                 raise
             return int(details.get("nInserted", 0))
 
-    def claim(self, now: int):
+    def claim(self, now: int, *, mode: RunMode = "normal"):
         token = uuid.uuid4().hex
-        query = {"available_at": {"$lte": now}}
+        query = due_query(now, mode)
         cooling = [source for source, until in self.source_cooldowns.items() if until > now]
         if cooling:
             query["source"] = {"$nin": cooling}
+        values = {
+            "state": "in_progress", "available_at": now + self.config.lease_seconds,
+            "lease_token": token,
+        }
+        if mode == "revisit":
+            # Keep the work type across a crash or transient HTTP retry.
+            values["revisit_job"] = True
         return self.frontier.find_one_and_update(
             query,
-            {"$set": {
-                "state": "in_progress", "available_at": now + self.config.lease_seconds,
-                "lease_token": token,
-            }, "$inc": {"attempts": 1}},
+            {"$set": values, "$inc": {"attempts": 1}},
             sort=[("available_at", 1), ("queue_order", 1), ("_id", 1)],
             return_document=ReturnDocument.AFTER,
         )
@@ -341,8 +367,27 @@ class Crawler:
             {"_id": f"cooldown:{source}"}, {"$max": {"until": until}}, upsert=True,
         )
 
+    def _exclude(self, task: dict, now: int, reason: str, final_url: str | None = None) -> None:
+        """Keep a historical page, but remove it from the publication queue/index."""
+        self.documents.update_one(
+            {"_id": task["_id"]},
+            {"$set": {"indexable": False, "exclusion_reason": reason}},
+        )
+        fields = {"state": "excluded", "last_checked_at": now,
+                  "last_error": None, "exclusion_reason": reason}
+        if final_url:
+            fields["final_url"] = final_url
+            fields["last_http_status"] = 200
+        self.frontier.update_one(
+            {"_id": task["_id"], "lease_token": task["lease_token"]},
+            {"$set": fields, "$unset": {"lease_token": "", "available_at": ""}},
+        )
+
     def process(self, task: dict) -> str:
         url, source = task["url"], task["source"]
+        if is_listing_url(source, url):
+            self._exclude(task, int(self.now()), "listing_url")
+            return "excluded"
         previous = self.documents.find_one(
             {"_id": url}, {"content_sha256": 1, "raw_page_id": 1}
         )
@@ -379,6 +424,9 @@ class Crawler:
             return "retry"
 
         now = int(self.now())
+        if response.status_code in {200, 304} and is_listing_url(source, response.url):
+            self._exclude(task, now, "redirect_to_listing", canonicalize_url(response.url))
+            return "excluded"
         if response.status_code == 304:
             if not raw_matches_previous:
                 self._finish(task, now, state="retry", delay=self.config.retry_seconds,
@@ -433,6 +481,7 @@ class Crawler:
             "fetched_at": now, "content_sha256": digest,
             "final_url": raw_page["final_url"], "http_status": response.status_code,
             "content_type": content_type, "parsed": parsed,
+            "indexable": parsed.get("parse_error") is None,
         }
         # Save raw HTML before its parsed counterpart. If the process crashes
         # between writes, the hash check above forces a fresh response next time.
@@ -447,16 +496,21 @@ class Crawler:
                      fields=validators)
         return "changed"
 
-    def run(self) -> dict[str, int]:
+    def run(self, *, mode: RunMode = "normal") -> dict[str, int]:
+        if mode not in {"normal", "revisit"}:
+            raise ValueError(f"Неизвестный режим работы робота: {mode}")
         self.prepare()
-        added = self.seed()
-        print(f"[crawler] Очередь пополнена: {added} URL")
+        if mode == "normal":
+            added = self.seed()
+            print(f"[crawler] Очередь пополнена: {added} URL")
+        else:
+            print("[crawler] Проверка ранее обработанных URL; инвентарь не импортируется")
         counters = {"changed": 0, "unchanged": 0, "retry": 0,
-                    "blocked": 0, "gone": 0}
+                    "blocked": 0, "gone": 0, "excluded": 0}
         processed = 0
         while self.config.max_documents is None or processed < self.config.max_documents:
             now = int(self.now())
-            task = self.claim(now)
+            task = self.claim(now, mode=mode)
             if task is None:
                 if self.config.run_forever:
                     next_cooldown = min(

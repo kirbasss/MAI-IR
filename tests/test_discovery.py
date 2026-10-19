@@ -136,6 +136,39 @@ class SitemapDiscoveryTests(unittest.TestCase):
             document_category("gamemag", "https://gamemag.ru/games/example", "publication")
         )
 
+    def test_listing_urls_are_not_publications(self) -> None:
+        self.assertIsNone(document_category(
+            "eurogamer", "https://www.eurogamer.net/games/neverhood", "publication"
+        ))
+        self.assertIsNone(document_category(
+            "pcgamer", "https://www.pcgamer.com/games/adventure/", "publication"
+        ))
+        self.assertIsNone(document_category(
+            "gamingonlinux", "https://www.gamingonlinux.com/articles/category/music/", "publication"
+        ))
+        self.assertEqual(document_category(
+            "pcgamer", "https://www.pcgamer.com/games/action/control-resonant-review/", "publication"
+        ), "publication")
+        self.assertEqual(document_category(
+            "pcgamer", "https://www.pcgamer.com/games/you-can-now-leap-across-levels/", "publication"
+        ), "publication")
+
+    def test_merge_inventories_excludes_known_listings(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            source = root / "source"
+            source.mkdir()
+            (source / "url_inventory.tsv").write_text(
+                "source\tcategory\turl\tsitemap_url\n"
+                "pcgamer\tpublication\thttps://www.pcgamer.com/games/adventure/\thttps://www.pcgamer.com/sitemap.xml\n"
+                "pcgamer\tpublication\thttps://www.pcgamer.com/games/action/example/\thttps://www.pcgamer.com/sitemap.xml\n",
+                encoding="utf-8",
+            )
+            summary = merge_inventories([source], root / "merged")
+            self.assertEqual(summary["excluded_urls"], 1)
+            self.assertEqual(summary["total_unique_urls"], 1)
+            self.assertEqual(summary["duplicate_urls_removed"], 0)
+
     def test_cache_only_rebuilds_inventory_without_network(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             data_dir = Path(temporary_directory) / "data"

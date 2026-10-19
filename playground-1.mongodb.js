@@ -10,7 +10,7 @@ use('mai_ir');
 // 2. Быстрый просмотр разобранных документов без большого поля html.
 use('mai_ir');
 db.documents.find(
-  {},
+  { indexable: { $ne: false } },
   { _id: 0, url: 1, source: 1, fetched_at: 1, raw_page_id: 1,
     'parsed.title': 1, 'parsed.category': 1, 'parsed.author': 1, 'parsed.text': 1 }
 ).limit(2);
@@ -37,6 +37,7 @@ const rawPage = document && db.raw_pages.findOne(
 // 5. Сколько публикаций уже загружено с каждого сайта.
 use('mai_ir');
 db.documents.aggregate([
+  { $match: { indexable: { $ne: false } } },
   { $group: { _id: '$source', documents: { $sum: 1 } } },
   { $sort: { documents: -1 } }
 ]);
@@ -53,5 +54,11 @@ db.frontier.find(
 use('mai_ir');
 ({
   parseErrors: db.documents.countDocuments({ 'parsed.parse_error': { $type: 'string' } }),
-  emptyTexts: db.documents.countDocuments({ 'parsed.text': '' })
+  activeParseErrors: db.documents.countDocuments({
+    indexable: { $ne: false }, 'parsed.parse_error': { $type: 'string' }
+  }),
+  emptyTexts: db.documents.countDocuments({ 'parsed.text': '' }),
+  indexable: db.documents.countDocuments({ indexable: { $ne: false } }),
+  titleOnly: db.documents.countDocuments({ indexable: { $ne: false }, 'parsed.text': '' }),
+  excluded: db.documents.countDocuments({ indexable: false })
 });

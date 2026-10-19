@@ -17,6 +17,7 @@ import requests
 
 from src.downloader import SOURCE_HOSTS, USER_AGENT, fetch_robots, safe_name
 from src.utils import canonicalize_source_url, canonicalize_url, dump_json
+from src.url_policy import is_listing_url
 
 
 @dataclass(frozen=True)
@@ -171,6 +172,8 @@ def sitemap_category(source: str, sitemap_url: str) -> str | None:
 
 def document_category(source: str, url: str, sitemap_type: str) -> str | None:
     """Map a document URL to the corpus taxonomy used in the URL inventory."""
+    if is_listing_url(source, url):
+        return None
     path = urlsplit(url).path.lower()
 
     if source == "gamemag":
@@ -262,6 +265,7 @@ def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
     rows_seen = 0
     inserted = 0
     normalized_urls = 0
+    excluded_urls = 0
 
     with tempfile.TemporaryDirectory(prefix="mai-ir-inventory-") as temporary_dir:
         database_path = Path(temporary_dir) / "inventory.sqlite3"
@@ -296,6 +300,9 @@ def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
                         sitemap_url = canonicalize_url(row["sitemap_url"])
                         if not all((source, category, url, sitemap_url)):
                             raise ValueError(f"Пустое обязательное поле: {inventory_path}")
+                        if is_listing_url(source, url):
+                            excluded_urls += 1
+                            continue
                         cursor = connection.execute(
                             "INSERT OR IGNORE INTO documents VALUES (?, ?, ?, ?)",
                             (url, source, category, sitemap_url),
@@ -334,7 +341,8 @@ def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
         "generated_at": datetime.now(UTC).isoformat(),
         "input_inventories": [str(directory) for directory in input_dirs],
         "input_rows": rows_seen,
-        "duplicate_urls_removed": rows_seen - inserted,
+        "duplicate_urls_removed": rows_seen - inserted - excluded_urls,
+        "excluded_urls": excluded_urls,
         "normalized_urls": normalized_urls,
         "total_unique_urls": inserted,
         "sources": {
