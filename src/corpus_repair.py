@@ -5,6 +5,7 @@ from __future__ import annotations
 import time
 
 from src.parsers import PARSERS
+from src.downloader import _response_class
 from src.url_policy import is_listing_url
 
 
@@ -20,7 +21,7 @@ def repair_saved_documents(db, *, apply: bool = False) -> dict[str, int]:
 
     result = {"documents_excluded": 0, "frontier_excluded": 0,
               "documents_reparsed": 0, "still_parse_errors": 0,
-              "inconsistent_raw": 0}
+              "inconsistent_raw": 0, "documents_requeued": 0}
     redirect_exclusions: set[str] = set()
     for doc in db.documents.find({}, {
         "url": 1, "source": 1, "final_url": 1, "raw_page_id": 1,
@@ -51,6 +52,26 @@ def repair_saved_documents(db, *, apply: bool = False) -> dict[str, int]:
                 doc.get("content_sha256") != raw.get("content_sha256") or
                 not isinstance(raw.get("html"), str)):
             result["inconsistent_raw"] += 1
+            continue
+        response_class = _response_class(200, raw["html"])
+        if response_class in {"empty_response", "anti_bot_or_challenge"}:
+            # Invalid old responses are evidence, not articles. Keep their HTML,
+            # force an unconditional download in normal mode, and avoid replaying
+            # the same repair on every invocation.
+            task = db.frontier.find_one({"_id": url}, {"state": 1, "last_error": 1})
+            if task and task.get("state") == "done":
+                result["documents_requeued"] += 1
+                if apply:
+                    db.frontier.update_one(
+                        {"_id": url, "state": "done"},
+                        {"$set": {"state": "retry", "available_at": int(time.time()),
+                                  "last_error": response_class},
+                         "$unset": {"etag": "", "last_modified": "", "revisit_job": ""}},
+                    )
+                    db.documents.update_one(
+                        {"_id": url, "content_sha256": doc.get("content_sha256")},
+                        {"$set": {"indexable": False, "response_error": response_class}},
+                    )
             continue
         try:
             parsed = PARSERS[source](raw["html"].encode("utf-8"), url).to_dict()

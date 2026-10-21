@@ -44,7 +44,7 @@ class CorpusRepairTests(unittest.TestCase):
     def test_preview_apply_and_repeat_preserve_raw_html(self) -> None:
         expected = {"documents_excluded": 2, "frontier_excluded": 2,
                     "documents_reparsed": 1, "still_parse_errors": 0,
-                    "inconsistent_raw": 0}
+                    "inconsistent_raw": 0, "documents_requeued": 0}
         self.assertEqual(repair_saved_documents(self.db), expected)
         self.assertNotIn("indexable", self.db.documents.find_one({"_id": self.listing}))
         self.assertEqual(self.db.frontier.find_one({"_id": self.listing})["state"], "done")
@@ -61,6 +61,7 @@ class CorpusRepairTests(unittest.TestCase):
             "documents_excluded": 0, "frontier_excluded": 0,
             "documents_reparsed": 0, "still_parse_errors": 0,
             "inconsistent_raw": 0,
+            "documents_requeued": 0,
         })
 
     def test_apply_refuses_active_worker(self) -> None:

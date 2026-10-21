@@ -13,7 +13,7 @@ from urllib.parse import urlsplit, urlunsplit
 import requests
 
 from src.parsers import PARSERS
-from src.utils import canonicalize_url, dump_json, sha256_text
+from src.utils import canonicalize_url, dump_json, sha256_text, soup
 
 
 USER_AGENT = (
@@ -31,8 +31,15 @@ SOURCE_HOSTS = {
     "eurogamer": {"eurogamer.net", "www.eurogamer.net"},
 }
 CHALLENGE_MARKERS = (
-    "captcha", "verify you are human", "checking your browser",
-    "cloudflare ray id", "access denied", "just a moment",
+    "verify you are human", "checking your browser", "just a moment",
+    "attention required", "access denied", "security check", "robot check",
+    "подтвердите, что вы не робот", "подтвердите, что вы человек",
+    "проверка браузера", "проверка безопасности", "доступ ограничен",
+)
+ARTICLE_BODY_SELECTORS = (
+    "article#material_content, div.article-content, div[id^='publication-'].prose, "
+    "div[class*='material-content_'], div.content-text, article.h-entry .e-content, "
+    "#article-body, #gallery-body .gallery-text, div.article_body_content"
 )
 
 
@@ -63,17 +70,49 @@ def _valid_source_url(source: str, url: str) -> bool:
 
 
 def _response_class(status: int, html: str) -> str:
-    lowered = html.lower()
+    # Bounded work even for multi-megabyte pages. A plain word "captcha" in a
+    # story or a site's shared JavaScript is not evidence of an interstitial.
+    sample = html[:200_000]
+    # Sitemap URLs can legitimately contain "captcha" or "challenge". Do not
+    # feed their XML to BeautifulSoup's HTML parser; discovery validates XML.
+    if re.match(r"[\s\ufeff]*(?:(?:<\?xml[^>]*>|<!--.*?-->)\s*)*<(?:[\w.-]+:)?(?:urlset|sitemapindex)(?:\s|>)", sample, re.DOTALL):
+        if 200 <= status <= 299:
+            return "valid_content_page"
+        if status in {404, 410}:
+            return "not_found"
+        if status == 429:
+            return "rate_limited"
+        return "server_error" if status >= 500 else "http_error"
+    lowered = sample.casefold()
     title_match = re.search(r"<title[^>]*>(.*?)</title>", lowered, re.DOTALL)
-    title = title_match.group(1) if title_match else ""
-    # A site's JavaScript can legitimately contain words such as CAPTCHA or
-    # ddos-guard. A challenge is recognised only from the page title or from
-    # a very short, marker-only response.
+    title = " ".join(title_match.group(1).split()) if title_match else ""
     if any(marker in title for marker in CHALLENGE_MARKERS):
         return "anti_bot_or_challenge"
-    if len(html) < 10_000 and any(marker in lowered for marker in CHALLENGE_MARKERS):
+    if title.strip(" .!:") in {"captcha", "капча", "ddos-guard"}:
         return "anti_bot_or_challenge"
-    if status == 404:
+    if any(marker in lowered for marker in (
+        "captcha", "challenge", "turnstile", "ddos-guard", *CHALLENGE_MARKERS,
+    )):
+        page = soup(sample.encode("utf-8"))
+        # Visible interstitial forms are stronger evidence than words in scripts.
+        if page.select_one(
+            "#challenge-form, #cf-challenge-running, #px-captcha, "
+            "form[action*='/cdn-cgi/challenge-platform/']"
+        ):
+            return "anti_bot_or_challenge"
+        has_article = any(node.get_text(" ", strip=True)
+                          for node in page.select(ARTICLE_BODY_SELECTORS))
+        if not has_article:
+            for node in page.select("script, style, noscript, template"):
+                node.decompose()
+            visible = " ".join(page.get_text(" ", strip=True).casefold().split())
+            widget = page.select_one(
+                ".g-recaptcha, .h-captcha, .cf-turnstile, "
+                "iframe[src*='recaptcha'], iframe[src*='hcaptcha']"
+            )
+            if widget or (len(visible) < 3000 and any(marker in visible for marker in CHALLENGE_MARKERS)):
+                return "anti_bot_or_challenge"
+    if status in {404, 410}:
         return "not_found"
     if status == 429:
         return "rate_limited"
@@ -82,6 +121,8 @@ def _response_class(status: int, html: str) -> str:
     if 300 <= status <= 399:
         return "redirect"
     if 200 <= status <= 299:
+        if not html.strip():
+            return "empty_response"
         return "valid_content_page"
     return "http_error"
 
@@ -186,7 +227,7 @@ def collect_one(
     raw_path = data_dir / "raw" / source / f"{safe_name(canonical_url)}.html"
     raw_path.parent.mkdir(parents=True, exist_ok=True)
     raw_path.write_bytes(raw)
-    response_class = _response_class(response.status_code, response.text[:100_000])
+    response_class = _response_class(response.status_code, response.text)
 
     if response_class != "valid_content_page":
         result = _error_document(

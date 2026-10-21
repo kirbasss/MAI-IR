@@ -54,9 +54,13 @@ db.frontier.find(
 use('mai_ir');
 ({
   parseErrors: db.documents.countDocuments({ 'parsed.parse_error': { $type: 'string' } }),
-  activeParseErrors: db.documents.countDocuments({
-    indexable: { $ne: false }, 'parsed.parse_error': { $type: 'string' }
+  // Старые parse_error у исключённых каталогов остаются как диагностика.
+  // Здесь считаем только публикации, которым ещё нужен разбор, не перезагрузка.
+  unresolvedParseErrors: db.documents.countDocuments({
+    'parsed.parse_error': { $type: 'string' },
+    exclusion_reason: { $exists: false }, response_error: { $exists: false }
   }),
+  awaitingRefetch: db.documents.countDocuments({ response_error: { $exists: true } }),
   emptyTexts: db.documents.countDocuments({ 'parsed.text': '' }),
   indexable: db.documents.countDocuments({ indexable: { $ne: false } }),
   titleOnly: db.documents.countDocuments({ indexable: { $ne: false }, 'parsed.text': '' }),

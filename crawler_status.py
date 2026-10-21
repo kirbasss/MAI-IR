@@ -51,6 +51,7 @@ def main() -> int:
                 "new_due_now": db.frontier.count_documents(due_query(now, "normal")),
                 "revisit_due_now": db.frontier.count_documents(due_query(now, "revisit")),
                 "source_cooldowns": cooldowns,
+                "sitemap_refresh": db.crawler_meta.find_one({"_id": "sitemap_refresh"}, {"_id": 0}),
                 "data_mib": round(db_stats["dataSize"] / 1048576, 1),
                 "storage_mib": round(db_stats["storageSize"] / 1048576, 1),
                 "index_mib": round(db_stats["indexSize"] / 1048576, 1),

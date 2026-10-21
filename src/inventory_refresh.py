@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import tempfile
 from pathlib import Path
+from typing import Callable
 
 from src.discovery import discover_sitemaps, merge_inventories
 from src.downloader import SOURCE_HOSTS
@@ -14,6 +15,7 @@ from src.utils import dump_json
 def refresh_inventory(
     *, data_dir: Path, inventory_path: Path, sources: list[str],
     delay_seconds: float = 1.0,
+    fetcher: Callable[[str, str, str | None], bytes] | None = None,
 ) -> dict:
     """Fetch selected sources, union them with old URLs, publish atomically."""
     if inventory_path.name != "url_inventory.tsv":
@@ -42,6 +44,7 @@ def refresh_inventory(
             summary = discover_sitemaps(
                 data_dir=data_dir, output_dir=source_dir, sources=[source],
                 delay_seconds=delay_seconds, refresh_roots=True,
+                **({"fetcher": fetcher} if fetcher is not None else {}),
             )
             count = summary["sources"][source]["urls"]
             if summary["errors"] or count == 0:
@@ -59,9 +62,12 @@ def refresh_inventory(
         summary = merge_inventories(inputs, merged_dir)
         if summary["errors"] or summary["total_unique_urls"] == 0:
             raise RuntimeError("Объединённый инвентарь пуст или содержит ошибки")
-        # A corrected alias may collapse with an already canonical URL.
-        # That is a repair, not a loss of a publication.
-        added = max(0, summary["total_unique_urls"] - old_count)
+        # Compare URL identities AFTER normalizing/filtering the old inventory.
+        # Removed catalog rows must not hide newly discovered publications.
+        old_exists = inventory_path.is_file()
+        baseline = summary["input_added_urls"][0] if old_exists else 0
+        added = summary["total_unique_urls"] - baseline
+        changed = bool(added or summary["normalized_urls"] or summary["total_unique_urls"] != old_count)
 
         summary["input_inventories"] = (
             ([str(inventory_path)] if inventory_path.is_file() else [])
@@ -71,11 +77,13 @@ def refresh_inventory(
         summary["refreshed_sources"] = source_counts
         summary["refresh_errors"] = refresh_errors
         summary["new_inventory_urls"] = added
+        summary["removed_old_rows"] = old_count - baseline
+        summary["inventory_changed"] = changed
         dump_json(merged_dir / "summary.json", summary)
 
         # The TSV is the crawler's source of truth. Publishing it last keeps
         # the old queue input intact until the entire refresh succeeds.
         os.replace(merged_dir / "summary.json", output_dir / "summary.json")
-        if added or summary["normalized_urls"]:
+        if changed:
             os.replace(merged_dir / "url_inventory.tsv", inventory_path)
         return summary

@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import math
 import time
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -20,7 +21,9 @@ from pymongo import ReturnDocument
 from pymongo.errors import BulkWriteError, DocumentTooLarge
 
 from src.downloader import SOURCE_HOSTS, _response_class
+from src.inventory_refresh import refresh_inventory as refresh_url_inventory
 from src.parsers import PARSERS
+from src.sitemap_cache import SitemapCache
 from src.utils import canonicalize_source_url, canonicalize_url
 from src.url_policy import is_listing_url
 
@@ -58,6 +61,14 @@ class CrawlerConfig:
     max_documents: int | None
     run_forever: bool
     poll_seconds: float
+    global_delay_seconds: float = 0
+    source_delays_seconds: dict[str, float] = field(default_factory=dict)
+    refresh_sitemaps: bool = False
+    sitemap_sources: tuple[str, ...] = ()
+    discovery_data_dir: Path | None = None
+    sitemap_refresh_interval_seconds: int = 86400
+    sitemap_cache_ttl_seconds: float = 0
+    sitemap_recheck_seconds: float = 86400
 
 
 def load_config(path: Path) -> CrawlerConfig:
@@ -79,14 +90,21 @@ def load_config(path: Path) -> CrawlerConfig:
     if not inventory.is_absolute():
         inventory = path.parent / inventory
     inventory = inventory.resolve()
-    if not inventory.is_file():
+
+    refresh_sitemaps = logic.get("refresh_sitemaps", True)
+    if not isinstance(refresh_sitemaps, bool):
+        raise ValueError("logic.refresh_sitemaps должен быть true или false.")
+    if refresh_sitemaps and inventory.name != "url_inventory.tsv":
+        raise ValueError("Для обновления sitemap задайте inventory с именем url_inventory.tsv "
+                         "или явно отключите logic.refresh_sitemaps для готовой выборки.")
+    if not refresh_sitemaps and not inventory.is_file():
         raise ValueError(f"Список URL не найден: {inventory}")
 
     def number(key: str, default: int | float, *, positive: bool = False) -> int | float:
         value = logic.get(key, default)
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             raise ValueError(f"logic.{key} должен быть числом.")
-        if (positive and value <= 0) or (not positive and value < 0):
+        if not math.isfinite(value) or (positive and value <= 0) or (not positive and value < 0):
             raise ValueError(f"logic.{key} имеет недопустимое значение: {value}.")
         return value
 
@@ -102,21 +120,47 @@ def load_config(path: Path) -> CrawlerConfig:
     lease_seconds = number("lease_seconds", 600, positive=True)
     revisit_seconds = number("revisit_seconds", 2_592_000, positive=True)
     retry_seconds = number("retry_seconds", 3600, positive=True)
+    refresh_interval = number("sitemap_refresh_interval_seconds", 86400, positive=True)
     if any(not isinstance(value, int) for value in (
-        seed_batch_size, lease_seconds, revisit_seconds, retry_seconds
+        seed_batch_size, lease_seconds, revisit_seconds, retry_seconds, refresh_interval
     )):
         raise ValueError("Интервалы, lease_seconds и seed_batch_size должны быть целыми.")
     request_timeout_seconds = float(number("request_timeout_seconds", 30, positive=True))
     if lease_seconds <= request_timeout_seconds * (2 * MAX_REDIRECTS + 2):
         raise ValueError("logic.lease_seconds должен превышать время цепочки запросов.")
+    sources = logic.get("sitemap_sources", list(SOURCE_HOSTS))
+    if (not isinstance(sources, list) or not sources or
+            any(not isinstance(source, str) or source not in SOURCE_HOSTS for source in sources) or
+            len(sources) != len(set(sources))):
+        raise ValueError("logic.sitemap_sources должен содержать известные источники без повторов.")
+    source_delays = logic.get("source_delays_seconds", {})
+    if not isinstance(source_delays, dict):
+        raise ValueError("logic.source_delays_seconds должен содержать объект source: seconds.")
+    for source, delay in source_delays.items():
+        if (source not in SOURCE_HOSTS or isinstance(delay, bool) or
+                not isinstance(delay, (int, float)) or not math.isfinite(delay) or delay < 0):
+            raise ValueError(f"Некорректная локальная задержка для {source}.")
+    discovery_dir = logic.get("discovery_data_dir", "data")
+    if not isinstance(discovery_dir, str) or not discovery_dir.strip():
+        raise ValueError("logic.discovery_data_dir должен содержать путь.")
+    discovery_path = Path(discovery_dir)
+    if not discovery_path.is_absolute():
+        discovery_path = path.parent / discovery_path
     return CrawlerConfig(
         db_uri=db["uri"], db_name=db["name"], inventory=inventory,
-        delay_seconds=float(number("delay_seconds", 2)),
+        # delay_seconds remains a compatibility alias for the per-source default.
+        delay_seconds=float(number("local_delay_seconds", logic.get("delay_seconds", 2))),
         revisit_seconds=revisit_seconds, retry_seconds=retry_seconds,
         lease_seconds=lease_seconds, request_timeout_seconds=request_timeout_seconds,
         seed_batch_size=seed_batch_size, max_documents=max_documents,
         run_forever=run_forever,
         poll_seconds=float(number("poll_seconds", 60, positive=True)),
+        global_delay_seconds=float(number("global_delay_seconds", 0)),
+        source_delays_seconds={source: float(delay) for source, delay in source_delays.items()},
+        refresh_sitemaps=refresh_sitemaps, sitemap_sources=tuple(sources),
+        discovery_data_dir=discovery_path.resolve(), sitemap_refresh_interval_seconds=refresh_interval,
+        sitemap_cache_ttl_seconds=float(number("sitemap_cache_ttl_seconds", 3600)),
+        sitemap_recheck_seconds=float(number("sitemap_recheck_seconds", 86400, positive=True)),
     )
 
 
@@ -157,38 +201,54 @@ class RobotsUnavailable(RobotsDenied):
 
 
 class HttpGate:
-    """Check robots.txt for every target and space requests to each host."""
+    """Share global, per-source and robots Crawl-delay limits for all HTTP."""
 
-    def __init__(self, session: requests.Session, config: CrawlerConfig):
+    def __init__(self, session: requests.Session, config: CrawlerConfig, *, clock=None, sleep=None):
         self.session = session
         self.config = config
         self.rules: dict[str, robotparser.RobotFileParser] = {}
+        self.stale_rules: set[str] = set()
         self.last_request: dict[str, float] = {}
+        self.last_source_request: dict[str, float] = {}
+        self.last_global_request: float | None = None
+        self.robots_cache_dir: Path | None = None
+        self.clock = clock or time.monotonic
+        self.sleep = sleep or time.sleep
 
-    def _send(self, url: str, *, headers: dict[str, str] | None = None):
+    def _send(self, source: str, url: str, *, headers: dict[str, str] | None = None):
         host = urlsplit(url).hostname or ""
         parser = self.rules.get(host)
         crawl_delay = parser.crawl_delay(USER_AGENT) if parser else None
-        delay = max(self.config.delay_seconds, float(crawl_delay or 0))
-        wait = self.last_request.get(host, 0) + delay - time.monotonic()
+        local_delay = self.config.source_delays_seconds.get(source, self.config.delay_seconds)
+        deadlines = [0.0]
+        if self.last_global_request is not None:
+            deadlines.append(self.last_global_request + self.config.global_delay_seconds)
+        if source in self.last_source_request:
+            deadlines.append(self.last_source_request[source] + local_delay)
+        if host in self.last_request:
+            deadlines.append(self.last_request[host] + float(crawl_delay or 0))
+        wait = max(deadlines) - self.clock()
         if wait > 0:
-            time.sleep(wait)
+            self.sleep(wait)
         try:
             return self.session.get(
                 url, headers=headers, timeout=self.config.request_timeout_seconds,
                 allow_redirects=False,
             )
         finally:
-            self.last_request[host] = time.monotonic()
+            finished = self.clock()
+            self.last_request[host] = finished
+            self.last_source_request[source] = finished
+            self.last_global_request = finished
 
     def _check_robots(self, source: str, url: str) -> None:
         parsed = urlsplit(url)
         host = parsed.hostname or ""
-        if host not in self.rules:
+        if host not in self.rules or host in self.stale_rules:
             robots_url = urlunsplit((parsed.scheme, parsed.netloc, "/robots.txt", "", ""))
             try:
                 for _ in range(MAX_REDIRECTS + 1):
-                    response = self._send(robots_url)
+                    response = self._send(source, robots_url)
                     if response.status_code not in {301, 302, 303, 307, 308}:
                         break
                     location = response.headers.get("Location")
@@ -215,6 +275,11 @@ class HttpGate:
                 rules.set_url(robots_url)
                 rules.parse(response.text.splitlines())
                 self.rules[host] = rules
+                self.stale_rules.discard(host)
+                if self.robots_cache_dir is not None:
+                    target = self.robots_cache_dir / "discovery" / source / "robots.txt"
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text(response.text, encoding="utf-8")
             except requests.RequestException as exc:
                 raise RobotsUnavailable(f"robots.txt недоступен для {host}: {exc}") from exc
         if not self.rules[host].can_fetch(USER_AGENT, url):
@@ -227,7 +292,7 @@ class HttpGate:
             if host not in SOURCE_HOSTS[source] or urlsplit(current).scheme not in {"http", "https"}:
                 raise RobotsDenied(f"Редирект за пределы источника: {current}")
             self._check_robots(source, current)
-            response = self._send(current, headers=headers)
+            response = self._send(source, current, headers=headers)
             if response.status_code not in {301, 302, 303, 307, 308}:
                 return response
             location = response.headers.get("Location")
@@ -249,6 +314,101 @@ class Crawler:
         self.gate = HttpGate(self.session, config)
         self.now = now or time.time
         self.source_cooldowns: dict[str, int] = {}
+        self.next_sitemap_refresh_at: int | None = None
+        data_dir = config.discovery_data_dir or config.inventory.parent / "sitemap_cache"
+        self.sitemap_cache = SitemapCache(data_dir, ttl_seconds=config.sitemap_cache_ttl_seconds,
+                                           recheck_seconds=config.sitemap_recheck_seconds, now=self.now)
+
+    def _fetch_sitemap(self, source: str, url: str, lastmod: str | None = None) -> bytes:
+        """Discovery uses exactly the same robots and pacing gate as articles."""
+        pause = self.meta.find_one({"_id": f"cooldown:{source}"}, {"until": 1})
+        until = max(self.source_cooldowns.get(source, 0), int((pause or {}).get("until", 0)))
+        if until > int(self.now()):
+            self.source_cooldowns[source] = until
+            raise requests.RequestException(f"Источник {source} на паузе до {until}")
+        try:
+            # Updated robots rules apply even when only a local cached map is read.
+            self.gate._check_robots(source, url)
+        except RobotsDenied as exc:
+            if isinstance(exc, RobotsUnavailable):
+                self._cooldown_source(source, int(self.now()) + self.config.retry_seconds)
+            raise requests.RequestException(str(exc)) from exc
+        def request(headers):
+            try:
+                response = self.gate.get(source, url, headers)
+            except RobotsDenied as exc:
+                raise requests.RequestException(str(exc)) from exc
+            if response.status_code == 304:
+                return response
+            response_class = _response_class(response.status_code, response.text)
+            if response.status_code in {403, 429} or response.status_code >= 500 or response_class == "anti_bot_or_challenge":
+                self._cooldown_source(source, int(self.now()) + self._retry_delay(response, int(self.now())))
+            response.raise_for_status()
+            if response_class != "valid_content_page":
+                raise requests.RequestException(f"Sitemap: {response_class}: {url}")
+            return response
+        return self.sitemap_cache.fetch(source, url, lastmod, request)
+
+    def update_inventory(self, *, sources: list[str] | None = None, strict: bool = False,
+                         force: bool = False) -> dict | None:
+        started = int(self.now())
+        data_dir = self.config.discovery_data_dir or self.config.inventory.parent / "sitemap_cache"
+        self.gate.robots_cache_dir = data_dir
+        self.sitemap_cache.force = force
+        self.sitemap_cache.reset_stats()
+        # Re-read current rules at each discovery cycle, including a long-lived run.
+        self.gate.stale_rules.update(self.gate.rules)
+        try:
+            summary = refresh_url_inventory(
+                data_dir=data_dir, inventory_path=self.config.inventory,
+                sources=sources or list(self.config.sitemap_sources or SOURCE_HOSTS),
+                fetcher=self._fetch_sitemap,
+            )
+        except (OSError, ValueError, RuntimeError, requests.RequestException) as exc:
+            finished = int(self.now())
+            self.next_sitemap_refresh_at = finished + min(
+                self.config.retry_seconds, self.config.sitemap_refresh_interval_seconds
+            )
+            self.meta.update_one({"_id": "sitemap_refresh"}, {"$set": {
+                "started_at": started, "finished_at": finished, "status": "failed",
+                "last_error": str(exc), "next_refresh_at": self.next_sitemap_refresh_at,
+                "cache": self.sitemap_cache.stats,
+            }}, upsert=True)
+            if strict or not self.config.inventory.is_file():
+                raise
+            print(f"[sitemaps] Обновление не удалось; продолжаю с сохранённым inventory: {exc}")
+            return None
+        finished = int(self.now())
+        partial = bool(summary["refresh_errors"])
+        interval = self.config.sitemap_refresh_interval_seconds
+        self.next_sitemap_refresh_at = finished + (min(interval, self.config.retry_seconds) if partial else interval)
+        self.meta.update_one({"_id": "sitemap_refresh"}, {"$set": {
+            "started_at": started, "finished_at": finished,
+            "status": "partial" if partial else "ok", "last_error": None,
+            "inventory_urls": summary["total_unique_urls"],
+            "new_inventory_urls": summary["new_inventory_urls"],
+            "removed_old_rows": summary["removed_old_rows"],
+            "refreshed_sources": summary["refreshed_sources"],
+            "refresh_errors": summary["refresh_errors"],
+            "cache": self.sitemap_cache.stats,
+            "next_refresh_at": self.next_sitemap_refresh_at,
+        }}, upsert=True)
+        print(f"[sitemaps] URL: {summary['total_unique_urls']}; новых: {summary['new_inventory_urls']}")
+        print(f"[sitemaps] Убрано служебных/дубликатных строк старого inventory: {summary['removed_old_rows']}")
+        print(f"[sitemaps] HTTP карт: {self.sitemap_cache.stats['http_requests']}; "
+              f"из кеша: {self.sitemap_cache.stats['cache_hits']}; 304: {self.sitemap_cache.stats['not_modified']}")
+        if partial:
+            print(f"[sitemaps] Ошибки отдельных источников: {summary['refresh_errors']}")
+        return summary
+
+    def update_frontier(self) -> int:
+        """Discover URLs before importing them; never reset existing queue states."""
+        if self.config.refresh_sitemaps:
+            self.update_inventory()
+        added = self.seed()
+        if self.config.refresh_sitemaps:
+            self.meta.update_one({"_id": "sitemap_refresh"}, {"$set": {"queue_urls_added": added}})
+        return added
 
     def ensure_indexes(self) -> None:
         # claim() sorts by all three fields. A single-field index would still
@@ -348,8 +508,6 @@ class Crawler:
 
     def _retry_delay(self, response, now: int) -> int:
         delay = self.config.retry_seconds
-        if response.status_code not in {429, 503}:
-            return delay
         value = response.headers.get("Retry-After", "").strip()
         try:
             return max(delay, int(value))
@@ -424,10 +582,10 @@ class Crawler:
             return "retry"
 
         now = int(self.now())
-        if response.status_code in {200, 304} and is_listing_url(source, response.url):
-            self._exclude(task, now, "redirect_to_listing", canonicalize_url(response.url))
-            return "excluded"
         if response.status_code == 304:
+            if is_listing_url(source, response.url):
+                self._exclude(task, now, "redirect_to_listing", canonicalize_url(response.url))
+                return "excluded"
             if not raw_matches_previous:
                 self._finish(task, now, state="retry", delay=self.config.retry_seconds,
                              fields={"last_error": "304 без согласованного HTML и разбора"},
@@ -436,24 +594,28 @@ class Crawler:
             self._finish(task, now, state="done", delay=self.config.revisit_seconds,
                          fields={"last_http_status": 304, "last_error": None})
             return "unchanged"
-        if response.status_code in {404, 410}:
+        response_class = _response_class(response.status_code, response.text)
+        if response.status_code in {404, 410} and response_class != "anti_bot_or_challenge":
             self._finish(task, now, state="gone", delay=self.config.revisit_seconds,
                          fields={"last_http_status": response.status_code,
                                  "last_error": f"HTTP {response.status_code}"})
             return "gone"
-        response_class = _response_class(response.status_code, response.text[:100_000])
         content_type = response.headers.get("Content-Type", "").lower()
         if response_class != "valid_content_page" or (
             content_type and "html" not in content_type
         ):
             delay = self._retry_delay(response, now)
-            if response.status_code in {403, 429, 503} or response_class == "anti_bot_or_challenge":
+            if response.status_code in {403, 429} or response.status_code >= 500 or response_class == "anti_bot_or_challenge":
                 self._cooldown_source(source, now + delay)
             self._finish(task, now, state="retry", delay=delay,
                          fields={"last_http_status": response.status_code,
                                  "last_error": response_class if "html" in content_type or not content_type
                                  else f"Не HTML: {content_type}"})
             return "retry"
+
+        if is_listing_url(source, response.url):
+            self._exclude(task, now, "redirect_to_listing", canonicalize_url(response.url))
+            return "excluded"
 
         raw = response.content
         digest = hashlib.sha256(raw).hexdigest()
@@ -501,7 +663,7 @@ class Crawler:
             raise ValueError(f"Неизвестный режим работы робота: {mode}")
         self.prepare()
         if mode == "normal":
-            added = self.seed()
+            added = self.update_frontier()
             print(f"[crawler] Очередь пополнена: {added} URL")
         else:
             print("[crawler] Проверка ранее обработанных URL; инвентарь не импортируется")
@@ -510,6 +672,10 @@ class Crawler:
         processed = 0
         while self.config.max_documents is None or processed < self.config.max_documents:
             now = int(self.now())
+            if (mode == "normal" and self.config.refresh_sitemaps and self.config.run_forever and
+                    self.next_sitemap_refresh_at is not None and now >= self.next_sitemap_refresh_at):
+                print(f"[crawler] Очередь пополнена: {self.update_frontier()} URL")
+                now = int(self.now())
             task = self.claim(now, mode=mode)
             if task is None:
                 if self.config.run_forever:
@@ -517,6 +683,8 @@ class Crawler:
                         (until for until in self.source_cooldowns.values() if until > now),
                         default=now + self.config.poll_seconds,
                     )
+                    if mode == "normal" and self.config.refresh_sitemaps and self.next_sitemap_refresh_at is not None:
+                        next_cooldown = min(next_cooldown, self.next_sitemap_refresh_at)
                     time.sleep(min(self.config.poll_seconds, max(1, next_cooldown - now)))
                     continue
                 break

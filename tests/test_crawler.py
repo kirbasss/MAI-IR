@@ -81,7 +81,8 @@ class CrawlerTests(unittest.TestCase):
         path = Path(self.temp.name) / "crawler.yaml"
         path.write_text(
             "db:\n  uri: mongodb://127.0.0.1:27017\n  name: test\n"
-            "logic:\n  inventory: urls.tsv\n  delay_seconds: 0\n  max_documents: 1\n",
+            "logic:\n  inventory: urls.tsv\n  refresh_sitemaps: false\n"
+            "  delay_seconds: 0\n  max_documents: 1\n",
             encoding="utf-8",
         )
         loaded = load_config(path)

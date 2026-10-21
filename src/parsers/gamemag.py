@@ -54,7 +54,7 @@ def parse_gamemag(html: bytes, url: str) -> ParsedDocument:
     metadata["source_category"] = source_section
     metadata["source_path_section"] = path_section
     media_only = bool(blocks and title and not text and any(
-        block.select_one("img, video, iframe, embed") for block in blocks
+        block.select_one("img, video, iframe, embed, object") for block in blocks
     ))
     if media_only:
         metadata["content_kind"] = "media_only"

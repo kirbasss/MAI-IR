@@ -63,6 +63,41 @@ class InventoryRefreshTests(unittest.TestCase):
         self.assertEqual(summary["new_inventory_urls"], 0)
         self.assertEqual(self.inventory.stat().st_mtime_ns, before)
 
+    def test_removed_catalog_rows_do_not_hide_new_publications(self) -> None:
+        listing = "pcgamer\tpublication\thttps://www.pcgamer.com/author/example/\thttps://www.pcgamer.com/sitemap.xml\n"
+        self.inventory.write_text(HEADER + OLD + listing, encoding="utf-8")
+
+        def discover(**kwargs):
+            directory = kwargs["output_dir"]
+            directory.mkdir()
+            (directory / "url_inventory.tsv").write_text(HEADER + OLD + NEW, encoding="utf-8")
+            return {"sources": {"stopgame": {"urls": 2}}, "errors": []}
+
+        with patch("src.inventory_refresh.discover_sitemaps", side_effect=discover):
+            summary = refresh_inventory(data_dir=self.root, inventory_path=self.inventory, sources=["stopgame"])
+        # Old and new totals are BOTH two: a net-size difference would falsely be zero.
+        self.assertEqual(summary["total_unique_urls"], 2)
+        self.assertEqual(summary["new_inventory_urls"], 1)
+        self.assertEqual(summary["removed_old_rows"], 1)
+        self.assertTrue(summary["inventory_changed"])
+        self.assertEqual(self.inventory.read_text(encoding="utf-8"), HEADER + OLD + NEW)
+
+    def test_filter_only_change_is_published_even_without_new_urls(self) -> None:
+        self.inventory.write_text(HEADER + OLD +
+            "stopgame\tarticle\thttps://stopgame.ru/games/compilation/1\thttps://stopgame.ru/sitemap.xml\n", encoding="utf-8")
+
+        def discover(**kwargs):
+            directory = kwargs["output_dir"]
+            directory.mkdir()
+            (directory / "url_inventory.tsv").write_text(HEADER + OLD, encoding="utf-8")
+            return {"sources": {"stopgame": {"urls": 1}}, "errors": []}
+
+        with patch("src.inventory_refresh.discover_sitemaps", side_effect=discover):
+            summary = refresh_inventory(data_dir=self.root, inventory_path=self.inventory, sources=["stopgame"])
+        self.assertEqual(summary["new_inventory_urls"], 0)
+        self.assertEqual(summary["removed_old_rows"], 1)
+        self.assertEqual(self.inventory.read_text(encoding="utf-8"), HEADER + OLD)
+
     def test_error_preserves_previous_inventory(self) -> None:
         original = self.inventory.read_bytes()
         with patch("src.inventory_refresh.discover_sitemaps", return_value={

@@ -20,7 +20,7 @@ def main(*, mode: RunMode = "normal") -> int:
     parser.add_argument("config", type=Path, help="YAML-конфигурация краулера")
     if mode == "normal":
         parser.add_argument("--seed-only", action="store_true",
-                            help="добавить URL в MongoDB без скачивания страниц")
+                            help="обновить sitemap и очередь без скачивания HTML-публикаций")
     args = parser.parse_args()
     try:
         config = load_config(args.config)
@@ -29,7 +29,7 @@ def main(*, mode: RunMode = "normal") -> int:
             crawler = Crawler(config, client[config.db_name])
             if mode == "normal" and args.seed_only:
                 crawler.ensure_indexes()
-                print(f"[crawler] Очередь пополнена: {crawler.seed()} URL")
+                print(f"[crawler] Очередь пополнена: {crawler.update_frontier()} URL")
             else:
                 crawler.run(mode=mode)
     except KeyboardInterrupt:

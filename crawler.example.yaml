@@ -3,10 +3,19 @@ db:
   name: mai_ir
 
 logic:
-  # Start with the 24 inspected examples. Change to
-  # data/discovery/inventory_all/url_inventory.tsv for the larger inventory.
-  inventory: urls.txt
-  delay_seconds: 2
+  # Created automatically from sitemaps; no manual discover command is needed.
+  # All discovered URLs are queued, but at most 10 tasks are processed per run.
+  inventory: data/discovery/inventory_example/url_inventory.tsv
+  refresh_sitemaps: true
+  sitemap_sources: [stopgame]
+  discovery_data_dir: data
+  sitemap_refresh_interval_seconds: 86400
+  sitemap_cache_ttl_seconds: 3600
+  sitemap_recheck_seconds: 86400
+  global_delay_seconds: 0.5
+  local_delay_seconds: 3
+  source_delays_seconds:
+    stopgame: 5
   revisit_seconds: 2592000
   retry_seconds: 3600
   lease_seconds: 600

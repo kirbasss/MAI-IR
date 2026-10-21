@@ -20,12 +20,12 @@ class CrawlerCliTests(unittest.TestCase):
             patch.object(crawler_cli, "Crawler") as crawler_type,
             redirect_stdout(io.StringIO()),
         ):
-            crawler_type.return_value.seed.return_value = 5
+            crawler_type.return_value.update_frontier.return_value = 5
             result = crawler_cli.main()
 
         self.assertEqual(result, 0)
         crawler_type.return_value.ensure_indexes.assert_called_once_with()
-        crawler_type.return_value.seed.assert_called_once_with()
+        crawler_type.return_value.update_frontier.assert_called_once_with()
         crawler_type.return_value.run.assert_not_called()
 
     def test_revisit_runs_without_seeding(self) -> None:

@@ -3,10 +3,19 @@ db:
   name: mai_ir
 
 logic:
-  # The entire sitemap inventory is seeded into MongoDB at startup.
+  # Refresh sitemaps at startup, union URLs with the saved inventory, then seed MongoDB.
   # max_documents limits requests in this run, not the number of queued URLs.
   inventory: data/discovery/inventory_all/url_inventory.tsv
-  delay_seconds: 3
+  refresh_sitemaps: true
+  sitemap_sources: [stopgame, playground, ixbt_games, igromania, pcgamer, eurogamer, gamemag, gamingonlinux]
+  discovery_data_dir: data
+  sitemap_refresh_interval_seconds: 86400  # Also refresh daily during run_forever.
+  sitemap_cache_ttl_seconds: 3600          # Child maps without lastmod: at most one hour of staleness.
+  sitemap_recheck_seconds: 86400           # Recheck even unchanged lastmod over HTTP at least daily.
+  global_delay_seconds: 0.5              # Between any HTTP requests.
+  local_delay_seconds: 3                 # Default for requests to the same site.
+  source_delays_seconds:
+    stopgame: 5                          # Override for one site; robots Crawl-delay also applies.
   revisit_seconds: 2592000
   retry_seconds: 21600
   lease_seconds: 600

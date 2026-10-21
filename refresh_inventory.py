@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 from pymongo import MongoClient
@@ -13,29 +15,30 @@ import yaml
 
 from src.crawler import Crawler, load_config
 from src.downloader import SOURCE_HOSTS
-from src.inventory_refresh import refresh_inventory
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("config", type=Path, help="YAML с полным inventory и MongoDB")
     parser.add_argument("--sources", nargs="+", choices=sorted(SOURCE_HOSTS),
-                        help="обновить только эти сайты; по умолчанию все восемь")
-    parser.add_argument("--delay", type=float, default=1.0,
-                        help="пауза между запросами sitemap, с")
+                        help="обновить только эти сайты; по умолчанию sitemap_sources из YAML")
+    parser.add_argument("--delay", type=float,
+                        help="переопределить локальную паузу по умолчанию, с")
+    parser.add_argument("--force", action="store_true", help="проверить все карты по сети, игнорируя TTL кеша")
     args = parser.parse_args()
     try:
         config = load_config(args.config)
-        data_dir = Path(__file__).resolve().parent / "data"
+        if args.delay is not None:
+            if not math.isfinite(args.delay) or args.delay < 0:
+                raise ValueError("--delay должен быть конечным неотрицательным числом")
+            config = replace(config, delay_seconds=args.delay)
         with MongoClient(config.db_uri, serverSelectionTimeoutMS=5000) as client:
             client.admin.command("ping")
-            summary = refresh_inventory(
-                data_dir=data_dir, inventory_path=config.inventory,
-                sources=args.sources or list(SOURCE_HOSTS), delay_seconds=args.delay,
-            )
             crawler = Crawler(config, client[config.db_name])
             crawler.ensure_indexes()
+            summary = crawler.update_inventory(sources=args.sources, strict=True, force=args.force)
             added = crawler.seed()
+            crawler.meta.update_one({"_id": "sitemap_refresh"}, {"$set": {"queue_urls_added": added}})
         print(json.dumps({
             "inventory_urls": summary["total_unique_urls"],
             "refreshed_sources": summary["refreshed_sources"],
