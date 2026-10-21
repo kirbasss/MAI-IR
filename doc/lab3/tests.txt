@@ -1,0 +1,35 @@
+test_existing_snapshot_is_preserved (tests.test_corpus_export.CorpusExportTests.test_existing_snapshot_is_preserved) ... ok
+test_failed_export_is_not_published (tests.test_corpus_export.CorpusExportTests.test_failed_export_is_not_published) ... ok
+test_filters_excluded_errors_and_empty_but_keeps_title_only (tests.test_corpus_export.CorpusExportTests.test_filters_excluded_errors_and_empty_but_keeps_title_only) ... ok
+test_reader_rejects_bad_header_and_partial_records (tests.test_corpus_export.CorpusExportTests.test_reader_rejects_bad_header_and_partial_records) ... ok
+test_connectors_are_internal_and_normalized (tests.test_tokenizer.TokenizerCliTests.test_connectors_are_internal_and_normalized) ... ok
+test_corpus_fields_title_only_limit_and_statistics (tests.test_tokenizer.TokenizerCliTests.test_corpus_fields_title_only_limit_and_statistics) ... ok
+test_corrupt_corpus_and_oversized_field (tests.test_tokenizer.TokenizerCliTests.test_corrupt_corpus_and_oversized_field) ... ok
+test_documented_difficult_names (tests.test_tokenizer.TokenizerCliTests.test_documented_difficult_names) ... ok
+test_dotted_acronym_offsets_and_normalized_length (tests.test_tokenizer.TokenizerCliTests.test_dotted_acronym_offsets_and_normalized_length) ... ok
+test_dotted_acronyms_do_not_merge_short_or_ordinary_segments (tests.test_tokenizer.TokenizerCliTests.test_dotted_acronyms_do_not_merge_short_or_ordinary_segments) ... ok
+test_dotted_acronyms_three_or_more_letters (tests.test_tokenizer.TokenizerCliTests.test_dotted_acronyms_three_or_more_letters) ... ok
+test_empty_and_punctuation_only (tests.test_tokenizer.TokenizerCliTests.test_empty_and_punctuation_only) ... ok
+test_invalid_arguments (tests.test_tokenizer.TokenizerCliTests.test_invalid_arguments) ... ok
+test_language_names_boundaries_and_standards (tests.test_tokenizer.TokenizerCliTests.test_language_names_boundaries_and_standards) ... ok
+test_large_multilingual_field (tests.test_tokenizer.TokenizerCliTests.test_large_multilingual_field) ... ok
+test_latin_accents_combining_marks_and_no_nfc (tests.test_tokenizer.TokenizerCliTests.test_latin_accents_combining_marks_and_no_nfc) ... ok
+test_long_dotted_chains_valid_and_rejected (tests.test_tokenizer.TokenizerCliTests.test_long_dotted_chains_valid_and_rejected) ... ok
+test_malformed_utf8_is_rejected (tests.test_tokenizer.TokenizerCliTests.test_malformed_utf8_is_rejected) ... ok
+test_original_utf8_offsets_and_positions (tests.test_tokenizer.TokenizerCliTests.test_original_utf8_offsets_and_positions) ... ok
+test_partial_output_is_not_published_and_existing_file_is_preserved (tests.test_tokenizer.TokenizerCliTests.test_partial_output_is_not_published_and_existing_file_is_preserved) ... ok
+test_punctuation_emoji_nul_bom_and_linebreaks (tests.test_tokenizer.TokenizerCliTests.test_punctuation_emoji_nul_bom_and_linebreaks) ... ok
+test_real_corpus_examples (tests.test_tokenizer.TokenizerCliTests.test_real_corpus_examples) ... ok
+test_ru_en_case_digits_and_yo (tests.test_tokenizer.TokenizerCliTests.test_ru_en_case_digits_and_yo) ... ok
+test_special_token_offsets_and_character_counts (tests.test_tokenizer.TokenizerCliTests.test_special_token_offsets_and_character_counts) ... ok
+test_versions_decimals_and_sentence_punctuation (tests.test_tokenizer.TokenizerCliTests.test_versions_decimals_and_sentence_punctuation) ... ok
+test_byte_offsets_refer_to_original_full_utf8_field (tests.test_lab3_demo.Lab3DemoTests.test_byte_offsets_refer_to_original_full_utf8_field) ... ok
+test_cli_output_is_utf8_and_refuses_overwrite (tests.test_lab3_demo.Lab3DemoTests.test_cli_output_is_utf8_and_refuses_overwrite) ... ok
+test_custom_title_and_missing_fragment (tests.test_lab3_demo.Lab3DemoTests.test_custom_title_and_missing_fragment) ... ok
+test_default_demo_uses_real_metadata_and_native_rules (tests.test_lab3_demo.Lab3DemoTests.test_default_demo_uses_real_metadata_and_native_rules) ... ok
+test_latest_snapshot_ignores_unpublished_directory (tests.test_lab3_demo.Lab3DemoTests.test_latest_snapshot_ignores_unpublished_directory) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 1.253s
+
+OK

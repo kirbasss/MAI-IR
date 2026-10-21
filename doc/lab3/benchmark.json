@@ -1,0 +1,2119 @@
+{
+  "snapshot": {
+    "format": "MAIIR3-v1",
+    "created_at": "2026-10-21T12:59:29.224741+00:00",
+    "export_started_at": "2026-10-21T12:59:26.763113+00:00",
+    "origin": "mongodb:mai_ir.documents",
+    "documents": 12497,
+    "title_only_documents": 121,
+    "skipped_documents": 0,
+    "input_utf8_bytes": 40324695,
+    "corpus_sha256": "8f7f32b1a5c3665f78466f03ba4b32dadaa7d48ced749ad790c067e3b28a1ee1",
+    "sources": {
+      "eurogamer": 1058,
+      "gamemag": 2442,
+      "gamingonlinux": 378,
+      "igromania": 2411,
+      "ixbt_games": 1817,
+      "pcgamer": 1477,
+      "playground": 1290,
+      "stopgame": 1624
+    },
+    "fields": [
+      "title",
+      "text"
+    ]
+  },
+  "rules_version": "gaming-v3",
+  "runs": 5,
+  "kilobyte_bytes": 1000,
+  "warmups_per_sample": 1,
+  "timing": "processing_ms includes scanner and counters; elapsed_ms also includes file reading; measured trials do not write tokens; OS cache is warm; process startup and MongoDB export excluded",
+  "sampling": "every 8th, 4th, 2nd record, then all; records are not duplicated",
+  "environment": {
+    "system": "Windows",
+    "release": "11",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel"
+  },
+  "binary_sha256": "861bdd6fbd0fe200ee2041713476de54f95145200601dcf9eaa5891a458e9ce1",
+  "build": {
+    "compiler": "g++.EXE (Rev7, Built by MSYS2 project) 13.1.0",
+    "flags": [
+      "-std=c++17",
+      "-O3",
+      "-DNDEBUG",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic"
+    ],
+    "binary_sha256": "861bdd6fbd0fe200ee2041713476de54f95145200601dcf9eaa5891a458e9ce1",
+    "sources_sha256": {
+      "tokenizer.cpp": "08ec2b05da5dd4fa6af015a8b366c5c9af56c102a23978059553f41cd8dd5bb9",
+      "tokenizer_main.cpp": "101f825264d9ebc0a48bfebb8024d0cbbf3852e525477fc87fd4e74fd3e0c0c1",
+      "tokenizer.hpp": "433e70df21f8db0972070dd5d70c2e017232c93b9ecd0a22dcd0c40f57d23186"
+    }
+  },
+  "measurements": [
+    {
+      "sample": "1/8",
+      "documents": 1563,
+      "input_utf8_bytes": 5147280,
+      "tokens": 523773,
+      "processing_ms_median": 51.4151,
+      "elapsed_ms_median": 57.7665,
+      "process_wall_ms_median": 68.99970001541078,
+      "elapsed_ms_min": 53.2932,
+      "elapsed_ms_max": 64.7932,
+      "kb_per_second": 89104.93105865856,
+      "ms_per_kb": 0.01122272345782627,
+      "trials": [
+        {
+          "rules_version": "gaming-v3",
+          "documents": 1563,
+          "title_only_documents": 16,
+          "token_output_enabled": false,
+          "processing_ms": 51.3438,
+          "elapsed_ms": 57.7665,
+          "total": {
+            "input_utf8_bytes": 5147280,
+            "tokens": 523773,
+            "token_characters": 2785694,
+            "token_utf8_bytes": 4490157,
+            "mean_token_characters": 5.31851393638
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 5005107,
+              "tokens": 508673,
+              "token_characters": 2702585,
+              "token_utf8_bytes": 4363963,
+              "mean_token_characters": 5.31301051953
+            },
+            "title": {
+              "input_utf8_bytes": 142173,
+              "tokens": 15100,
+              "token_characters": 83109,
+              "token_utf8_bytes": 126194,
+              "mean_token_characters": 5.50390728477
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 342331,
+              "tokens": 58121,
+              "token_characters": 273766,
+              "token_utf8_bytes": 273849,
+              "mean_token_characters": 4.71027683626
+            },
+            "gamemag": {
+              "input_utf8_bytes": 746746,
+              "tokens": 64752,
+              "token_characters": 369081,
+              "token_utf8_bytes": 662247,
+              "mean_token_characters": 5.69991660489
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 83782,
+              "tokens": 14360,
+              "token_characters": 66618,
+              "token_utf8_bytes": 66625,
+              "mean_token_characters": 4.63913649025
+            },
+            "igromania": {
+              "input_utf8_bytes": 1261770,
+              "tokens": 103023,
+              "token_characters": 587771,
+              "token_utf8_bytes": 1125474,
+              "mean_token_characters": 5.70524057735
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 472381,
+              "tokens": 39102,
+              "token_characters": 229853,
+              "token_utf8_bytes": 422789,
+              "mean_token_characters": 5.87829267045
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 649177,
+              "tokens": 111968,
+              "token_characters": 516999,
+              "token_utf8_bytes": 517028,
+              "mean_token_characters": 4.61738175193
+            },
+            "playground": {
+              "input_utf8_bytes": 387636,
+              "tokens": 31257,
+              "token_characters": 184759,
+              "token_utf8_bytes": 348462,
+              "mean_token_characters": 5.91096394408
+            },
+            "stopgame": {
+              "input_utf8_bytes": 1203457,
+              "tokens": 101190,
+              "token_characters": 556847,
+              "token_utf8_bytes": 1073683,
+              "mean_token_characters": 5.50298448463
+            }
+          },
+          "source_documents": {
+            "eurogamer": 132,
+            "gamemag": 306,
+            "gamingonlinux": 47,
+            "igromania": 302,
+            "ixbt_games": 227,
+            "pcgamer": 184,
+            "playground": 162,
+            "stopgame": 203
+          },
+          "process_wall_ms": 68.99970001541078
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 1563,
+          "title_only_documents": 16,
+          "token_output_enabled": false,
+          "processing_ms": 47.5306,
+          "elapsed_ms": 53.2932,
+          "total": {
+            "input_utf8_bytes": 5147280,
+            "tokens": 523773,
+            "token_characters": 2785694,
+            "token_utf8_bytes": 4490157,
+            "mean_token_characters": 5.31851393638
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 5005107,
+              "tokens": 508673,
+              "token_characters": 2702585,
+              "token_utf8_bytes": 4363963,
+              "mean_token_characters": 5.31301051953
+            },
+            "title": {
+              "input_utf8_bytes": 142173,
+              "tokens": 15100,
+              "token_characters": 83109,
+              "token_utf8_bytes": 126194,
+              "mean_token_characters": 5.50390728477
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 342331,
+              "tokens": 58121,
+              "token_characters": 273766,
+              "token_utf8_bytes": 273849,
+              "mean_token_characters": 4.71027683626
+            },
+            "gamemag": {
+              "input_utf8_bytes": 746746,
+              "tokens": 64752,
+              "token_characters": 369081,
+              "token_utf8_bytes": 662247,
+              "mean_token_characters": 5.69991660489
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 83782,
+              "tokens": 14360,
+              "token_characters": 66618,
+              "token_utf8_bytes": 66625,
+              "mean_token_characters": 4.63913649025
+            },
+            "igromania": {
+              "input_utf8_bytes": 1261770,
+              "tokens": 103023,
+              "token_characters": 587771,
+              "token_utf8_bytes": 1125474,
+              "mean_token_characters": 5.70524057735
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 472381,
+              "tokens": 39102,
+              "token_characters": 229853,
+              "token_utf8_bytes": 422789,
+              "mean_token_characters": 5.87829267045
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 649177,
+              "tokens": 111968,
+              "token_characters": 516999,
+              "token_utf8_bytes": 517028,
+              "mean_token_characters": 4.61738175193
+            },
+            "playground": {
+              "input_utf8_bytes": 387636,
+              "tokens": 31257,
+              "token_characters": 184759,
+              "token_utf8_bytes": 348462,
+              "mean_token_characters": 5.91096394408
+            },
+            "stopgame": {
+              "input_utf8_bytes": 1203457,
+              "tokens": 101190,
+              "token_characters": 556847,
+              "token_utf8_bytes": 1073683,
+              "mean_token_characters": 5.50298448463
+            }
+          },
+          "source_documents": {
+            "eurogamer": 132,
+            "gamemag": 306,
+            "gamingonlinux": 47,
+            "igromania": 302,
+            "ixbt_games": 227,
+            "pcgamer": 184,
+            "playground": 162,
+            "stopgame": 203
+          },
+          "process_wall_ms": 63.452100032009184
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 1563,
+          "title_only_documents": 16,
+          "token_output_enabled": false,
+          "processing_ms": 57.5792,
+          "elapsed_ms": 64.7932,
+          "total": {
+            "input_utf8_bytes": 5147280,
+            "tokens": 523773,
+            "token_characters": 2785694,
+            "token_utf8_bytes": 4490157,
+            "mean_token_characters": 5.31851393638
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 5005107,
+              "tokens": 508673,
+              "token_characters": 2702585,
+              "token_utf8_bytes": 4363963,
+              "mean_token_characters": 5.31301051953
+            },
+            "title": {
+              "input_utf8_bytes": 142173,
+              "tokens": 15100,
+              "token_characters": 83109,
+              "token_utf8_bytes": 126194,
+              "mean_token_characters": 5.50390728477
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 342331,
+              "tokens": 58121,
+              "token_characters": 273766,
+              "token_utf8_bytes": 273849,
+              "mean_token_characters": 4.71027683626
+            },
+            "gamemag": {
+              "input_utf8_bytes": 746746,
+              "tokens": 64752,
+              "token_characters": 369081,
+              "token_utf8_bytes": 662247,
+              "mean_token_characters": 5.69991660489
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 83782,
+              "tokens": 14360,
+              "token_characters": 66618,
+              "token_utf8_bytes": 66625,
+              "mean_token_characters": 4.63913649025
+            },
+            "igromania": {
+              "input_utf8_bytes": 1261770,
+              "tokens": 103023,
+              "token_characters": 587771,
+              "token_utf8_bytes": 1125474,
+              "mean_token_characters": 5.70524057735
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 472381,
+              "tokens": 39102,
+              "token_characters": 229853,
+              "token_utf8_bytes": 422789,
+              "mean_token_characters": 5.87829267045
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 649177,
+              "tokens": 111968,
+              "token_characters": 516999,
+              "token_utf8_bytes": 517028,
+              "mean_token_characters": 4.61738175193
+            },
+            "playground": {
+              "input_utf8_bytes": 387636,
+              "tokens": 31257,
+              "token_characters": 184759,
+              "token_utf8_bytes": 348462,
+              "mean_token_characters": 5.91096394408
+            },
+            "stopgame": {
+              "input_utf8_bytes": 1203457,
+              "tokens": 101190,
+              "token_characters": 556847,
+              "token_utf8_bytes": 1073683,
+              "mean_token_characters": 5.50298448463
+            }
+          },
+          "source_documents": {
+            "eurogamer": 132,
+            "gamemag": 306,
+            "gamingonlinux": 47,
+            "igromania": 302,
+            "ixbt_games": 227,
+            "pcgamer": 184,
+            "playground": 162,
+            "stopgame": 203
+          },
+          "process_wall_ms": 78.52729997830465
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 1563,
+          "title_only_documents": 16,
+          "token_output_enabled": false,
+          "processing_ms": 57.6317,
+          "elapsed_ms": 64.486,
+          "total": {
+            "input_utf8_bytes": 5147280,
+            "tokens": 523773,
+            "token_characters": 2785694,
+            "token_utf8_bytes": 4490157,
+            "mean_token_characters": 5.31851393638
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 5005107,
+              "tokens": 508673,
+              "token_characters": 2702585,
+              "token_utf8_bytes": 4363963,
+              "mean_token_characters": 5.31301051953
+            },
+            "title": {
+              "input_utf8_bytes": 142173,
+              "tokens": 15100,
+              "token_characters": 83109,
+              "token_utf8_bytes": 126194,
+              "mean_token_characters": 5.50390728477
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 342331,
+              "tokens": 58121,
+              "token_characters": 273766,
+              "token_utf8_bytes": 273849,
+              "mean_token_characters": 4.71027683626
+            },
+            "gamemag": {
+              "input_utf8_bytes": 746746,
+              "tokens": 64752,
+              "token_characters": 369081,
+              "token_utf8_bytes": 662247,
+              "mean_token_characters": 5.69991660489
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 83782,
+              "tokens": 14360,
+              "token_characters": 66618,
+              "token_utf8_bytes": 66625,
+              "mean_token_characters": 4.63913649025
+            },
+            "igromania": {
+              "input_utf8_bytes": 1261770,
+              "tokens": 103023,
+              "token_characters": 587771,
+              "token_utf8_bytes": 1125474,
+              "mean_token_characters": 5.70524057735
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 472381,
+              "tokens": 39102,
+              "token_characters": 229853,
+              "token_utf8_bytes": 422789,
+              "mean_token_characters": 5.87829267045
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 649177,
+              "tokens": 111968,
+              "token_characters": 516999,
+              "token_utf8_bytes": 517028,
+              "mean_token_characters": 4.61738175193
+            },
+            "playground": {
+              "input_utf8_bytes": 387636,
+              "tokens": 31257,
+              "token_characters": 184759,
+              "token_utf8_bytes": 348462,
+              "mean_token_characters": 5.91096394408
+            },
+            "stopgame": {
+              "input_utf8_bytes": 1203457,
+              "tokens": 101190,
+              "token_characters": 556847,
+              "token_utf8_bytes": 1073683,
+              "mean_token_characters": 5.50298448463
+            }
+          },
+          "source_documents": {
+            "eurogamer": 132,
+            "gamemag": 306,
+            "gamingonlinux": 47,
+            "igromania": 302,
+            "ixbt_games": 227,
+            "pcgamer": 184,
+            "playground": 162,
+            "stopgame": 203
+          },
+          "process_wall_ms": 74.32959997095168
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 1563,
+          "title_only_documents": 16,
+          "token_output_enabled": false,
+          "processing_ms": 51.4151,
+          "elapsed_ms": 57.7535,
+          "total": {
+            "input_utf8_bytes": 5147280,
+            "tokens": 523773,
+            "token_characters": 2785694,
+            "token_utf8_bytes": 4490157,
+            "mean_token_characters": 5.31851393638
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 5005107,
+              "tokens": 508673,
+              "token_characters": 2702585,
+              "token_utf8_bytes": 4363963,
+              "mean_token_characters": 5.31301051953
+            },
+            "title": {
+              "input_utf8_bytes": 142173,
+              "tokens": 15100,
+              "token_characters": 83109,
+              "token_utf8_bytes": 126194,
+              "mean_token_characters": 5.50390728477
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 342331,
+              "tokens": 58121,
+              "token_characters": 273766,
+              "token_utf8_bytes": 273849,
+              "mean_token_characters": 4.71027683626
+            },
+            "gamemag": {
+              "input_utf8_bytes": 746746,
+              "tokens": 64752,
+              "token_characters": 369081,
+              "token_utf8_bytes": 662247,
+              "mean_token_characters": 5.69991660489
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 83782,
+              "tokens": 14360,
+              "token_characters": 66618,
+              "token_utf8_bytes": 66625,
+              "mean_token_characters": 4.63913649025
+            },
+            "igromania": {
+              "input_utf8_bytes": 1261770,
+              "tokens": 103023,
+              "token_characters": 587771,
+              "token_utf8_bytes": 1125474,
+              "mean_token_characters": 5.70524057735
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 472381,
+              "tokens": 39102,
+              "token_characters": 229853,
+              "token_utf8_bytes": 422789,
+              "mean_token_characters": 5.87829267045
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 649177,
+              "tokens": 111968,
+              "token_characters": 516999,
+              "token_utf8_bytes": 517028,
+              "mean_token_characters": 4.61738175193
+            },
+            "playground": {
+              "input_utf8_bytes": 387636,
+              "tokens": 31257,
+              "token_characters": 184759,
+              "token_utf8_bytes": 348462,
+              "mean_token_characters": 5.91096394408
+            },
+            "stopgame": {
+              "input_utf8_bytes": 1203457,
+              "tokens": 101190,
+              "token_characters": 556847,
+              "token_utf8_bytes": 1073683,
+              "mean_token_characters": 5.50298448463
+            }
+          },
+          "source_documents": {
+            "eurogamer": 132,
+            "gamemag": 306,
+            "gamingonlinux": 47,
+            "igromania": 302,
+            "ixbt_games": 227,
+            "pcgamer": 184,
+            "playground": 162,
+            "stopgame": 203
+          },
+          "process_wall_ms": 66.73510000109673
+        }
+      ]
+    },
+    {
+      "sample": "1/4",
+      "documents": 3125,
+      "input_utf8_bytes": 9682721,
+      "tokens": 996549,
+      "processing_ms_median": 100.7959,
+      "elapsed_ms_median": 114.0021,
+      "process_wall_ms_median": 122.64249997679144,
+      "elapsed_ms_min": 103.3026,
+      "elapsed_ms_max": 139.2378,
+      "kb_per_second": 84934.58453835499,
+      "ms_per_kb": 0.011773766898788058,
+      "trials": [
+        {
+          "rules_version": "gaming-v3",
+          "documents": 3125,
+          "title_only_documents": 36,
+          "token_output_enabled": false,
+          "processing_ms": 119.9386,
+          "elapsed_ms": 139.2378,
+          "total": {
+            "input_utf8_bytes": 9682721,
+            "tokens": 996549,
+            "token_characters": 5294339,
+            "token_utf8_bytes": 8433219,
+            "mean_token_characters": 5.31267303464
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 9400136,
+              "tokens": 966341,
+              "token_characters": 5129315,
+              "token_utf8_bytes": 8182710,
+              "mean_token_characters": 5.3079761699
+            },
+            "title": {
+              "input_utf8_bytes": 282585,
+              "tokens": 30208,
+              "token_characters": 165024,
+              "token_utf8_bytes": 250509,
+              "mean_token_characters": 5.46292372881
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 751461,
+              "tokens": 127253,
+              "token_characters": 600098,
+              "token_utf8_bytes": 600394,
+              "mean_token_characters": 4.71578666122
+            },
+            "gamemag": {
+              "input_utf8_bytes": 1450292,
+              "tokens": 124240,
+              "token_characters": 707619,
+              "token_utf8_bytes": 1289092,
+              "mean_token_characters": 5.69558113329
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 177570,
+              "tokens": 30114,
+              "token_characters": 141621,
+              "token_utf8_bytes": 141632,
+              "mean_token_characters": 4.70282924885
+            },
+            "igromania": {
+              "input_utf8_bytes": 2150944,
+              "tokens": 176010,
+              "token_characters": 1008599,
+              "token_utf8_bytes": 1918340,
+              "mean_token_characters": 5.73035054826
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 997279,
+              "tokens": 82082,
+              "token_characters": 482808,
+              "token_utf8_bytes": 893331,
+              "mean_token_characters": 5.88202041861
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 1252141,
+              "tokens": 215356,
+              "token_characters": 997952,
+              "token_utf8_bytes": 998004,
+              "mean_token_characters": 4.63396422668
+            },
+            "playground": {
+              "input_utf8_bytes": 656106,
+              "tokens": 53252,
+              "token_characters": 312851,
+              "token_utf8_bytes": 589759,
+              "mean_token_characters": 5.87491549613
+            },
+            "stopgame": {
+              "input_utf8_bytes": 2246928,
+              "tokens": 188242,
+              "token_characters": 1042791,
+              "token_utf8_bytes": 2002667,
+              "mean_token_characters": 5.53962983819
+            }
+          },
+          "source_documents": {
+            "eurogamer": 265,
+            "gamemag": 611,
+            "gamingonlinux": 94,
+            "igromania": 603,
+            "ixbt_games": 454,
+            "pcgamer": 369,
+            "playground": 323,
+            "stopgame": 406
+          },
+          "process_wall_ms": 149.06770002562553
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 3125,
+          "title_only_documents": 36,
+          "token_output_enabled": false,
+          "processing_ms": 105.1277,
+          "elapsed_ms": 118.7214,
+          "total": {
+            "input_utf8_bytes": 9682721,
+            "tokens": 996549,
+            "token_characters": 5294339,
+            "token_utf8_bytes": 8433219,
+            "mean_token_characters": 5.31267303464
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 9400136,
+              "tokens": 966341,
+              "token_characters": 5129315,
+              "token_utf8_bytes": 8182710,
+              "mean_token_characters": 5.3079761699
+            },
+            "title": {
+              "input_utf8_bytes": 282585,
+              "tokens": 30208,
+              "token_characters": 165024,
+              "token_utf8_bytes": 250509,
+              "mean_token_characters": 5.46292372881
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 751461,
+              "tokens": 127253,
+              "token_characters": 600098,
+              "token_utf8_bytes": 600394,
+              "mean_token_characters": 4.71578666122
+            },
+            "gamemag": {
+              "input_utf8_bytes": 1450292,
+              "tokens": 124240,
+              "token_characters": 707619,
+              "token_utf8_bytes": 1289092,
+              "mean_token_characters": 5.69558113329
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 177570,
+              "tokens": 30114,
+              "token_characters": 141621,
+              "token_utf8_bytes": 141632,
+              "mean_token_characters": 4.70282924885
+            },
+            "igromania": {
+              "input_utf8_bytes": 2150944,
+              "tokens": 176010,
+              "token_characters": 1008599,
+              "token_utf8_bytes": 1918340,
+              "mean_token_characters": 5.73035054826
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 997279,
+              "tokens": 82082,
+              "token_characters": 482808,
+              "token_utf8_bytes": 893331,
+              "mean_token_characters": 5.88202041861
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 1252141,
+              "tokens": 215356,
+              "token_characters": 997952,
+              "token_utf8_bytes": 998004,
+              "mean_token_characters": 4.63396422668
+            },
+            "playground": {
+              "input_utf8_bytes": 656106,
+              "tokens": 53252,
+              "token_characters": 312851,
+              "token_utf8_bytes": 589759,
+              "mean_token_characters": 5.87491549613
+            },
+            "stopgame": {
+              "input_utf8_bytes": 2246928,
+              "tokens": 188242,
+              "token_characters": 1042791,
+              "token_utf8_bytes": 2002667,
+              "mean_token_characters": 5.53962983819
+            }
+          },
+          "source_documents": {
+            "eurogamer": 265,
+            "gamemag": 611,
+            "gamingonlinux": 94,
+            "igromania": 603,
+            "ixbt_games": 454,
+            "pcgamer": 369,
+            "playground": 323,
+            "stopgame": 406
+          },
+          "process_wall_ms": 127.55730003118515
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 3125,
+          "title_only_documents": 36,
+          "token_output_enabled": false,
+          "processing_ms": 100.7959,
+          "elapsed_ms": 114.0021,
+          "total": {
+            "input_utf8_bytes": 9682721,
+            "tokens": 996549,
+            "token_characters": 5294339,
+            "token_utf8_bytes": 8433219,
+            "mean_token_characters": 5.31267303464
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 9400136,
+              "tokens": 966341,
+              "token_characters": 5129315,
+              "token_utf8_bytes": 8182710,
+              "mean_token_characters": 5.3079761699
+            },
+            "title": {
+              "input_utf8_bytes": 282585,
+              "tokens": 30208,
+              "token_characters": 165024,
+              "token_utf8_bytes": 250509,
+              "mean_token_characters": 5.46292372881
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 751461,
+              "tokens": 127253,
+              "token_characters": 600098,
+              "token_utf8_bytes": 600394,
+              "mean_token_characters": 4.71578666122
+            },
+            "gamemag": {
+              "input_utf8_bytes": 1450292,
+              "tokens": 124240,
+              "token_characters": 707619,
+              "token_utf8_bytes": 1289092,
+              "mean_token_characters": 5.69558113329
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 177570,
+              "tokens": 30114,
+              "token_characters": 141621,
+              "token_utf8_bytes": 141632,
+              "mean_token_characters": 4.70282924885
+            },
+            "igromania": {
+              "input_utf8_bytes": 2150944,
+              "tokens": 176010,
+              "token_characters": 1008599,
+              "token_utf8_bytes": 1918340,
+              "mean_token_characters": 5.73035054826
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 997279,
+              "tokens": 82082,
+              "token_characters": 482808,
+              "token_utf8_bytes": 893331,
+              "mean_token_characters": 5.88202041861
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 1252141,
+              "tokens": 215356,
+              "token_characters": 997952,
+              "token_utf8_bytes": 998004,
+              "mean_token_characters": 4.63396422668
+            },
+            "playground": {
+              "input_utf8_bytes": 656106,
+              "tokens": 53252,
+              "token_characters": 312851,
+              "token_utf8_bytes": 589759,
+              "mean_token_characters": 5.87491549613
+            },
+            "stopgame": {
+              "input_utf8_bytes": 2246928,
+              "tokens": 188242,
+              "token_characters": 1042791,
+              "token_utf8_bytes": 2002667,
+              "mean_token_characters": 5.53962983819
+            }
+          },
+          "source_documents": {
+            "eurogamer": 265,
+            "gamemag": 611,
+            "gamingonlinux": 94,
+            "igromania": 603,
+            "ixbt_games": 454,
+            "pcgamer": 369,
+            "playground": 323,
+            "stopgame": 406
+          },
+          "process_wall_ms": 122.64249997679144
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 3125,
+          "title_only_documents": 36,
+          "token_output_enabled": false,
+          "processing_ms": 95.2576,
+          "elapsed_ms": 106.274,
+          "total": {
+            "input_utf8_bytes": 9682721,
+            "tokens": 996549,
+            "token_characters": 5294339,
+            "token_utf8_bytes": 8433219,
+            "mean_token_characters": 5.31267303464
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 9400136,
+              "tokens": 966341,
+              "token_characters": 5129315,
+              "token_utf8_bytes": 8182710,
+              "mean_token_characters": 5.3079761699
+            },
+            "title": {
+              "input_utf8_bytes": 282585,
+              "tokens": 30208,
+              "token_characters": 165024,
+              "token_utf8_bytes": 250509,
+              "mean_token_characters": 5.46292372881
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 751461,
+              "tokens": 127253,
+              "token_characters": 600098,
+              "token_utf8_bytes": 600394,
+              "mean_token_characters": 4.71578666122
+            },
+            "gamemag": {
+              "input_utf8_bytes": 1450292,
+              "tokens": 124240,
+              "token_characters": 707619,
+              "token_utf8_bytes": 1289092,
+              "mean_token_characters": 5.69558113329
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 177570,
+              "tokens": 30114,
+              "token_characters": 141621,
+              "token_utf8_bytes": 141632,
+              "mean_token_characters": 4.70282924885
+            },
+            "igromania": {
+              "input_utf8_bytes": 2150944,
+              "tokens": 176010,
+              "token_characters": 1008599,
+              "token_utf8_bytes": 1918340,
+              "mean_token_characters": 5.73035054826
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 997279,
+              "tokens": 82082,
+              "token_characters": 482808,
+              "token_utf8_bytes": 893331,
+              "mean_token_characters": 5.88202041861
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 1252141,
+              "tokens": 215356,
+              "token_characters": 997952,
+              "token_utf8_bytes": 998004,
+              "mean_token_characters": 4.63396422668
+            },
+            "playground": {
+              "input_utf8_bytes": 656106,
+              "tokens": 53252,
+              "token_characters": 312851,
+              "token_utf8_bytes": 589759,
+              "mean_token_characters": 5.87491549613
+            },
+            "stopgame": {
+              "input_utf8_bytes": 2246928,
+              "tokens": 188242,
+              "token_characters": 1042791,
+              "token_utf8_bytes": 2002667,
+              "mean_token_characters": 5.53962983819
+            }
+          },
+          "source_documents": {
+            "eurogamer": 265,
+            "gamemag": 611,
+            "gamingonlinux": 94,
+            "igromania": 603,
+            "ixbt_games": 454,
+            "pcgamer": 369,
+            "playground": 323,
+            "stopgame": 406
+          },
+          "process_wall_ms": 114.69050002051517
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 3125,
+          "title_only_documents": 36,
+          "token_output_enabled": false,
+          "processing_ms": 92.0644,
+          "elapsed_ms": 103.3026,
+          "total": {
+            "input_utf8_bytes": 9682721,
+            "tokens": 996549,
+            "token_characters": 5294339,
+            "token_utf8_bytes": 8433219,
+            "mean_token_characters": 5.31267303464
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 9400136,
+              "tokens": 966341,
+              "token_characters": 5129315,
+              "token_utf8_bytes": 8182710,
+              "mean_token_characters": 5.3079761699
+            },
+            "title": {
+              "input_utf8_bytes": 282585,
+              "tokens": 30208,
+              "token_characters": 165024,
+              "token_utf8_bytes": 250509,
+              "mean_token_characters": 5.46292372881
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 751461,
+              "tokens": 127253,
+              "token_characters": 600098,
+              "token_utf8_bytes": 600394,
+              "mean_token_characters": 4.71578666122
+            },
+            "gamemag": {
+              "input_utf8_bytes": 1450292,
+              "tokens": 124240,
+              "token_characters": 707619,
+              "token_utf8_bytes": 1289092,
+              "mean_token_characters": 5.69558113329
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 177570,
+              "tokens": 30114,
+              "token_characters": 141621,
+              "token_utf8_bytes": 141632,
+              "mean_token_characters": 4.70282924885
+            },
+            "igromania": {
+              "input_utf8_bytes": 2150944,
+              "tokens": 176010,
+              "token_characters": 1008599,
+              "token_utf8_bytes": 1918340,
+              "mean_token_characters": 5.73035054826
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 997279,
+              "tokens": 82082,
+              "token_characters": 482808,
+              "token_utf8_bytes": 893331,
+              "mean_token_characters": 5.88202041861
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 1252141,
+              "tokens": 215356,
+              "token_characters": 997952,
+              "token_utf8_bytes": 998004,
+              "mean_token_characters": 4.63396422668
+            },
+            "playground": {
+              "input_utf8_bytes": 656106,
+              "tokens": 53252,
+              "token_characters": 312851,
+              "token_utf8_bytes": 589759,
+              "mean_token_characters": 5.87491549613
+            },
+            "stopgame": {
+              "input_utf8_bytes": 2246928,
+              "tokens": 188242,
+              "token_characters": 1042791,
+              "token_utf8_bytes": 2002667,
+              "mean_token_characters": 5.53962983819
+            }
+          },
+          "source_documents": {
+            "eurogamer": 265,
+            "gamemag": 611,
+            "gamingonlinux": 94,
+            "igromania": 603,
+            "ixbt_games": 454,
+            "pcgamer": 369,
+            "playground": 323,
+            "stopgame": 406
+          },
+          "process_wall_ms": 112.22680000355467
+        }
+      ]
+    },
+    {
+      "sample": "1/2",
+      "documents": 6249,
+      "input_utf8_bytes": 19961699,
+      "tokens": 2053307,
+      "processing_ms_median": 199.9602,
+      "elapsed_ms_median": 224.2376,
+      "process_wall_ms_median": 233.01040002843365,
+      "elapsed_ms_min": 213.6685,
+      "elapsed_ms_max": 289.5111,
+      "kb_per_second": 89020.3025719148,
+      "ms_per_kb": 0.011233392508323062,
+      "trials": [
+        {
+          "rules_version": "gaming-v3",
+          "documents": 6249,
+          "title_only_documents": 68,
+          "token_output_enabled": false,
+          "processing_ms": 191.7212,
+          "elapsed_ms": 213.6685,
+          "total": {
+            "input_utf8_bytes": 19961699,
+            "tokens": 2053307,
+            "token_characters": 10904513,
+            "token_utf8_bytes": 17376450,
+            "mean_token_characters": 5.31070755615
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 19393917,
+              "tokens": 1992627,
+              "token_characters": 10573060,
+              "token_utf8_bytes": 16873185,
+              "mean_token_characters": 5.30609090412
+            },
+            "title": {
+              "input_utf8_bytes": 567782,
+              "tokens": 60680,
+              "token_characters": 331453,
+              "token_utf8_bytes": 503265,
+              "mean_token_characters": 5.46231048121
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 1564896,
+              "tokens": 265967,
+              "token_characters": 1247615,
+              "token_utf8_bytes": 1248081,
+              "mean_token_characters": 4.69086390417
+            },
+            "gamemag": {
+              "input_utf8_bytes": 2909479,
+              "tokens": 249216,
+              "token_characters": 1421063,
+              "token_utf8_bytes": 2584680,
+              "mean_token_characters": 5.70213389188
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 346975,
+              "tokens": 58502,
+              "token_characters": 276873,
+              "token_utf8_bytes": 276886,
+              "mean_token_characters": 4.73270999282
+            },
+            "igromania": {
+              "input_utf8_bytes": 4555836,
+              "tokens": 370913,
+              "token_characters": 2130320,
+              "token_utf8_bytes": 4063831,
+              "mean_token_characters": 5.74344927247
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 2046912,
+              "tokens": 169414,
+              "token_characters": 995989,
+              "token_utf8_bytes": 1829910,
+              "mean_token_characters": 5.87902416565
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 2572020,
+              "tokens": 442206,
+              "token_characters": 2049121,
+              "token_utf8_bytes": 2049208,
+              "mean_token_characters": 4.63386068936
+            },
+            "playground": {
+              "input_utf8_bytes": 1308002,
+              "tokens": 106528,
+              "token_characters": 625097,
+              "token_utf8_bytes": 1175844,
+              "mean_token_characters": 5.86791266146
+            },
+            "stopgame": {
+              "input_utf8_bytes": 4657579,
+              "tokens": 390561,
+              "token_characters": 2158435,
+              "token_utf8_bytes": 4148010,
+              "mean_token_characters": 5.52649906161
+            }
+          },
+          "source_documents": {
+            "eurogamer": 529,
+            "gamemag": 1221,
+            "gamingonlinux": 189,
+            "igromania": 1205,
+            "ixbt_games": 909,
+            "pcgamer": 739,
+            "playground": 645,
+            "stopgame": 812
+          },
+          "process_wall_ms": 221.7223000479862
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 6249,
+          "title_only_documents": 68,
+          "token_output_enabled": false,
+          "processing_ms": 254.8096,
+          "elapsed_ms": 289.5111,
+          "total": {
+            "input_utf8_bytes": 19961699,
+            "tokens": 2053307,
+            "token_characters": 10904513,
+            "token_utf8_bytes": 17376450,
+            "mean_token_characters": 5.31070755615
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 19393917,
+              "tokens": 1992627,
+              "token_characters": 10573060,
+              "token_utf8_bytes": 16873185,
+              "mean_token_characters": 5.30609090412
+            },
+            "title": {
+              "input_utf8_bytes": 567782,
+              "tokens": 60680,
+              "token_characters": 331453,
+              "token_utf8_bytes": 503265,
+              "mean_token_characters": 5.46231048121
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 1564896,
+              "tokens": 265967,
+              "token_characters": 1247615,
+              "token_utf8_bytes": 1248081,
+              "mean_token_characters": 4.69086390417
+            },
+            "gamemag": {
+              "input_utf8_bytes": 2909479,
+              "tokens": 249216,
+              "token_characters": 1421063,
+              "token_utf8_bytes": 2584680,
+              "mean_token_characters": 5.70213389188
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 346975,
+              "tokens": 58502,
+              "token_characters": 276873,
+              "token_utf8_bytes": 276886,
+              "mean_token_characters": 4.73270999282
+            },
+            "igromania": {
+              "input_utf8_bytes": 4555836,
+              "tokens": 370913,
+              "token_characters": 2130320,
+              "token_utf8_bytes": 4063831,
+              "mean_token_characters": 5.74344927247
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 2046912,
+              "tokens": 169414,
+              "token_characters": 995989,
+              "token_utf8_bytes": 1829910,
+              "mean_token_characters": 5.87902416565
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 2572020,
+              "tokens": 442206,
+              "token_characters": 2049121,
+              "token_utf8_bytes": 2049208,
+              "mean_token_characters": 4.63386068936
+            },
+            "playground": {
+              "input_utf8_bytes": 1308002,
+              "tokens": 106528,
+              "token_characters": 625097,
+              "token_utf8_bytes": 1175844,
+              "mean_token_characters": 5.86791266146
+            },
+            "stopgame": {
+              "input_utf8_bytes": 4657579,
+              "tokens": 390561,
+              "token_characters": 2158435,
+              "token_utf8_bytes": 4148010,
+              "mean_token_characters": 5.52649906161
+            }
+          },
+          "source_documents": {
+            "eurogamer": 529,
+            "gamemag": 1221,
+            "gamingonlinux": 189,
+            "igromania": 1205,
+            "ixbt_games": 909,
+            "pcgamer": 739,
+            "playground": 645,
+            "stopgame": 812
+          },
+          "process_wall_ms": 297.9983999975957
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 6249,
+          "title_only_documents": 68,
+          "token_output_enabled": false,
+          "processing_ms": 199.9602,
+          "elapsed_ms": 224.2376,
+          "total": {
+            "input_utf8_bytes": 19961699,
+            "tokens": 2053307,
+            "token_characters": 10904513,
+            "token_utf8_bytes": 17376450,
+            "mean_token_characters": 5.31070755615
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 19393917,
+              "tokens": 1992627,
+              "token_characters": 10573060,
+              "token_utf8_bytes": 16873185,
+              "mean_token_characters": 5.30609090412
+            },
+            "title": {
+              "input_utf8_bytes": 567782,
+              "tokens": 60680,
+              "token_characters": 331453,
+              "token_utf8_bytes": 503265,
+              "mean_token_characters": 5.46231048121
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 1564896,
+              "tokens": 265967,
+              "token_characters": 1247615,
+              "token_utf8_bytes": 1248081,
+              "mean_token_characters": 4.69086390417
+            },
+            "gamemag": {
+              "input_utf8_bytes": 2909479,
+              "tokens": 249216,
+              "token_characters": 1421063,
+              "token_utf8_bytes": 2584680,
+              "mean_token_characters": 5.70213389188
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 346975,
+              "tokens": 58502,
+              "token_characters": 276873,
+              "token_utf8_bytes": 276886,
+              "mean_token_characters": 4.73270999282
+            },
+            "igromania": {
+              "input_utf8_bytes": 4555836,
+              "tokens": 370913,
+              "token_characters": 2130320,
+              "token_utf8_bytes": 4063831,
+              "mean_token_characters": 5.74344927247
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 2046912,
+              "tokens": 169414,
+              "token_characters": 995989,
+              "token_utf8_bytes": 1829910,
+              "mean_token_characters": 5.87902416565
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 2572020,
+              "tokens": 442206,
+              "token_characters": 2049121,
+              "token_utf8_bytes": 2049208,
+              "mean_token_characters": 4.63386068936
+            },
+            "playground": {
+              "input_utf8_bytes": 1308002,
+              "tokens": 106528,
+              "token_characters": 625097,
+              "token_utf8_bytes": 1175844,
+              "mean_token_characters": 5.86791266146
+            },
+            "stopgame": {
+              "input_utf8_bytes": 4657579,
+              "tokens": 390561,
+              "token_characters": 2158435,
+              "token_utf8_bytes": 4148010,
+              "mean_token_characters": 5.52649906161
+            }
+          },
+          "source_documents": {
+            "eurogamer": 529,
+            "gamemag": 1221,
+            "gamingonlinux": 189,
+            "igromania": 1205,
+            "ixbt_games": 909,
+            "pcgamer": 739,
+            "playground": 645,
+            "stopgame": 812
+          },
+          "process_wall_ms": 233.01040002843365
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 6249,
+          "title_only_documents": 68,
+          "token_output_enabled": false,
+          "processing_ms": 217.1301,
+          "elapsed_ms": 244.7668,
+          "total": {
+            "input_utf8_bytes": 19961699,
+            "tokens": 2053307,
+            "token_characters": 10904513,
+            "token_utf8_bytes": 17376450,
+            "mean_token_characters": 5.31070755615
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 19393917,
+              "tokens": 1992627,
+              "token_characters": 10573060,
+              "token_utf8_bytes": 16873185,
+              "mean_token_characters": 5.30609090412
+            },
+            "title": {
+              "input_utf8_bytes": 567782,
+              "tokens": 60680,
+              "token_characters": 331453,
+              "token_utf8_bytes": 503265,
+              "mean_token_characters": 5.46231048121
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 1564896,
+              "tokens": 265967,
+              "token_characters": 1247615,
+              "token_utf8_bytes": 1248081,
+              "mean_token_characters": 4.69086390417
+            },
+            "gamemag": {
+              "input_utf8_bytes": 2909479,
+              "tokens": 249216,
+              "token_characters": 1421063,
+              "token_utf8_bytes": 2584680,
+              "mean_token_characters": 5.70213389188
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 346975,
+              "tokens": 58502,
+              "token_characters": 276873,
+              "token_utf8_bytes": 276886,
+              "mean_token_characters": 4.73270999282
+            },
+            "igromania": {
+              "input_utf8_bytes": 4555836,
+              "tokens": 370913,
+              "token_characters": 2130320,
+              "token_utf8_bytes": 4063831,
+              "mean_token_characters": 5.74344927247
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 2046912,
+              "tokens": 169414,
+              "token_characters": 995989,
+              "token_utf8_bytes": 1829910,
+              "mean_token_characters": 5.87902416565
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 2572020,
+              "tokens": 442206,
+              "token_characters": 2049121,
+              "token_utf8_bytes": 2049208,
+              "mean_token_characters": 4.63386068936
+            },
+            "playground": {
+              "input_utf8_bytes": 1308002,
+              "tokens": 106528,
+              "token_characters": 625097,
+              "token_utf8_bytes": 1175844,
+              "mean_token_characters": 5.86791266146
+            },
+            "stopgame": {
+              "input_utf8_bytes": 4657579,
+              "tokens": 390561,
+              "token_characters": 2158435,
+              "token_utf8_bytes": 4148010,
+              "mean_token_characters": 5.52649906161
+            }
+          },
+          "source_documents": {
+            "eurogamer": 529,
+            "gamemag": 1221,
+            "gamingonlinux": 189,
+            "igromania": 1205,
+            "ixbt_games": 909,
+            "pcgamer": 739,
+            "playground": 645,
+            "stopgame": 812
+          },
+          "process_wall_ms": 254.70749998930842
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 6249,
+          "title_only_documents": 68,
+          "token_output_enabled": false,
+          "processing_ms": 195.2349,
+          "elapsed_ms": 217.0264,
+          "total": {
+            "input_utf8_bytes": 19961699,
+            "tokens": 2053307,
+            "token_characters": 10904513,
+            "token_utf8_bytes": 17376450,
+            "mean_token_characters": 5.31070755615
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 19393917,
+              "tokens": 1992627,
+              "token_characters": 10573060,
+              "token_utf8_bytes": 16873185,
+              "mean_token_characters": 5.30609090412
+            },
+            "title": {
+              "input_utf8_bytes": 567782,
+              "tokens": 60680,
+              "token_characters": 331453,
+              "token_utf8_bytes": 503265,
+              "mean_token_characters": 5.46231048121
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 1564896,
+              "tokens": 265967,
+              "token_characters": 1247615,
+              "token_utf8_bytes": 1248081,
+              "mean_token_characters": 4.69086390417
+            },
+            "gamemag": {
+              "input_utf8_bytes": 2909479,
+              "tokens": 249216,
+              "token_characters": 1421063,
+              "token_utf8_bytes": 2584680,
+              "mean_token_characters": 5.70213389188
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 346975,
+              "tokens": 58502,
+              "token_characters": 276873,
+              "token_utf8_bytes": 276886,
+              "mean_token_characters": 4.73270999282
+            },
+            "igromania": {
+              "input_utf8_bytes": 4555836,
+              "tokens": 370913,
+              "token_characters": 2130320,
+              "token_utf8_bytes": 4063831,
+              "mean_token_characters": 5.74344927247
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 2046912,
+              "tokens": 169414,
+              "token_characters": 995989,
+              "token_utf8_bytes": 1829910,
+              "mean_token_characters": 5.87902416565
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 2572020,
+              "tokens": 442206,
+              "token_characters": 2049121,
+              "token_utf8_bytes": 2049208,
+              "mean_token_characters": 4.63386068936
+            },
+            "playground": {
+              "input_utf8_bytes": 1308002,
+              "tokens": 106528,
+              "token_characters": 625097,
+              "token_utf8_bytes": 1175844,
+              "mean_token_characters": 5.86791266146
+            },
+            "stopgame": {
+              "input_utf8_bytes": 4657579,
+              "tokens": 390561,
+              "token_characters": 2158435,
+              "token_utf8_bytes": 4148010,
+              "mean_token_characters": 5.52649906161
+            }
+          },
+          "source_documents": {
+            "eurogamer": 529,
+            "gamemag": 1221,
+            "gamingonlinux": 189,
+            "igromania": 1205,
+            "ixbt_games": 909,
+            "pcgamer": 739,
+            "playground": 645,
+            "stopgame": 812
+          },
+          "process_wall_ms": 227.0344999851659
+        }
+      ]
+    },
+    {
+      "sample": "all",
+      "documents": 12497,
+      "input_utf8_bytes": 40324695,
+      "tokens": 4140679,
+      "processing_ms_median": 389.6377,
+      "elapsed_ms_median": 431.5446,
+      "process_wall_ms_median": 441.1882999702357,
+      "elapsed_ms_min": 425.1847,
+      "elapsed_ms_max": 449.7985,
+      "kb_per_second": 93442.70557434851,
+      "ms_per_kb": 0.010701744923303202,
+      "trials": [
+        {
+          "rules_version": "gaming-v3",
+          "documents": 12497,
+          "title_only_documents": 121,
+          "token_output_enabled": false,
+          "processing_ms": 402.188,
+          "elapsed_ms": 449.7985,
+          "total": {
+            "input_utf8_bytes": 40324695,
+            "tokens": 4140679,
+            "token_characters": 21980749,
+            "token_utf8_bytes": 35106283,
+            "mean_token_characters": 5.30848901835
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 39189113,
+              "tokens": 4019175,
+              "token_characters": 21318210,
+              "token_utf8_bytes": 34100259,
+              "mean_token_characters": 5.30412584672
+            },
+            "title": {
+              "input_utf8_bytes": 1135582,
+              "tokens": 121504,
+              "token_characters": 662539,
+              "token_utf8_bytes": 1006024,
+              "mean_token_characters": 5.45281636819
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 3061413,
+              "tokens": 521285,
+              "token_characters": 2440637,
+              "token_utf8_bytes": 2441477,
+              "mean_token_characters": 4.68196284182
+            },
+            "gamemag": {
+              "input_utf8_bytes": 5634770,
+              "tokens": 482025,
+              "token_characters": 2747343,
+              "token_utf8_bytes": 5006475,
+              "mean_token_characters": 5.69958612105
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 721238,
+              "tokens": 121603,
+              "token_characters": 575649,
+              "token_utf8_bytes": 575673,
+              "mean_token_characters": 4.73383880332
+            },
+            "igromania": {
+              "input_utf8_bytes": 8934192,
+              "tokens": 731247,
+              "token_characters": 4192744,
+              "token_utf8_bytes": 7967012,
+              "mean_token_characters": 5.73369053138
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 4092929,
+              "tokens": 338056,
+              "token_characters": 1987842,
+              "token_utf8_bytes": 3660201,
+              "mean_token_characters": 5.88021511229
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 5161723,
+              "tokens": 888458,
+              "token_characters": 4108950,
+              "token_utf8_bytes": 4109118,
+              "mean_token_characters": 4.62481062695
+            },
+            "playground": {
+              "input_utf8_bytes": 2640804,
+              "tokens": 215523,
+              "token_characters": 1262505,
+              "token_utf8_bytes": 2373444,
+              "mean_token_characters": 5.8578666778
+            },
+            "stopgame": {
+              "input_utf8_bytes": 10077626,
+              "tokens": 842482,
+              "token_characters": 4665079,
+              "token_utf8_bytes": 8972883,
+              "mean_token_characters": 5.5373040611
+            }
+          },
+          "source_documents": {
+            "eurogamer": 1058,
+            "gamemag": 2442,
+            "gamingonlinux": 378,
+            "igromania": 2411,
+            "ixbt_games": 1817,
+            "pcgamer": 1477,
+            "playground": 1290,
+            "stopgame": 1624
+          },
+          "process_wall_ms": 458.349900029134
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 12497,
+          "title_only_documents": 121,
+          "token_output_enabled": false,
+          "processing_ms": 389.6377,
+          "elapsed_ms": 431.5446,
+          "total": {
+            "input_utf8_bytes": 40324695,
+            "tokens": 4140679,
+            "token_characters": 21980749,
+            "token_utf8_bytes": 35106283,
+            "mean_token_characters": 5.30848901835
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 39189113,
+              "tokens": 4019175,
+              "token_characters": 21318210,
+              "token_utf8_bytes": 34100259,
+              "mean_token_characters": 5.30412584672
+            },
+            "title": {
+              "input_utf8_bytes": 1135582,
+              "tokens": 121504,
+              "token_characters": 662539,
+              "token_utf8_bytes": 1006024,
+              "mean_token_characters": 5.45281636819
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 3061413,
+              "tokens": 521285,
+              "token_characters": 2440637,
+              "token_utf8_bytes": 2441477,
+              "mean_token_characters": 4.68196284182
+            },
+            "gamemag": {
+              "input_utf8_bytes": 5634770,
+              "tokens": 482025,
+              "token_characters": 2747343,
+              "token_utf8_bytes": 5006475,
+              "mean_token_characters": 5.69958612105
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 721238,
+              "tokens": 121603,
+              "token_characters": 575649,
+              "token_utf8_bytes": 575673,
+              "mean_token_characters": 4.73383880332
+            },
+            "igromania": {
+              "input_utf8_bytes": 8934192,
+              "tokens": 731247,
+              "token_characters": 4192744,
+              "token_utf8_bytes": 7967012,
+              "mean_token_characters": 5.73369053138
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 4092929,
+              "tokens": 338056,
+              "token_characters": 1987842,
+              "token_utf8_bytes": 3660201,
+              "mean_token_characters": 5.88021511229
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 5161723,
+              "tokens": 888458,
+              "token_characters": 4108950,
+              "token_utf8_bytes": 4109118,
+              "mean_token_characters": 4.62481062695
+            },
+            "playground": {
+              "input_utf8_bytes": 2640804,
+              "tokens": 215523,
+              "token_characters": 1262505,
+              "token_utf8_bytes": 2373444,
+              "mean_token_characters": 5.8578666778
+            },
+            "stopgame": {
+              "input_utf8_bytes": 10077626,
+              "tokens": 842482,
+              "token_characters": 4665079,
+              "token_utf8_bytes": 8972883,
+              "mean_token_characters": 5.5373040611
+            }
+          },
+          "source_documents": {
+            "eurogamer": 1058,
+            "gamemag": 2442,
+            "gamingonlinux": 378,
+            "igromania": 2411,
+            "ixbt_games": 1817,
+            "pcgamer": 1477,
+            "playground": 1290,
+            "stopgame": 1624
+          },
+          "process_wall_ms": 441.0869999555871
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 12497,
+          "title_only_documents": 121,
+          "token_output_enabled": false,
+          "processing_ms": 385.3561,
+          "elapsed_ms": 425.1847,
+          "total": {
+            "input_utf8_bytes": 40324695,
+            "tokens": 4140679,
+            "token_characters": 21980749,
+            "token_utf8_bytes": 35106283,
+            "mean_token_characters": 5.30848901835
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 39189113,
+              "tokens": 4019175,
+              "token_characters": 21318210,
+              "token_utf8_bytes": 34100259,
+              "mean_token_characters": 5.30412584672
+            },
+            "title": {
+              "input_utf8_bytes": 1135582,
+              "tokens": 121504,
+              "token_characters": 662539,
+              "token_utf8_bytes": 1006024,
+              "mean_token_characters": 5.45281636819
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 3061413,
+              "tokens": 521285,
+              "token_characters": 2440637,
+              "token_utf8_bytes": 2441477,
+              "mean_token_characters": 4.68196284182
+            },
+            "gamemag": {
+              "input_utf8_bytes": 5634770,
+              "tokens": 482025,
+              "token_characters": 2747343,
+              "token_utf8_bytes": 5006475,
+              "mean_token_characters": 5.69958612105
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 721238,
+              "tokens": 121603,
+              "token_characters": 575649,
+              "token_utf8_bytes": 575673,
+              "mean_token_characters": 4.73383880332
+            },
+            "igromania": {
+              "input_utf8_bytes": 8934192,
+              "tokens": 731247,
+              "token_characters": 4192744,
+              "token_utf8_bytes": 7967012,
+              "mean_token_characters": 5.73369053138
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 4092929,
+              "tokens": 338056,
+              "token_characters": 1987842,
+              "token_utf8_bytes": 3660201,
+              "mean_token_characters": 5.88021511229
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 5161723,
+              "tokens": 888458,
+              "token_characters": 4108950,
+              "token_utf8_bytes": 4109118,
+              "mean_token_characters": 4.62481062695
+            },
+            "playground": {
+              "input_utf8_bytes": 2640804,
+              "tokens": 215523,
+              "token_characters": 1262505,
+              "token_utf8_bytes": 2373444,
+              "mean_token_characters": 5.8578666778
+            },
+            "stopgame": {
+              "input_utf8_bytes": 10077626,
+              "tokens": 842482,
+              "token_characters": 4665079,
+              "token_utf8_bytes": 8972883,
+              "mean_token_characters": 5.5373040611
+            }
+          },
+          "source_documents": {
+            "eurogamer": 1058,
+            "gamemag": 2442,
+            "gamingonlinux": 378,
+            "igromania": 2411,
+            "ixbt_games": 1817,
+            "pcgamer": 1477,
+            "playground": 1290,
+            "stopgame": 1624
+          },
+          "process_wall_ms": 434.0821000514552
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 12497,
+          "title_only_documents": 121,
+          "token_output_enabled": false,
+          "processing_ms": 389.0229,
+          "elapsed_ms": 431.3667,
+          "total": {
+            "input_utf8_bytes": 40324695,
+            "tokens": 4140679,
+            "token_characters": 21980749,
+            "token_utf8_bytes": 35106283,
+            "mean_token_characters": 5.30848901835
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 39189113,
+              "tokens": 4019175,
+              "token_characters": 21318210,
+              "token_utf8_bytes": 34100259,
+              "mean_token_characters": 5.30412584672
+            },
+            "title": {
+              "input_utf8_bytes": 1135582,
+              "tokens": 121504,
+              "token_characters": 662539,
+              "token_utf8_bytes": 1006024,
+              "mean_token_characters": 5.45281636819
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 3061413,
+              "tokens": 521285,
+              "token_characters": 2440637,
+              "token_utf8_bytes": 2441477,
+              "mean_token_characters": 4.68196284182
+            },
+            "gamemag": {
+              "input_utf8_bytes": 5634770,
+              "tokens": 482025,
+              "token_characters": 2747343,
+              "token_utf8_bytes": 5006475,
+              "mean_token_characters": 5.69958612105
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 721238,
+              "tokens": 121603,
+              "token_characters": 575649,
+              "token_utf8_bytes": 575673,
+              "mean_token_characters": 4.73383880332
+            },
+            "igromania": {
+              "input_utf8_bytes": 8934192,
+              "tokens": 731247,
+              "token_characters": 4192744,
+              "token_utf8_bytes": 7967012,
+              "mean_token_characters": 5.73369053138
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 4092929,
+              "tokens": 338056,
+              "token_characters": 1987842,
+              "token_utf8_bytes": 3660201,
+              "mean_token_characters": 5.88021511229
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 5161723,
+              "tokens": 888458,
+              "token_characters": 4108950,
+              "token_utf8_bytes": 4109118,
+              "mean_token_characters": 4.62481062695
+            },
+            "playground": {
+              "input_utf8_bytes": 2640804,
+              "tokens": 215523,
+              "token_characters": 1262505,
+              "token_utf8_bytes": 2373444,
+              "mean_token_characters": 5.8578666778
+            },
+            "stopgame": {
+              "input_utf8_bytes": 10077626,
+              "tokens": 842482,
+              "token_characters": 4665079,
+              "token_utf8_bytes": 8972883,
+              "mean_token_characters": 5.5373040611
+            }
+          },
+          "source_documents": {
+            "eurogamer": 1058,
+            "gamemag": 2442,
+            "gamingonlinux": 378,
+            "igromania": 2411,
+            "ixbt_games": 1817,
+            "pcgamer": 1477,
+            "playground": 1290,
+            "stopgame": 1624
+          },
+          "process_wall_ms": 441.1882999702357
+        },
+        {
+          "rules_version": "gaming-v3",
+          "documents": 12497,
+          "title_only_documents": 121,
+          "token_output_enabled": false,
+          "processing_ms": 392.3793,
+          "elapsed_ms": 435.7798,
+          "total": {
+            "input_utf8_bytes": 40324695,
+            "tokens": 4140679,
+            "token_characters": 21980749,
+            "token_utf8_bytes": 35106283,
+            "mean_token_characters": 5.30848901835
+          },
+          "fields": {
+            "text": {
+              "input_utf8_bytes": 39189113,
+              "tokens": 4019175,
+              "token_characters": 21318210,
+              "token_utf8_bytes": 34100259,
+              "mean_token_characters": 5.30412584672
+            },
+            "title": {
+              "input_utf8_bytes": 1135582,
+              "tokens": 121504,
+              "token_characters": 662539,
+              "token_utf8_bytes": 1006024,
+              "mean_token_characters": 5.45281636819
+            }
+          },
+          "sources": {
+            "eurogamer": {
+              "input_utf8_bytes": 3061413,
+              "tokens": 521285,
+              "token_characters": 2440637,
+              "token_utf8_bytes": 2441477,
+              "mean_token_characters": 4.68196284182
+            },
+            "gamemag": {
+              "input_utf8_bytes": 5634770,
+              "tokens": 482025,
+              "token_characters": 2747343,
+              "token_utf8_bytes": 5006475,
+              "mean_token_characters": 5.69958612105
+            },
+            "gamingonlinux": {
+              "input_utf8_bytes": 721238,
+              "tokens": 121603,
+              "token_characters": 575649,
+              "token_utf8_bytes": 575673,
+              "mean_token_characters": 4.73383880332
+            },
+            "igromania": {
+              "input_utf8_bytes": 8934192,
+              "tokens": 731247,
+              "token_characters": 4192744,
+              "token_utf8_bytes": 7967012,
+              "mean_token_characters": 5.73369053138
+            },
+            "ixbt_games": {
+              "input_utf8_bytes": 4092929,
+              "tokens": 338056,
+              "token_characters": 1987842,
+              "token_utf8_bytes": 3660201,
+              "mean_token_characters": 5.88021511229
+            },
+            "pcgamer": {
+              "input_utf8_bytes": 5161723,
+              "tokens": 888458,
+              "token_characters": 4108950,
+              "token_utf8_bytes": 4109118,
+              "mean_token_characters": 4.62481062695
+            },
+            "playground": {
+              "input_utf8_bytes": 2640804,
+              "tokens": 215523,
+              "token_characters": 1262505,
+              "token_utf8_bytes": 2373444,
+              "mean_token_characters": 5.8578666778
+            },
+            "stopgame": {
+              "input_utf8_bytes": 10077626,
+              "tokens": 842482,
+              "token_characters": 4665079,
+              "token_utf8_bytes": 8972883,
+              "mean_token_characters": 5.5373040611
+            }
+          },
+          "source_documents": {
+            "eurogamer": 1058,
+            "gamemag": 2442,
+            "gamingonlinux": 378,
+            "igromania": 2411,
+            "ixbt_games": 1817,
+            "pcgamer": 1477,
+            "playground": 1290,
+            "stopgame": 1624
+          },
+          "process_wall_ms": 444.38140001147985
+        }
+      ]
+    }
+  ]
+}
