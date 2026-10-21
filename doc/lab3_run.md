@@ -2,13 +2,35 @@
 
 Основной алгоритм написан самостоятельно на C++17. STL используется только
 в модуле токенизации, что разрешено требованиями курса. Python экспортирует
-корпус из MongoDB, запускает CLI-тесты и эксперименты; matplotlib строит график.
+корпус из MongoDB и запускает эксперименты; matplotlib строит график.
+Правила и CLI проверяются на C++ с GoogleTest. На Python остаются тесты
+экспорта и оформления демонстрации, а не правила токенизации.
 Лемматизация/стемминг и закон Ципфа остаются для следующих работ.
 
 ## Подготовка и полный запуск
 
 Нужны Python с зависимостями и `g++` либо `clang++` в `PATH`.
 При необходимости путь к компилятору задаётся переменной `CXX`.
+Для C++-тестов по умолчанию используется Docker Desktop. Один раз соберите
+его отдельный образ (команда скачает Debian и установит компилятор, CMake,
+GoogleTest и JSON-библиотеку для проверки тестовых данных и статистики):
+
+```powershell
+docker compose --profile tests build tokenizer-tests
+docker compose run --rm --no-deps tokenizer-tests
+```
+
+Вторая команда собирает C++-тесты в Release и запускает CTest. MongoDB не
+нужна, сеть при выполнении тестов отключена. Исходники подключены только
+для чтения, результаты сборки — в отдельном томе `mai-ir-tokenizer-tests`.
+Образ не пересобирается после каждой правки: повторяйте только вторую команду,
+она пересоберёт изменённые исходники. Не используйте `docker compose down -v`:
+в проекте есть также том MongoDB, который удалять не нужно.
+
+Контейнер запускает Linux-тесты, а Python-демонстрация и измерения в Windows
+по-прежнему используют собственный Windows-бинарник из `build_tokenizer.py`.
+GoogleTest нужен только для тестов; JSON-библиотека также используется
+в C++-демо для чтения метаданных. Сам алгоритм не зависит от этих библиотек.
 
 ```powershell
 python -m pip install -r requirements-lab3.txt
@@ -40,15 +62,29 @@ python run_lab3.py --snapshot data/tokenization/mongodb_2026-10-21 --output data
 
 ## Демонстрация на защите
 
+Основное демо теперь тоже написано на C++: `cpp/tokenizer_demo.cpp`.
+Оно само читает снимок и JSON-метаданные, выбирает примеры, вызывает
+`gaming::tokenize()` напрямую и оформляет таблицу. Python в этом запуске
+вообще не участвует. Новые C++-тесты проверяют и демонстрацию.
+
+Один раз после изменения исходников пересоберите CMake-цели обычным запуском:
+
 ```powershell
-python demo_lab3.py
+docker compose run --rm --no-deps tokenizer-tests
 ```
 
-Команда сама выбирает самый новый завершённый снимок из `data/tokenization`.
-MongoDB и сеть для демонстрации не нужны. Исполняемый файл C++ автоматически
-пересобирается, если изменились исходники или хеш бинарного файла.
-Python только выбирает статьи и оформляет вывод; токены выдаёт тот же
-C++-модуль, что используется при обработке всего корпуса.
+Затем в Git Bash или PowerShell:
+
+```bash
+docker compose run --rm --no-deps tokenizer-tests tokenizer_demo
+```
+
+Каталог `/build` добавлен в `PATH` контейнера, поэтому команда не содержит
+абсолютного Linux-пути и Git Bash не пытается преобразовать его в путь Windows.
+Внутри контейнера `data/tokenization` доступна как `/corpus` только для чтения.
+Демо выбирает самый новый завершённый снимок из этого каталога; временные
+скрытые каталоги экспорта игнорируются. MongoDB и сеть не нужны. Прямой
+запуск `/build/tokenizer_demo` сам не пересобирает исходники.
 
 Показываются три реальных примера: версия, обозначения C++/C# и нормализация
 S.T.A.L.K.E.R. в `stalker` (либо Half-Life, если названия с точками не найдены).
@@ -61,23 +97,38 @@ S.T.A.L.K.E.R. в `stalker` (либо Half-Life, если названия с т
 
 Можно выбрать свой пример и сохранить журнал:
 
-```powershell
-python demo_lab3.py --find "3.0.1" --context 4
-python demo_lab3.py --snapshot data/tokenization/mongodb_2026-10-21 --document-id 816 --find "3.0.1"
-python demo_lab3.py --document-id 816 --field title
-python demo_lab3.py --output data/tokenization/demo_001.txt
+```bash
+docker compose run --rm --no-deps tokenizer-tests tokenizer_demo --find "3.0.1" --context 4
+docker compose run --rm --no-deps tokenizer-tests tokenizer_demo --snapshot mongodb_2026-10-21 --document-id 816 --find "3.0.1"
+docker compose run --rm --no-deps tokenizer-tests tokenizer_demo --snapshot mongodb_2026-10-21 --document-id 816 --field title
 ```
+
+Относительный `--snapshot` отсчитывается от `--root` (`/corpus` в Docker,
+`data/tokenization` при обычном запуске). `--find` ищет буквальную UTF-8
+подстроку **с учётом регистра**. В автоматическом режиме поиск примеров
+использует уже нормализованные токены и не зависит от регистра написания.
 
 ID 816 относится к снимку от 21 октября; в другом снимке он может означать
 другую статью. `--context` задаёт число соседних токенов с каждой стороны.
-Файл `--output` должен быть новым и сохраняется в UTF-8. Если выражение
-не встречается в корпусе, демонстрация не подставляет выдуманный пример.
+Если выражение не встречается в корпусе, демонстрация не подставляет
+выдуманный пример. `--output NEW_FILE` сохраняет новый UTF-8 журнал при
+обычном запуске вне Docker; каталог `/corpus` в контейнере не доступен для
+записи. Для Docker можно сохранить stdout через перенаправление Git Bash:
+
+```bash
+docker compose run --rm -T --no-deps tokenizer-tests tokenizer_demo > demo_cpp.txt
+```
+
+Обычное перенаправление оболочки перезапишет существующий `demo_cpp.txt` —
+выбирайте новое имя. Старый вариант `python demo_lab3.py` сохранён для
+совместимости и сравнения; он не требуется для C++-демо.
 
 ## Отдельные команды
 
 ```powershell
 python build_tokenizer.py
-python -m unittest -v tests.test_corpus_export tests.test_tokenizer tests.test_lab3_demo
+docker compose run --rm --no-deps tokenizer-tests
+python -m unittest -v tests.test_corpus_export tests.test_lab3_demo
 python export_corpus.py --config crawler.large.yaml --output data/tokenization/snapshot_001
 build/tokenizer.exe corpus data/tokenization/snapshot_001/corpus.bin --output data/tokenization/tokens_001.tsv --stats data/tokenization/stats_001.json
 python benchmark_tokenizer.py data/tokenization/snapshot_001 --output data/tokenization/benchmark_001 --runs 5
@@ -102,36 +153,83 @@ UTF-8 файл через перенаправление Git Bash: старая 
 
 ## Запуск и устройство тестов
 
-Тесты написаны на стандартном Python `unittest` в `tests/test_tokenizer.py`.
-Они запускают настоящий C++-файл через `subprocess`: передают UTF-8 текст
-в stdin, читают TSV из stdout и JSON со статистикой из stderr, после чего
-сравнивают токены, позиции, границы и счётчики с заранее заданным результатом.
-Подмены токенизатора Python-реализацией нет. При первом запуске или изменении
-исходников C++ автоматически пересобирается; необходим компилятор в PATH.
+Тесты токенизатора полностью написаны на C++ с GoogleTest:
+
+- `tests/cpp/tokenizer_test.cpp` вызывает `gaming::tokenize()` напрямую и
+  проверяет термы, позиции, исходные байтовые границы и нормализованную длину.
+  Временный `Token.term` копируется в `std::string` внутри callback.
+- `tests/cpp/tokenizer_cli_test.cpp` вызывает настоящий обработчик CLI
+  `gaming::run_tokenizer()` с потоками в памяти и временными файлами. Проверяются
+  TSV, JSON-статистика, формат корпуса, ограничения и ненулевые коды ошибок.
+- `tests/cpp/tokenizer_demo_test.cpp` проверяет C++-демонстрацию: метаданные,
+  выбор примеров, исходные байтовые границы и безопасное сохранение журнала.
+- CTest дополнительно запускает сам бинарник с `--help` и неизвестным режимом.
+
+Алгоритм и формат вывода не переписаны в тестах. `cpp/tokenizer_main.cpp` —
+тонкая точка входа, а прежняя логика CLI находится в `cpp/tokenizer_cli.cpp`.
+JSON-библиотека используется в C++-тестах для чтения общих fixtures и проверки
+настоящего JSON, а в C++-демо — для чтения manifest и метаданных статей.
+Алгоритм токенизации этой библиотекой не пользуется; экспорт MongoDB не нужен.
 
 Только тесты токенизатора:
 
 ```powershell
-python -m unittest -v tests.test_tokenizer
+docker compose run --rm --no-deps tokenizer-tests
 ```
 
-Один конкретный тест нового правила:
+После полной сборки можно отдельно запустить уже собранный тест нового правила:
 
 ```powershell
-python -m unittest -v tests.test_tokenizer.TokenizerCliTests.test_dotted_acronyms_three_or_more_letters
+docker compose run --rm --no-deps tokenizer-tests tokenizer_tests --gtest_filter=TokenizerRules.DottedAcronymsRequireThreeSingleLetters
 ```
 
-Все проверки ЛР3 (экспорт, токенизация и демонстрация):
+Перед таким выборочным запуском после изменения C++ выполните обычную команду
+выше: прямой вызов `/build/tokenizer_tests` сам не пересобирает исходники.
+
+Все проверки ЛР3 (C++-токенизация, Python-экспорт и демонстрация):
 
 ```powershell
-python -m unittest -v tests.test_corpus_export tests.test_tokenizer tests.test_lab3_demo
+docker compose run --rm --no-deps tokenizer-tests
+python -m unittest -v tests.test_corpus_export tests.test_lab3_demo tests.test_lab3_runner
 ```
 
-Все тесты проекта: `python run_tests.py`. Для проверок ЛР3 MongoDB и сеть
-не нужны: используются маленькие тестовые снимки и временные каталоги.
+`python run_tests.py` запускает Python-компоненты проекта; GoogleTest запускается
+отдельной Docker-командой. `run_lab3.py` автоматически выполняет оба набора
+перед экспортом и измерениями, сохраняет общий `tests.txt` и сумму реально
+выполненных CTest/unittest проверок в `tests_summary.tex`.
+Журнал `doc/lab3/tests.txt` обновлён 22 октября 2026 года: успешно пройдены
+34 проверки CTest (32 GoogleTest и 2 запуска бинарника) и 9 Python-тестов
+экспортёра и прежней демонстрации, всего 43. Тесты самого оркестратора
+`tests.test_lab3_runner` запускаются отдельно и в эту сумму не входят.
+Результаты измерений производительности сохранены от предыдущего эксперимента;
+повторный прогон тестов не изменяет корпус и его статистику.
+
+Для проверок ЛР3 MongoDB и сеть не нужны после сборки Docker-образа:
+используются маленькие тестовые снимки и временные каталоги.
 Реальные короткие фрагменты с ожидаемыми токенами сохранены в
 `tests/fixtures/tokenizer_cases.json`. Повреждённый UTF-8 и формат проверяются
 по ненулевому коду возврата, а ошибочный вывод не должен оставлять частичный файл.
+
+Вариант без Docker: установите CMake, компилятор и development-пакеты GoogleTest
+и nlohmann-json для **одного и того же toolchain**. Затем:
+
+```powershell
+cmake -S . -B build/native-tests -DCMAKE_BUILD_TYPE=Release
+cmake --build build/native-tests --config Release --parallel 2
+ctest --test-dir build/native-tests -C Release --output-on-failure
+```
+
+Для полного эксперимента используйте `python run_lab3.py ... --cpp-tests native`.
+Нужный генератор CMake выбирается при первой конфигурации (например,
+`-G "MinGW Makefiles"` для MinGW). На Windows GTest для MSVC нельзя смешивать
+с MinGW. Для сборки только программы, без сторонних тестовых зависимостей,
+укажите `-DBUILD_TESTING=OFF -DBUILD_DEMO=OFF`; прежняя команда `python build_tokenizer.py`
+тоже продолжает работать.
+
+Для сборки C++-демо без Docker нужны nlohmann-json и `-DBUILD_DEMO=ON`.
+Бинарник называется `build/native-tests/tokenizer_demo` (или `.exe` в Windows;
+для многоконфигурационных генераторов он находится в подкаталоге `Release`).
+GoogleTest не обязателен для самого демо: можно задать `BUILD_TESTING=OFF`.
 
 ## Правила gaming-v3
 

@@ -13,13 +13,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_BINARY = ROOT / "build" / ("tokenizer.exe" if os.name == "nt" else "tokenizer")
+SOURCE_NAMES = ("tokenizer.cpp", "tokenizer_cli.cpp", "tokenizer_main.cpp")
+HEADER_NAMES = ("tokenizer.hpp", "tokenizer_cli.hpp")
 
 
 def ensure_built(output: Path = DEFAULT_BINARY) -> Path:
     """Never run a stale executable after editing rules or changing branches."""
     try:
         info = json.loads(output.with_suffix(".build.json").read_text(encoding="utf-8"))
-        sources = [ROOT / "cpp" / name for name in ("tokenizer.cpp", "tokenizer_main.cpp", "tokenizer.hpp")]
+        sources = [ROOT / "cpp" / name for name in (*SOURCE_NAMES, *HEADER_NAMES)]
         if (info["binary_sha256"] == hashlib.sha256(output.read_bytes()).hexdigest() and
                 all(info["sources_sha256"].get(path.name) == hashlib.sha256(path.read_bytes()).hexdigest()
                     for path in sources)):
@@ -35,7 +37,7 @@ def build(output: Path = DEFAULT_BINARY, compiler: str | None = None) -> Path:
         raise RuntimeError("Install g++/clang++ with C++17 support, or set CXX to its executable")
     output = output.resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
-    sources = [ROOT / "cpp" / name for name in ("tokenizer.cpp", "tokenizer_main.cpp")]
+    sources = [ROOT / "cpp" / name for name in SOURCE_NAMES]
     flags = ["-std=c++17", "-O3", "-DNDEBUG", "-Wall", "-Wextra", "-Wpedantic"]
     command = [compiler, *flags, *map(str, sources), "-o", str(output)]
     subprocess.run(command, check=True, cwd=ROOT)
@@ -44,7 +46,7 @@ def build(output: Path = DEFAULT_BINARY, compiler: str | None = None) -> Path:
         "compiler": version.splitlines()[0], "flags": flags,
         "binary_sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
         "sources_sha256": {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
-                           for path in [*sources, ROOT / "cpp" / "tokenizer.hpp"]},
+                           for path in [*sources, *(ROOT / "cpp" / name for name in HEADER_NAMES)]},
     }
     output.with_suffix(".build.json").write_text(json.dumps(info, indent=2) + "\n", encoding="utf-8")
     return output

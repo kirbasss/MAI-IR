@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# Python components only. Native tokenizer tests: docker compose run --rm tokenizer-tests
 import sys
 import unittest
 

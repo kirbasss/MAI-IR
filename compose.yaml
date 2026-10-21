@@ -7,6 +7,23 @@ services:
     volumes:
       - mongo_data:/data/db
 
+  tokenizer-tests:
+    profiles: [tests]
+    build:
+      context: ./docker/tokenizer-tests
+    network_mode: none
+    environment:
+      PATH: /build:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    volumes:
+      - ./CMakeLists.txt:/src/CMakeLists.txt:ro
+      - ./cpp:/src/cpp:ro
+      - ./tests/cpp:/src/tests/cpp:ro
+      - ./tests/fixtures:/src/tests/fixtures:ro
+      - ./data/tokenization:/corpus:ro
+      - tokenizer_test_build:/build
+
 volumes:
   mongo_data:
     name: mai-ir-mongo
+  tokenizer_test_build:
+    name: mai-ir-tokenizer-tests
