@@ -1,8 +1,10 @@
 .venv/
 __pycache__/
 data/
+build/
 *.py[cod]
 *.aux
 *.log
 *.out
 *.toc
+report_example.pdf
