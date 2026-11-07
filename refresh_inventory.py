@@ -15,6 +15,8 @@ import yaml
 
 from src.crawler import Crawler, load_config
 from src.downloader import SOURCE_HOSTS
+from src.disk_guard import DiskGuardError
+from src.worker_lock import exclusive_worker
 
 
 def main() -> int:
@@ -35,10 +37,14 @@ def main() -> int:
         with MongoClient(config.db_uri, serverSelectionTimeoutMS=5000) as client:
             client.admin.command("ping")
             crawler = Crawler(config, client[config.db_name])
-            crawler.ensure_indexes()
-            summary = crawler.update_inventory(sources=args.sources, strict=True, force=args.force)
-            added = crawler.seed()
-            crawler.meta.update_one({"_id": "sitemap_refresh"}, {"$set": {"queue_urls_added": added}})
+            with exclusive_worker(config.db_name, "crawler"):
+                try:
+                    crawler.ensure_indexes()
+                    summary = crawler.update_inventory(sources=args.sources, strict=True, force=args.force)
+                    added = crawler.seed()
+                    crawler.meta.update_one({"_id": "sitemap_refresh"}, {"$set": {"queue_urls_added": added}})
+                finally:
+                    crawler.gate.close_sessions()
         print(json.dumps({
             "inventory_urls": summary["total_unique_urls"],
             "refreshed_sources": summary["refreshed_sources"],
@@ -48,6 +54,9 @@ def main() -> int:
         }, ensure_ascii=False, indent=2))
         if summary["refresh_errors"]:
             return 1
+    except DiskGuardError as exc:
+        print(f"[inventory-refresh] Защитная остановка: {exc}", file=sys.stderr)
+        return 3
     except (OSError, ValueError, RuntimeError, KeyError, PyMongoError, yaml.YAMLError) as exc:
         print(f"[inventory-refresh] {exc}", file=sys.stderr)
         return 1

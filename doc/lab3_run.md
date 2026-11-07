@@ -1,5 +1,11 @@
 # ЛР3: токенизация
 
+Только тесты этой работы: `python run_tests.py --lab 3`.
+Только C++/GoogleTest и CLI: `python run_tests.py --lab 3 --cpp-only`.
+Команды работают в PowerShell и Git Bash. Состав групп и запуск остальных
+работ описаны в [общей памятке](testing.md). `run_lab3.py` также использует
+только группу C++ ЛР3; прямой запуск Docker-сервиса без команды проверяет обе работы.
+
 Основной алгоритм написан самостоятельно на C++17. STL используется только
 в модуле токенизации, что разрешено требованиями курса. Python экспортирует
 корпус из MongoDB и запускает эксперименты; matplotlib строит график.
@@ -128,7 +134,7 @@ docker compose run --rm -T --no-deps tokenizer-tests tokenizer_demo > demo_cpp.t
 ```powershell
 python build_tokenizer.py
 docker compose run --rm --no-deps tokenizer-tests
-python -m unittest -v tests.test_corpus_export tests.test_lab3_demo
+python -m unittest -v tests.python.test_corpus_export tests.python.test_lab3_demo
 python export_corpus.py --config crawler.large.yaml --output data/tokenization/snapshot_001
 build/tokenizer.exe corpus data/tokenization/snapshot_001/corpus.bin --output data/tokenization/tokens_001.tsv --stats data/tokenization/stats_001.json
 python benchmark_tokenizer.py data/tokenization/snapshot_001 --output data/tokenization/benchmark_001 --runs 5
@@ -155,13 +161,13 @@ UTF-8 файл через перенаправление Git Bash: старая 
 
 Тесты токенизатора полностью написаны на C++ с GoogleTest:
 
-- `tests/cpp/tokenizer_test.cpp` вызывает `gaming::tokenize()` напрямую и
+- `tests/cpp/tokenizer_test_lab3.cpp` вызывает `gaming::tokenize()` напрямую и
   проверяет термы, позиции, исходные байтовые границы и нормализованную длину.
   Временный `Token.term` копируется в `std::string` внутри callback.
-- `tests/cpp/tokenizer_cli_test.cpp` вызывает настоящий обработчик CLI
+- `tests/cpp/tokenizer_cli_test_lab3.cpp` вызывает настоящий обработчик CLI
   `gaming::run_tokenizer()` с потоками в памяти и временными файлами. Проверяются
   TSV, JSON-статистика, формат корпуса, ограничения и ненулевые коды ошибок.
-- `tests/cpp/tokenizer_demo_test.cpp` проверяет C++-демонстрацию: метаданные,
+- `tests/cpp/tokenizer_demo_test_lab3.cpp` проверяет C++-демонстрацию: метаданные,
   выбор примеров, исходные байтовые границы и безопасное сохранение журнала.
 - CTest дополнительно запускает сам бинарник с `--help` и неизвестным режимом.
 
@@ -190,7 +196,7 @@ docker compose run --rm --no-deps tokenizer-tests tokenizer_tests --gtest_filter
 
 ```powershell
 docker compose run --rm --no-deps tokenizer-tests
-python -m unittest -v tests.test_corpus_export tests.test_lab3_demo tests.test_lab3_runner
+python -m unittest -v tests.python.test_corpus_export tests.python.test_lab3_demo tests.python.test_lab3_runner
 ```
 
 `python run_tests.py` запускает Python-компоненты проекта; GoogleTest запускается
@@ -200,7 +206,7 @@ python -m unittest -v tests.test_corpus_export tests.test_lab3_demo tests.test_l
 Журнал `doc/lab3/tests.txt` обновлён 22 октября 2026 года: успешно пройдены
 34 проверки CTest (32 GoogleTest и 2 запуска бинарника) и 9 Python-тестов
 экспортёра и прежней демонстрации, всего 43. Тесты самого оркестратора
-`tests.test_lab3_runner` запускаются отдельно и в эту сумму не входят.
+`tests.python.test_lab3_runner` запускаются отдельно и в эту сумму не входят.
 Результаты измерений производительности сохранены от предыдущего эксперимента;
 повторный прогон тестов не изменяет корпус и его статистику.
 

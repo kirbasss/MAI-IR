@@ -13,6 +13,7 @@ from urllib.parse import urlsplit, urlunsplit
 import requests
 
 from src.parsers import PARSERS
+from src.parsers.gamemag import NEWS_BODY, REVIEW_BODY
 from src.utils import canonicalize_url, dump_json, sha256_text, soup
 
 
@@ -39,6 +40,7 @@ CHALLENGE_MARKERS = (
 ARTICLE_BODY_SELECTORS = (
     "article#material_content, div.article-content, div[id^='publication-'].prose, "
     "div[class*='material-content_'], div.content-text, article.h-entry .e-content, "
+    f"{NEWS_BODY}, {REVIEW_BODY}, "
     "#article-body, #gallery-body .gallery-text, div.article_body_content"
 )
 

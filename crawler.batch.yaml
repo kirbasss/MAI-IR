@@ -6,6 +6,12 @@ logic:
   # Generate this file with `python main.py sample-inventory` before running.
   inventory: data/discovery/inventory_batch/url_inventory.tsv
   refresh_sitemaps: false  # Fixed sample, not the normal live-discovery mode.
+  download_workers: 1
+  parse_mode: inline
+  disk_watch_paths: ["D:/", "C:/"]
+  min_free_disk_gib: 5
+  check_mongo_disk: true
+  disk_check_interval_seconds: 5
   global_delay_seconds: 0.5
   local_delay_seconds: 3
   source_delays_seconds:

@@ -13,7 +13,7 @@ from bs4 import XMLParsedAsHTMLWarning
 from src.discovery import _leaf_path, discover_sitemaps, parse_sitemap, parse_sitemap_entries
 from src.downloader import _response_class
 from src.sitemap_cache import SitemapCache
-from tests.test_crawler import FakeResponse
+from tests.python.test_crawler import FakeResponse
 
 
 ROOT = "https://stopgame.ru/sitemap.xml"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import json
 import tempfile
 import unittest
 from contextlib import redirect_stdout
@@ -12,7 +13,7 @@ import mongomock
 import yaml
 
 from src.crawler import Crawler, HttpGate, RobotsDenied, load_config
-from tests.test_crawler import FakeResponse, FakeSession, HTML_1, URL, config
+from tests.python.test_crawler import FakeResponse, FakeSession, HTML_1, URL, config
 
 
 ROBOTS = "https://stopgame.ru/robots.txt"
@@ -87,20 +88,158 @@ class CrawlerDiscoveryTests(unittest.TestCase):
         self.assertEqual(self.db.crawler_meta.find_one({"_id": "sitemap_refresh"})["queue_urls_added"], 2)
         self.assertTrue((self.root / "data/discovery/stopgame/robots.txt").is_file())
 
-    def test_repeat_start_checks_root_but_skips_fresh_leaf(self):
+    def test_repeat_start_skips_all_maps_until_persisted_deadline(self):
+        self.worker(FakeSession(maps(URL)), sitemap_cache_ttl_seconds=3600).update_frontier()
+        session = FakeSession([])
+        worker = self.worker(session, sitemap_cache_ttl_seconds=3600)
+        self.assertEqual(worker.update_frontier(), 0)
+        self.assertEqual(session.calls, [])
+        self.assertEqual(worker.next_sitemap_refresh_at, 1000 + self.settings.sitemap_refresh_interval_seconds)
+
+    def test_manual_refresh_checks_root_but_skips_fresh_leaf(self):
         self.worker(FakeSession(maps(URL)), sitemap_cache_ttl_seconds=3600).update_frontier()
         session = FakeSession(maps(URL)[:2])
         worker = self.worker(session, sitemap_cache_ttl_seconds=3600)
-        self.assertEqual(worker.update_frontier(), 0)
+        worker.update_inventory()
         self.assertEqual([url for url, _ in session.calls], [ROBOTS, ROOT])
         self.assertEqual(worker.sitemap_cache.stats["cache_hits"], 1)
+
+    def test_restart_downloads_queued_article_without_sitemap_requests(self):
+        self.worker(FakeSession(maps(URL))).update_frontier()
+        session = FakeSession([FakeResponse(ROBOTS, 200, ALLOW), FakeResponse(URL, 200, HTML_1)])
+        self.assertEqual(self.worker(session).run()["changed"], 1)
+        self.assertEqual([url for url, _ in session.calls], [ROBOTS, URL])
+
+    def test_force_refresh_checks_all_maps_before_deadline(self):
+        self.worker(FakeSession(maps(URL)), sitemap_cache_ttl_seconds=3600).update_frontier()
+        session = FakeSession(maps(URL, NEW_URL))
+        worker = self.worker(session, sitemap_cache_ttl_seconds=3600)
+        worker.update_inventory(force=True)
+        self.assertEqual([url for url, _ in session.calls], [ROBOTS, ROOT, LEAF])
+        self.assertEqual(worker.seed(), 1)
+
+    def test_deadline_expiry_and_yaml_interval_change_are_honored(self):
+        self.worker(FakeSession(maps(URL))).update_frontier()
+        self.clock.value += 60
+        # A shorter current interval makes the saved successful check due now.
+        worker = self.worker(FakeSession(maps(URL, NEW_URL)), sitemap_refresh_interval_seconds=60)
+        self.assertEqual(worker.update_frontier(), 1)
+        self.assertEqual(worker.next_sitemap_refresh_at, 1120)
+
+    def test_missing_inventory_is_rebuilt_even_with_fresh_schedule(self):
+        self.worker(FakeSession(maps(URL))).update_frontier()
+        self.inventory.unlink()
+        session = FakeSession(maps(URL))
+        self.worker(session).update_frontier()
+        self.assertTrue(self.inventory.exists())
+        self.assertEqual(len(session.calls), 3)
+
+    def test_changed_cache_directory_does_not_reuse_another_scope(self):
+        self.worker(FakeSession(maps(URL))).update_frontier()
+        session = FakeSession(maps(URL))
+        worker = self.worker(session, discovery_data_dir=self.root / "another-cache")
+        worker.update_frontier()
+        self.assertEqual(len(session.calls), 3)
+
+    def test_different_inventory_path_is_a_different_schedule_scope(self):
+        self.worker(FakeSession(maps(URL))).update_frontier()
+        other = self.root / "other" / "url_inventory.tsv"
+        other.parent.mkdir()
+        other.write_bytes(self.inventory.read_bytes())
+        session = FakeSession(maps(URL))
+        self.worker(session, inventory=other).update_frontier()
+        self.assertEqual(len(session.calls), 3)
+
+    def test_invalid_or_future_saved_timestamps_do_not_postpone_refresh(self):
+        worker = self.worker(FakeSession(maps(URL)))
+        worker.update_frontier()
+        for value in (None, True, "1000", -1, float("nan"), float("inf"), 1001):
+            with self.subTest(value=value):
+                self.db.crawler_meta.update_one({"_id": "sitemap_refresh"}, {"$set": {
+                    "source_schedule.stopgame.finished_at": value}})
+                self.assertEqual(worker._sitemap_schedule(), {})
+
+    def test_new_source_is_discovered_without_rechecking_fresh_old_source(self):
+        self.worker(FakeSession(maps(URL))).update_frontier()
+        game_url = "https://gamemag.ru/news/123/example"
+        session = FakeSession([FakeResponse("https://gamemag.ru/robots.txt", 200, ALLOW),
+                               FakeResponse("https://gamemag.ru/sitemap.xml", 200, sitemap(game_url))])
+        worker = self.worker(session, sitemap_sources=("stopgame", "gamemag"))
+        self.assertEqual(worker.update_frontier(), 1)
+        self.assertTrue(all("gamemag.ru" in url for url, _ in session.calls))
+
+    def test_partial_retry_only_rechecks_failed_source_across_restart(self):
+        game_url = "https://gamemag.ru/news/123/example"
+        session = FakeSession(maps(URL) + [FakeResponse("https://gamemag.ru/robots.txt", 503)])
+        worker = self.worker(session, sitemap_sources=("stopgame", "gamemag"))
+        worker.update_frontier()
+        schedule = self.db.crawler_meta.find_one({"_id": "sitemap_refresh"})["source_schedule"]
+        self.assertEqual(schedule["stopgame"]["next_refresh_at"], 87400)
+        self.assertEqual(schedule["gamemag"]["next_refresh_at"], 1010)
+        self.assertEqual(worker.next_sitemap_refresh_at, 1010)
+        self.worker(FakeSession([]), sitemap_sources=("stopgame", "gamemag")).update_frontier()
+        self.clock.value = 1010
+        retry = FakeSession([FakeResponse("https://gamemag.ru/robots.txt", 200, ALLOW),
+                             FakeResponse("https://gamemag.ru/sitemap.xml", 200, sitemap(game_url))])
+        restarted = self.worker(retry, sitemap_sources=("stopgame", "gamemag"))
+        self.assertEqual(restarted.update_frontier(), 1)
+        self.assertEqual(restarted.next_sitemap_refresh_at, 87400)
+        self.assertTrue(all("gamemag.ru" in url for url, _ in retry.calls))
+
+    def test_legacy_metadata_migrates_only_with_matching_inventory_summary(self):
+        self.worker(FakeSession(maps(URL))).update_frontier()
+        # An existing-inventory refresh publishes an identity-bearing summary.
+        self.worker(FakeSession(maps(URL))).update_inventory()
+        self.db.crawler_meta.update_one({"_id": "sitemap_refresh"}, {"$unset": {
+            "schedule_scope": "", "source_schedule": ""}})
+        session = FakeSession([])
+        self.worker(session).update_frontier()
+        self.assertFalse(session.calls)
+        self.assertIn("stopgame", self.db.crawler_meta.find_one({"_id": "sitemap_refresh"})["source_schedule"])
+
+    def test_failed_retry_does_not_reset_successful_site_schedule(self):
+        worker = self.worker(FakeSession(maps(URL)), sitemap_sources=("stopgame", "gamemag"))
+        worker.update_inventory(sources=["stopgame"])
+        worker.session = worker.gate.session = FakeSession([FakeResponse("https://gamemag.ru/robots.txt", 503)])
+        worker.update_inventory(sources=["gamemag"])
+        self.clock.value = 1010
+        retry = self.worker(FakeSession([FakeResponse("https://gamemag.ru/robots.txt", 503)]),
+                            sitemap_sources=("stopgame", "gamemag"))
+        retry.update_frontier()
+        schedule = self.db.crawler_meta.find_one({"_id": "sitemap_refresh"})["source_schedule"]
+        self.assertEqual(schedule["stopgame"]["finished_at"], 1000)
+        self.assertEqual(schedule["stopgame"]["next_refresh_at"], 87400)
+        self.assertEqual(schedule["gamemag"]["next_refresh_at"], 1020)
+
+    def test_legacy_failure_does_not_misread_old_success_as_a_new_success(self):
+        worker = self.worker(FakeSession(maps(URL)))
+        worker.update_frontier()
+        self.worker(FakeSession(maps(URL))).update_inventory()
+        self.db.crawler_meta.update_one({"_id": "sitemap_refresh"}, {
+            "$unset": {"schedule_scope": "", "source_schedule": ""},
+            "$set": {"status": "failed", "last_error": "old failure"}})
+        state = worker._sitemap_schedule()["stopgame"]
+        self.assertEqual(state["status"], "failed")
+        self.assertEqual(state["next_refresh_at"], 1010)
+
+    def test_legacy_metadata_with_unrelated_inventory_does_not_skip_discovery(self):
+        self.worker(FakeSession(maps(URL))).update_frontier()
+        self.db.crawler_meta.update_one({"_id": "sitemap_refresh"}, {"$unset": {
+            "schedule_scope": "", "source_schedule": ""}})
+        path = self.inventory.with_name("summary.json")
+        summary = json.loads(path.read_text(encoding="utf-8"))
+        summary["input_inventories"] = ["different/url_inventory.tsv"]
+        path.write_text(json.dumps(summary), encoding="utf-8")
+        session = FakeSession(maps(URL))
+        self.worker(session).update_frontier()
+        self.assertEqual(len(session.calls), 3)
 
     def test_cached_leaf_still_obeys_new_robots_rules(self):
         self.worker(FakeSession(maps(URL)), sitemap_cache_ttl_seconds=3600).update_frontier()
         before = self.inventory.read_bytes()
         session = FakeSession(maps(URL, rules=b"User-agent: *\nDisallow: /sitemap/\n")[:2])
         worker = self.worker(session, sitemap_cache_ttl_seconds=3600)
-        self.assertEqual(worker.update_frontier(), 0)
+        self.assertIsNone(worker.update_inventory())
         self.assertEqual(self.inventory.read_bytes(), before)
         self.assertEqual(worker.sitemap_cache.stats["cache_hits"], 0)
         self.assertEqual(self.db.crawler_meta.find_one({"_id": "sitemap_refresh"})["status"], "failed")
@@ -111,6 +250,7 @@ class CrawlerDiscoveryTests(unittest.TestCase):
             "state": "done", "attempts": 7, "available_at": 5000, "etag": "saved",
         }})
         # The old URL has disappeared from the website's sitemap, but must remain.
+        self.clock.value += self.settings.sitemap_refresh_interval_seconds
         session = FakeSession(maps(NEW_URL))
         worker = self.worker(session)
         self.assertEqual(worker.update_frontier(), 1)
@@ -119,7 +259,8 @@ class CrawlerDiscoveryTests(unittest.TestCase):
                          ("done", 7, 5000, "saved"))
         before = self.inventory.stat().st_mtime_ns
         worker.session = worker.gate.session = FakeSession(maps(NEW_URL))
-        self.assertEqual(worker.update_frontier(), 0)
+        worker.update_inventory()
+        self.assertEqual(worker.seed(), 0)
         self.assertEqual(self.inventory.stat().st_mtime_ns, before)
         self.assertEqual(worker.session.calls[0][0], ROBOTS)  # Rules refreshed each cycle.
         self.assertEqual(self.db.frontier.count_documents({}), 2)
@@ -127,6 +268,7 @@ class CrawlerDiscoveryTests(unittest.TestCase):
     def test_bad_xml_keeps_old_inventory_and_allows_download(self):
         self.worker(FakeSession(maps(URL))).update_frontier()
         before = self.inventory.read_bytes()
+        self.clock.value += self.settings.sitemap_refresh_interval_seconds
         session = FakeSession([FakeResponse(ROBOTS, 200, ALLOW),
                                FakeResponse(ROOT, 200, b"not XML"), FakeResponse(URL, 200, HTML_1)])
         self.assertEqual(self.worker(session).run()["changed"], 1)
@@ -136,10 +278,11 @@ class CrawlerDiscoveryTests(unittest.TestCase):
     def test_sitemap_503_keeps_inventory_and_pauses_source(self):
         self.worker(FakeSession(maps(URL))).update_frontier()
         before = self.inventory.read_bytes()
+        self.clock.value += self.settings.sitemap_refresh_interval_seconds
         session = FakeSession([FakeResponse(ROBOTS, 200, ALLOW), FakeResponse(ROOT, 503)])
         self.assertEqual(self.worker(session).run()["changed"], 0)
         self.assertEqual(self.inventory.read_bytes(), before)
-        self.assertEqual(self.db.crawler_meta.find_one({"_id": "cooldown:stopgame"})["until"], 1010)
+        self.assertEqual(self.db.crawler_meta.find_one({"_id": "cooldown:stopgame"})["until"], int(self.clock.value) + 10)
 
     def test_sitemap_captcha_stops_requests_to_remaining_maps(self):
         second_leaf = "https://stopgame.ru/sitemap/news_2.xml"
@@ -158,7 +301,7 @@ class CrawlerDiscoveryTests(unittest.TestCase):
         self.db.frontier.update_one({"_id": URL}, {"$set": {
             "state": "in_progress", "lease_token": "running", "available_at": 5000,
         }})
-        self.worker(FakeSession(maps(URL, NEW_URL))).update_frontier()
+        self.worker(FakeSession(maps(URL, NEW_URL))).update_inventory()
         old = self.db.frontier.find_one({"_id": URL})
         self.assertEqual((old["state"], old["lease_token"], old["available_at"]),
                          ("in_progress", "running", 5000))
@@ -208,7 +351,7 @@ class CrawlerDiscoveryTests(unittest.TestCase):
     def test_continuous_mode_refreshes_and_discovers_work_while_idle(self):
         self.worker(FakeSession(maps(URL))).update_frontier()
         self.db.frontier.update_one({"_id": URL}, {"$set": {"state": "done", "available_at": 9000}})
-        session = FakeSession(maps(URL) + maps(URL, NEW_URL) + [FakeResponse(NEW_URL, 200, HTML_1)])
+        session = FakeSession(maps(URL, NEW_URL) + [FakeResponse(NEW_URL, 200, HTML_1)])
         worker = self.worker(session, run_forever=True, sitemap_refresh_interval_seconds=5, poll_seconds=60)
         with patch("src.crawler.time.sleep", side_effect=self.clock.sleep):
             self.assertEqual(worker.run()["changed"], 1)

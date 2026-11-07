@@ -11,22 +11,23 @@ from pathlib import Path
 
 from benchmark_tokenizer import benchmark
 from build_tokenizer import ROOT, build
+from run_tests import cpp_command
 
 
 def test_commands(backend: str, native_build: Path) -> list[list[str]]:
     if backend == "docker":
-        return [["docker", "compose", "run", "--rm", "-T", "--no-deps", "tokenizer-tests"]]
+        return [cpp_command("3")]
     return [
         ["cmake", "-S", str(ROOT), "-B", str(native_build), "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_TESTING=ON"],
         ["cmake", "--build", str(native_build), "--config", "Release", "--parallel", "2"],
-        ["ctest", "--test-dir", str(native_build), "-C", "Release", "--output-on-failure"],
+        ["ctest", "--test-dir", str(native_build), "-C", "Release", "--output-on-failure", "--no-tests=error", "-L", "lab3"],
     ]
 
 
 def run_checks(output: Path, backend: str, native_build: Path) -> int:
     """Run native C++ assertions, then Python export/demo checks, saving both logs."""
     commands = test_commands(backend, native_build) + [[
-        sys.executable, "-m", "unittest", "-v", "tests.test_corpus_export", "tests.test_lab3_demo",
+        sys.executable, "-m", "unittest", "-v", "tests.python.test_corpus_export", "tests.python.test_lab3_demo",
     ]]
     log = bytearray()
     for command in commands:

@@ -15,12 +15,17 @@ db.documents.find(
     'parsed.title': 1, 'parsed.category': 1, 'parsed.author': 1, 'parsed.text': 1 }
 ).limit(2);
 
-// 3. У сырой страницы есть URL, источник, время загрузки и HTML.
+// 3. У сырой страницы есть HTML или ссылка на проверенный архив на внешнем диске.
 use('mai_ir');
 db.raw_pages.find(
   {},
-  { _id: 0, url: 1, source: 1, fetched_at: 1, content_sha256: 1, html: 1 }
+  { _id: 0, url: 1, source: 1, fetched_at: 1, content_sha256: 1,
+    parse_state: 1, raw_storage: 1, raw_archive: 1 }
 ).limit(2);
+
+// Готовые архивные пачки (HTML здесь нет).
+use('mai_ir');
+db.raw_archives.find({}, { directory: 1, records: 1, compressed_bytes: 1, status: 1, verified_at: 1 });
 
 // 4. Связь разобранного документа с его сырой страницей по URL и хешу.
 use('mai_ir');
@@ -66,3 +71,26 @@ use('mai_ir');
   titleOnly: db.documents.countDocuments({ indexable: { $ne: false }, 'parsed.text': '' }),
   excluded: db.documents.countDocuments({ indexable: false })
 });
+
+// 8. Очередь офлайн-парсинга живёт в raw_pages. Сначала запустить parse_worker.py:
+// он создаёт индекс. hint не даёт агрегату читать десятки ГБ сырого HTML.
+use('mai_ir');
+db.raw_pages.aggregate([
+  { $group: { _id: '$parse_state', pages: { $sum: 1 } } },
+  { $sort: { pages: -1 } }
+], { hint: { parse_state: 1, parse_available_at: 1, fetched_at: 1, _id: 1 }, maxTimeMS: 10000 });
+
+// 9. Ошибки парсинга не являются поводом заново скачивать страницу.
+use('mai_ir');
+db.raw_pages.find(
+  { parse_state: 'error' },
+  { _id: 0, url: 1, source: 1, parse_error: 1, parse_attempts: 1, raw_generation: 1 }
+).limit(5);
+
+// 10. Измеренные стадии; это примеры по URL, не хронологический список.
+// Ограничиваем время: до появления первых timings фильтр может просмотреть очередь.
+use('mai_ir');
+db.frontier.find(
+  { 'timings_ms.total_ms': { $exists: true } },
+  { _id: 0, url: 1, source: 1, state: 1, timings_ms: 1 }
+).sort({ _id: 1 }).limit(5).maxTimeMS(5000);

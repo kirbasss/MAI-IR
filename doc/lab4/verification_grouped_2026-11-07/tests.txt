@@ -1,0 +1,103 @@
+
+COMMAND: docker compose run --rm -T --no-deps tokenizer-tests sh -ec cmake -S /src -B /build -G Ninja -DCMAKE_BUILD_TYPE=Release && cmake --build /build --parallel 2 && ctest --test-dir /build --output-on-failure --no-tests=error -L lab4
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build
+ninja: no work to do.
+Internal ctest changing into directory: /build
+Test project /build
+      Start 33: Lemmatizer.Fixture.RussianInflectionsAndLemmaAreEquivalent
+ 1/32 Test #33: Lemmatizer.Fixture.RussianInflectionsAndLemmaAreEquivalent ....................   Passed    0.00 sec
+      Start 34: Lemmatizer.Fixture.AmbiguityIsRetainedNotArbitrarilyResolved
+ 2/32 Test #34: Lemmatizer.Fixture.AmbiguityIsRetainedNotArbitrarilyResolved ..................   Passed    0.01 sec
+      Start 35: Lemmatizer.Fixture.YoIsPreservedNotConflatedWithE
+ 3/32 Test #35: Lemmatizer.Fixture.YoIsPreservedNotConflatedWithE .............................   Passed    0.01 sec
+      Start 36: Lemmatizer.Fixture.EnglishRegularFormsAreDictionaryValidated
+ 4/32 Test #36: Lemmatizer.Fixture.EnglishRegularFormsAreDictionaryValidated ..................   Passed    0.00 sec
+      Start 37: Lemmatizer.Fixture.EnglishExceptionsAndPosAmbiguity
+ 5/32 Test #37: Lemmatizer.Fixture.EnglishExceptionsAndPosAmbiguity ...........................   Passed    0.00 sec
+      Start 38: Lemmatizer.Fixture.SpecialAndUnknownTokensSurvive
+ 6/32 Test #38: Lemmatizer.Fixture.SpecialAndUnknownTokensSurvive .............................   Passed    0.01 sec
+      Start 39: Lemmatizer.Fixture.ProperNameInflectionsDoNotInventNicknameSynonyms
+ 7/32 Test #39: Lemmatizer.Fixture.ProperNameInflectionsDoNotInventNicknameSynonyms ...........   Passed    0.01 sec
+      Start 40: Lemmatizer.Fixture.UnknownLongTokenHasNoTruncation
+ 8/32 Test #40: Lemmatizer.Fixture.UnknownLongTokenHasNoTruncation ............................   Passed    0.00 sec
+      Start 41: Lemmatizer.Fixture.EmptyInputHasNoLemma
+ 9/32 Test #41: Lemmatizer.Fixture.EmptyInputHasNoLemma .......................................   Passed    0.00 sec
+      Start 42: Lemmatizer.Fixture.LoadedDictionaryIsReusableAndViewStable
+10/32 Test #42: Lemmatizer.Fixture.LoadedDictionaryIsReusableAndViewStable ....................   Passed    0.02 sec
+      Start 43: Lemmatizer.Fixture.HashCollisionsStillFindEveryKey
+11/32 Test #43: Lemmatizer.Fixture.HashCollisionsStillFindEveryKey ............................   Passed    0.00 sec
+      Start 44: Lemmatizer.Fixture.FailureToLoadLeavesSafeUnloadedState
+12/32 Test #44: Lemmatizer.Fixture.FailureToLoadLeavesSafeUnloadedState .......................   Passed    0.00 sec
+      Start 45: Lemmatizer.Fixture.TruncatedExtendedAndBadChecksumRejected
+13/32 Test #45: Lemmatizer.Fixture.TruncatedExtendedAndBadChecksumRejected ....................   Passed    0.00 sec
+      Start 46: Lemmatizer.Fixture.WrongHeaderAndHostileSizeRejected
+14/32 Test #46: Lemmatizer.Fixture.WrongHeaderAndHostileSizeRejected ..........................   Passed    0.00 sec
+      Start 47: Lemmatizer.Fixture.InvalidUtf8EmptyLemmaAndTooManyAlternativesRejected
+15/32 Test #47: Lemmatizer.Fixture.InvalidUtf8EmptyLemmaAndTooManyAlternativesRejected ........   Passed    0.01 sec
+      Start 48: Lemmatizer.Fixture.CliRealTokenizerPreservesUtf8OffsetsAndAlternatives
+16/32 Test #48: Lemmatizer.Fixture.CliRealTokenizerPreservesUtf8OffsetsAndAlternatives ........   Passed    0.01 sec
+      Start 49: Lemmatizer.Fixture.DemoUsesLiveDictionaryAndShowsAllAlternativesAndFallback
+17/32 Test #49: Lemmatizer.Fixture.DemoUsesLiveDictionaryAndShowsAllAlternativesAndFallback ...   Passed    0.01 sec
+      Start 50: Lemmatizer.Fixture.DemoCustomUtf8InputAndOutputUseTheSameAnalysisAsTsv
+18/32 Test #50: Lemmatizer.Fixture.DemoCustomUtf8InputAndOutputUseTheSameAnalysisAsTsv ........   Passed    0.00 sec
+      Start 51: Lemmatizer.Fixture.CliCorpusStreamsFieldsTitleOnlyAndLimit
+19/32 Test #51: Lemmatizer.Fixture.CliCorpusStreamsFieldsTitleOnlyAndLimit ....................   Passed    0.00 sec
+      Start 52: Lemmatizer.Fixture.CliErrorsDoNotPublishPartialOutputOrOverwrite
+20/32 Test #52: Lemmatizer.Fixture.CliErrorsDoNotPublishPartialOutputOrOverwrite ..............   Passed    0.00 sec
+      Start 53: Lemmatizer.Fixture.CliMalformedUtf8RejectsAndRemovesPartial
+21/32 Test #53: Lemmatizer.Fixture.CliMalformedUtf8RejectsAndRemovesPartial ...................   Passed    0.00 sec
+      Start 54: Lemmatizer.Fixture.CliArgumentErrors
+22/32 Test #54: Lemmatizer.Fixture.CliArgumentErrors ..........................................   Passed    0.00 sec
+      Start 55: Lemmatizer.Fixture.CliNoOutputHasStatisticsButNoTsv
+23/32 Test #55: Lemmatizer.Fixture.CliNoOutputHasStatisticsButNoTsv ...........................   Passed    0.00 sec
+      Start 56: Lemmatizer.Fixture.SearchShowsAmbiguityRegressionAndExactBonusRecovery
+24/32 Test #56: Lemmatizer.Fixture.SearchShowsAmbiguityRegressionAndExactBonusRecovery ........   Passed    0.01 sec
+      Start 57: Lemmatizer.Fixture.SearchAndSemanticsRepeatedTermsAndFieldSelection
+25/32 Test #57: Lemmatizer.Fixture.SearchAndSemanticsRepeatedTermsAndFieldSelection ...........   Passed    0.01 sec
+      Start 58: Lemmatizer.Fixture.SearchUnknownQueryViewsAndProtectedTermsRemainValid
+26/32 Test #58: Lemmatizer.Fixture.SearchUnknownQueryViewsAndProtectedTermsRemainValid ........   Passed    0.00 sec
+      Start 59: Lemmatizer.Fixture.SearchTopKAndDocumentIdTiesAreDeterministic
+27/32 Test #59: Lemmatizer.Fixture.SearchTopKAndDocumentIdTiesAreDeterministic ................   Passed    0.01 sec
+      Start 60: Lemmatizer.Fixture.SearchRejectsBadQueryFilesAndOptions
+28/32 Test #60: Lemmatizer.Fixture.SearchRejectsBadQueryFilesAndOptions .......................   Passed    0.01 sec
+      Start 61: Lemmatizer.Fixture.SearchMalformedCorpusNeverPublishesPartialRankings
+29/32 Test #61: Lemmatizer.Fixture.SearchMalformedCorpusNeverPublishesPartialRankings .........   Passed    0.01 sec
+      Start 62: Lemmatizer.Fixture.SearchNoMatchDoesNotInventResults
+30/32 Test #62: Lemmatizer.Fixture.SearchNoMatchDoesNotInventResults ..........................   Passed    0.00 sec
+      Start 65: LemmatizerProcess.Help
+31/32 Test #65: LemmatizerProcess.Help ........................................................   Passed    0.00 sec
+      Start 66: LemmaSearchProcess.Help
+32/32 Test #66: LemmaSearchProcess.Help .......................................................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 32
+
+Label Time Summary:
+lab4    =   0.17 sec*proc (32 tests)
+
+Total Test time (real) =   0.19 sec
+
+COMMAND: C:\Users\Kirbass\Desktop\PROGR\MAI-IR\.venv\Scripts\python.exe -m unittest -v tests.test_lemma_dictionary tests.test_lemma_evaluation
+test_dedup_binary_offsets_checksum_and_determinism (tests.test_lemma_dictionary.LemmaDictionaryTests.test_dedup_binary_offsets_checksum_and_determinism) ... ok
+test_existing_output_preserved (tests.test_lemma_dictionary.LemmaDictionaryTests.test_existing_output_preserved) ... ok
+test_failed_build_cleans_private_staging (tests.test_lemma_dictionary.LemmaDictionaryTests.test_failed_build_cleans_private_staging) ... ok
+test_packaged_cli_downloads_only_wordnet_not_unavailable_xml (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_cli_downloads_only_wordnet_not_unavailable_xml) ... ok
+test_packaged_data_ambiguity_and_yo_survive_conversion (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_data_ambiguity_and_yo_survive_conversion) ... ok
+test_packaged_data_reconstructs_prefix_suffix_and_empty_suffix (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_data_reconstructs_prefix_suffix_and_empty_suffix) ... ok
+test_packaged_data_rejects_corrupt_paradigms_references_and_affixes (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_data_rejects_corrupt_paradigms_references_and_affixes) ... ok
+test_packaged_data_requires_expected_format_and_language (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_data_requires_expected_format_and_language) ... ok
+test_packaged_source_hashes_legacy_prefix_file_when_used (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_source_hashes_legacy_prefix_file_when_used) ... ok
+test_packaged_source_records_versions_and_actual_data_hashes (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_source_records_versions_and_actual_data_hashes) ... ok
+test_wordnet_indices_exceptions_and_compounds (tests.test_lemma_dictionary.LemmaDictionaryTests.test_wordnet_indices_exceptions_and_compounds) ... ok
+test_xml_forms_multiple_lemmas_and_yo (tests.test_lemma_dictionary.LemmaDictionaryTests.test_xml_forms_multiple_lemmas_and_yo) ... ok
+test_duplicate_ranked_ids_and_invalid_cutoff_rejected (tests.test_lemma_evaluation.LemmaEvaluationTests.test_duplicate_ranked_ids_and_invalid_cutoff_rejected) ... ok
+test_empty_and_no_relevant_cases_are_defined (tests.test_lemma_evaluation.LemmaEvaluationTests.test_empty_and_no_relevant_cases_are_defined) ... ok
+test_graded_ndcg_and_rank_order (tests.test_lemma_evaluation.LemmaEvaluationTests.test_graded_ndcg_and_rank_order) ... ok
+test_invalid_judgments_rejected (tests.test_lemma_evaluation.LemmaEvaluationTests.test_invalid_judgments_rejected) ... ok
+test_precision_uses_fixed_k_and_recall_all_relevant_pool_documents (tests.test_lemma_evaluation.LemmaEvaluationTests.test_precision_uses_fixed_k_and_recall_all_relevant_pool_documents) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.156s
+
+OK

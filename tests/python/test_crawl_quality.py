@@ -16,7 +16,7 @@ from src.crawler import Crawler
 from src.downloader import _response_class
 from src.parsers import PARSERS
 from src.url_policy import is_listing_url
-from tests.test_crawler import FakeResponse, FakeSession, HTML_1, URL, config, responses
+from tests.python.test_crawler import FakeResponse, FakeSession, HTML_1, URL, config, responses
 
 
 class ResponseClassificationTests(unittest.TestCase):
@@ -45,6 +45,10 @@ class ResponseClassificationTests(unittest.TestCase):
             "<title>News</title><script>captcha(); var message='checking your browser';</script>"
             "<h1>Actual news</h1><p>New game released.</p>",
             "<title>News</title><script>var c='/cdn-cgi/challenge-platform/';</script><p>Actual news.</p>",
+            "<h1>Story</h1><article class='news-details'><div class='content-row__content'>"
+            "A game with captcha puzzles.</div></article><div class='g-recaptcha'></div>",
+            "<h1>Review</h1><article class='reviews-details'><div class='content-row__section'>"
+            "Review text.</div></article><div class='h-captcha'></div>",
         ]
         for html in articles:
             with self.subTest(html=html):

@@ -20,6 +20,7 @@ services:
       - ./tests/cpp:/src/tests/cpp:ro
       - ./tests/fixtures:/src/tests/fixtures:ro
       - ./data/tokenization:/corpus:ro
+      - ./data/lemmas:/lemmas:ro
       - tokenizer_test_build:/build
 
 volumes:

@@ -8,3 +8,10 @@ build/
 *.out
 *.toc
 report_example.pdf
+CONTEXT.md
+.agents/
+.codex/
+.aws/
+.env
+.env.local
+*.part

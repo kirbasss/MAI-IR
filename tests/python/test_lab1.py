@@ -9,7 +9,7 @@ from src.statistics import build_statistics
 from src.utils import canonicalize_url
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 SAMPLE_1 = ROOT / "data/raw/stopgame/sample_1.html"
 SAMPLE_2 = ROOT / "data/raw/stopgame/sample_2.html"
 URL_1 = (

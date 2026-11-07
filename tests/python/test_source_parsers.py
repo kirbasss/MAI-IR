@@ -8,7 +8,7 @@ from src.parsers import PARSERS
 from src.utils import soup
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 PARSED_ROOT = ROOT / "data" / "parsed"
 EXPECTED_SELECTORS = {
     "playground": "div.article-content",

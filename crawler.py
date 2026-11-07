@@ -11,6 +11,8 @@ from pymongo.errors import PyMongoError
 import yaml
 
 from src.crawler import Crawler, RunMode, load_config
+from src.disk_guard import DiskGuardError
+from src.worker_lock import exclusive_worker
 
 
 def main(*, mode: RunMode = "normal") -> int:
@@ -28,10 +30,17 @@ def main(*, mode: RunMode = "normal") -> int:
             client.admin.command("ping")
             crawler = Crawler(config, client[config.db_name])
             if mode == "normal" and args.seed_only:
-                crawler.ensure_indexes()
-                print(f"[crawler] Очередь пополнена: {crawler.update_frontier()} URL")
+                with exclusive_worker(config.db_name, "crawler"):
+                    try:
+                        crawler.ensure_indexes()
+                        print(f"[crawler] Очередь пополнена: {crawler.update_frontier()} URL")
+                    finally:
+                        crawler.gate.close_sessions()
             else:
                 crawler.run(mode=mode)
+    except DiskGuardError as exc:
+        print(f"[crawler] Защитная остановка: {exc}", file=sys.stderr)
+        return 3
     except KeyboardInterrupt:
         print("[crawler] Остановлен; незавершённый URL вернётся в очередь при следующем запуске.")
         return 130
