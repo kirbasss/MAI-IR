@@ -1,7 +1,7 @@
 # Тесты по лабораторным
 
 Все команды выполняются из корня проекта с активированной `.venv`.
-Для C++-проверок ЛР3–ЛР5 и ЛР7 нужен запущенный Docker Desktop. Если тестовый образ ещё
+Для C++-проверок ЛР3–ЛР5, ЛР7 и ЛР8 нужен запущенный Docker Desktop. Если тестовый образ ещё
 не собран: `docker compose --profile tests build tokenizer-tests`.
 
 ## Основные команды
@@ -14,6 +14,7 @@
 | ЛР4 | C++ лемматизатор, CLI, демо и диагностический поиск; подготовка словарей и метрики | `python run_tests.py --lab 4` |
 | ЛР5 | C++ частоты, внешняя сортировка/слияние, модели Ципфа; экспорт типов и подготовка рисунков | `python run_tests.py --lab 5` |
 | ЛР7 | C++ булев индекс, списки документов, словарь, чтение и целостность; подготовка URL | `python run_tests.py --lab 7` |
+| ЛР8 | C++ булевы выражения, потоковые операции, CLI; HTML-форма | `python run_tests.py --lab 8` |
 | Все работы | Все группы C++ и Python | `python run_tests.py --lab all` |
 
 Эти команды одинаковы в **Git Bash и PowerShell**. Скрипт сам запускает
@@ -50,6 +51,7 @@ python -m unittest discover -s tests/python -t . -v
 | ЛР4 | `tests/cpp/lemmatizer_test_lab4.cpp` | `lab4` |
 | ЛР5 | `tests/cpp/zipf_test_lab5.cpp` | `lab5` |
 | ЛР7 | `tests/cpp/boolean_index_test_lab7.cpp` | `lab7` |
+| ЛР8 | `tests/cpp/boolean_search_test_lab8.cpp` | `lab8` |
 
 ## Прямой запуск GoogleTest без Python
 
@@ -57,7 +59,7 @@ python -m unittest discover -s tests/python -t . -v
 Сборка сохраняется в подключённом каталоге `/build`; команда для Git Bash:
 
 ```bash
-MSYS_NO_PATHCONV=1 docker compose run --rm --no-deps tokenizer-tests sh -ec 'cmake -S /src -B /build -G Ninja -DCMAKE_BUILD_TYPE=Release && cmake --build /build --target tokenizer_tests lemmatizer_tests zipf_tests boolean_index_tests --parallel 2'
+MSYS_NO_PATHCONV=1 docker compose run --rm --no-deps tokenizer-tests sh -ec 'cmake -S /src -B /build -G Ninja -DCMAKE_BUILD_TYPE=Release && cmake --build /build --target tokenizer_tests lemmatizer_tests zipf_tests boolean_index_tests boolean_search_tests --parallel 2'
 ```
 
 В PowerShell удалить префикс `MSYS_NO_PATHCONV=1`. После сборки каждый набор
@@ -75,9 +77,12 @@ docker compose run --rm --no-deps tokenizer-tests zipf_tests --gtest_color=yes
 
 # ЛР7: GoogleTest булева индекса
 docker compose run --rm --no-deps tokenizer-tests boolean_index_tests --gtest_color=yes
+
+# ЛР8: GoogleTest булева поиска
+docker compose run --rm --no-deps tokenizer-tests boolean_search_tests --gtest_color=yes
 ```
 
-Эти две команды одинаковы в Git Bash и PowerShell: абсолютных Linux-путей
+Команды запуска тестовых бинарников одинаковы в Git Bash и PowerShell: абсолютных Linux-путей
 в аргументах нет. Они запускают уже собранные бинарники и сами не пересобирают код.
 Имя сервиса `tokenizer-tests` общее: оно не выбирает лабораторную;
 выбор задаётся именем исполняемого файла после сервиса.

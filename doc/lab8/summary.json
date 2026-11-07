@@ -1,0 +1,355 @@
+{
+  "date": "2026-11-07T22:31:26.863106",
+  "repeats": 3,
+  "binary_sha256": "3d2083b54a601622e6bbcdf8c690272424c44cb1630a3c9b82f97deaeb88b47e",
+  "dictionary_sha256": "9cb2227a073a4ed33cec6e60c9fe43593d1d7750800de7d3ebd5c71b132d27ff",
+  "index": "data\\boolean\\lab7_2026-11-07\\index",
+  "modes": {
+    "surface": {
+      "queries": [
+        {
+          "query": "doom",
+          "total": 7469,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "median_ms": 0.861,
+          "samples_ms": [
+            0.861,
+            0.806,
+            1.231
+          ]
+        },
+        {
+          "query": "doom AND quake",
+          "total": 975,
+          "first_ids": [
+            747,
+            1313,
+            2081,
+            2804,
+            3668
+          ],
+          "median_ms": 1.307,
+          "samples_ms": [
+            1.307,
+            1.126,
+            1.365
+          ]
+        },
+        {
+          "query": "doom OR quake",
+          "total": 9597,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "median_ms": 1.396,
+          "samples_ms": [
+            1.396,
+            1.15,
+            1.636
+          ]
+        },
+        {
+          "query": "(doom OR quake) AND NOT minecraft",
+          "total": 9291,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "median_ms": 1241.909,
+          "samples_ms": [
+            1241.909,
+            1094.214,
+            1438.328
+          ]
+        },
+        {
+          "query": "NOT doom",
+          "total": 471364,
+          "first_ids": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "median_ms": 1261.57,
+          "samples_ms": [
+            1114.58,
+            1261.57,
+            1413.127
+          ]
+        },
+        {
+          "query": "games AND doom",
+          "total": 2697,
+          "first_ids": [
+            2280,
+            2804,
+            3135,
+            4093,
+            4373
+          ],
+          "median_ms": 10.858,
+          "samples_ms": [
+            10.858,
+            11.587,
+            6.307
+          ]
+        },
+        {
+          "query": "игры AND doom",
+          "total": 2667,
+          "first_ids": [
+            72,
+            133,
+            747,
+            1013,
+            1486
+          ],
+          "median_ms": 13.628,
+          "samples_ms": [
+            13.628,
+            13.899,
+            7.745
+          ]
+        },
+        {
+          "query": "игрой AND doom",
+          "total": 717,
+          "first_ids": [
+            72,
+            1013,
+            3101,
+            3102,
+            3765
+          ],
+          "median_ms": 3.952,
+          "samples_ms": [
+            3.952,
+            3.996,
+            2.001
+          ]
+        },
+        {
+          "query": "(skyrim OR fallout) AND bethesda",
+          "total": 4425,
+          "first_ids": [
+            6,
+            595,
+            1419,
+            1606,
+            1617
+          ],
+          "median_ms": 2.56,
+          "samples_ms": [
+            8.189,
+            2.56,
+            1.831
+          ]
+        },
+        {
+          "query": "doom AND zzzmissingterm12345",
+          "total": 0,
+          "first_ids": [],
+          "median_ms": 0.951,
+          "samples_ms": [
+            3.101,
+            0.951,
+            0.922
+          ]
+        }
+      ],
+      "wall_ms": 7744.894200004637,
+      "peak_working_set_bytes": 4812800
+    },
+    "lemma": {
+      "queries": [
+        {
+          "query": "doom",
+          "total": 8112,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "median_ms": 0.606,
+          "samples_ms": [
+            0.772,
+            0.606,
+            0.546
+          ]
+        },
+        {
+          "query": "doom AND quake",
+          "total": 989,
+          "first_ids": [
+            747,
+            1313,
+            2081,
+            2804,
+            3668
+          ],
+          "median_ms": 1.032,
+          "samples_ms": [
+            5.209,
+            0.916,
+            1.032
+          ]
+        },
+        {
+          "query": "doom OR quake",
+          "total": 10271,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "median_ms": 1.107,
+          "samples_ms": [
+            1.71,
+            1.107,
+            0.913
+          ]
+        },
+        {
+          "query": "(doom OR quake) AND NOT minecraft",
+          "total": 9938,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "median_ms": 979.295,
+          "samples_ms": [
+            1076.527,
+            979.295,
+            929.897
+          ]
+        },
+        {
+          "query": "NOT doom",
+          "total": 470721,
+          "first_ids": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "median_ms": 1030.082,
+          "samples_ms": [
+            984.83,
+            1030.082,
+            1068.183
+          ]
+        },
+        {
+          "query": "games AND doom",
+          "total": 4653,
+          "first_ids": [
+            1915,
+            2280,
+            2722,
+            2804,
+            2942
+          ],
+          "median_ms": 12.478,
+          "samples_ms": [
+            12.963,
+            12.478,
+            9.906
+          ]
+        },
+        {
+          "query": "игры AND doom",
+          "total": 3703,
+          "first_ids": [
+            72,
+            133,
+            595,
+            747,
+            1013
+          ],
+          "median_ms": 12.756,
+          "samples_ms": [
+            10.165,
+            12.756,
+            13.006
+          ]
+        },
+        {
+          "query": "игрой AND doom",
+          "total": 3703,
+          "first_ids": [
+            72,
+            133,
+            595,
+            747,
+            1013
+          ],
+          "median_ms": 10.988,
+          "samples_ms": [
+            10.633,
+            11.293,
+            10.988
+          ]
+        },
+        {
+          "query": "(skyrim OR fallout) AND bethesda",
+          "total": 4427,
+          "first_ids": [
+            6,
+            595,
+            1419,
+            1606,
+            1617
+          ],
+          "median_ms": 2.004,
+          "samples_ms": [
+            8.985,
+            2.004,
+            1.804
+          ]
+        },
+        {
+          "query": "doom AND zzzmissingterm12345",
+          "total": 0,
+          "first_ids": [],
+          "median_ms": 0.338,
+          "samples_ms": [
+            2.168,
+            0.338,
+            0.333
+          ]
+        }
+      ],
+      "wall_ms": 7648.995499999728,
+      "peak_working_set_bytes": 171409408
+    }
+  },
+  "index_headers": {
+    "terms.bin": "4d41494954370001d0d726000000000080b8110600000000f96c263dc97f597d3c4b9a1bacddb94b921a6009ce90769dd0162e81230100dd030000000000000028000000000000005706b6686a140788",
+    "postings.bin": "4d414949503700019cded80a00000000e0f4c6560000000050b9bf6e1b9f74803c4b9a1bacddb94b921a6009ce90769dd0162e81230100dd030000000000000008000000000000005706b6686a140788",
+    "documents.bin": "4d41494944370001714e070000000000409cd30100000000d20490e1deb19ee73c4b9a1bacddb94b921a6009ce90769dd0162e81230100dd030000000000000040000000000000005706b6686a140788",
+    "strings.bin": "4d41494953370001eab8bd0700000000eab8bd070000000070ad353ddbd2603a3c4b9a1bacddb94b921a6009ce90769dd0162e81230100dd030000000000000001000000000000005706b6686a140788"
+  }
+}

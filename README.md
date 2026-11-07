@@ -19,3 +19,7 @@ Python используется для экспорта и рисунков.
 ЛР7: [построение и чтение булева индекса](doc/lab7_run.md),
 [результаты](doc/lab7/README.md), [отчёт PDF](doc/report_lab7.pdf).
 Прямые GoogleTest: `docker compose run --rm --no-deps tokenizer-tests boolean_index_tests`.
+
+ЛР8: [булев поиск и веб-форма](doc/lab8_run.md), [результаты запросов](doc/lab8/README.md),
+[отчёт PDF](doc/report_lab8.pdf). Прямые GoogleTest:
+`docker compose run --rm --no-deps tokenizer-tests boolean_search_tests`.
