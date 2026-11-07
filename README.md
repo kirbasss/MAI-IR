@@ -9,3 +9,9 @@
 Тесты: `tests/cpp/` — C++/GoogleTest, `tests/python/` — Python,
 `tests/fixtures/` — общие примеры. Запуск по работе:
 `python run_tests.py --lab 4`. Все команды описаны в [doc/testing.md](doc/testing.md).
+
+ЛР5: [запуск](doc/lab5_run.md), [результаты и графики](doc/lab5/README.md),
+[отчёт PDF](doc/report_lab5.pdf). Подсчёт частот и внешнее слияние — на C++;
+Python используется для экспорта и рисунков.
+Отдельное [сравнение словоформ и лемматизации](doc/lab5/comparison/README.md)
+выполнено на том же снимке корпуса с сохранением числа вхождений.

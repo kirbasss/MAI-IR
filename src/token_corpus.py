@@ -24,7 +24,8 @@ def mongo_documents(db, *, batch_size: int = 100) -> Iterator[dict]:
     cursor = db.documents.find(
         {"indexable": {"$ne": False}, "parsed.parse_error": None},
         {"url": 1, "source": 1, "fetched_at": 1, "content_sha256": 1,
-         "parsed.title": 1, "parsed.text": 1, "parsed.parse_error": 1},
+         "parsed.title": 1, "parsed.text": 1, "parsed.parse_error": 1,
+         "parsed.category": 1, "parsed.metadata.content_kind": 1},
     ).sort("_id", 1).batch_size(batch_size)
     try:
         yield from cursor
@@ -63,6 +64,8 @@ def export_snapshot(documents: Iterable[dict], output: Path, *, origin: str) -> 
     output.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=f".{output.name}-", dir=output.parent))
     digest = hashlib.sha256()
+    groups_digest = hashlib.sha256()
+    publication_types: Counter[str] = Counter()
     counts: Counter[str] = Counter()
     input_bytes = 0
     title_only = 0
@@ -72,7 +75,7 @@ def export_snapshot(documents: Iterable[dict], output: Path, *, origin: str) -> 
     try:
         with (staging / "corpus.bin").open("wb") as corpus, (staging / "documents.jsonl").open(
             "w", encoding="utf-8", newline="\n"
-        ) as metadata:
+        ) as metadata, (staging / "groups.tsv").open("wb") as groups:
             def write(value: bytes) -> None:
                 corpus.write(value)
                 digest.update(value)
@@ -106,10 +109,21 @@ def export_snapshot(documents: Iterable[dict], output: Path, *, origin: str) -> 
                 input_bytes += len(title) + len(text)
                 title_only += not bool(text.strip())
                 counts[source] += 1
+                category = parsed.get("category")
+                publication_type = category.lower() if isinstance(category, str) else "unknown"
+                if publication_type not in {"news", "article", "review", "blog"}:
+                    publication_type = "unknown"
+                publication_types[publication_type] += 1
+                group_record = f"{count}\t{publication_type}\n".encode("ascii")
+                groups.write(group_record)
+                groups_digest.update(group_record)
+                extra = parsed.get("metadata")
+                content_kind = extra.get("content_kind") if isinstance(extra, dict) else None
                 metadata.write(json.dumps({
                     "document_id": count, "url": url, "source": source,
                     "fetched_at": document.get("fetched_at"),
                     "content_sha256": document.get("content_sha256"),
+                    "category": category, "publication_type": publication_type, "content_kind": content_kind,
                 }, ensure_ascii=False) + "\n")
         if count == 0:
             raise ValueError("No indexable documents with a title or text")
@@ -119,6 +133,8 @@ def export_snapshot(documents: Iterable[dict], output: Path, *, origin: str) -> 
             "origin": origin, "documents": count, "title_only_documents": title_only,
             "skipped_documents": skipped, "input_utf8_bytes": input_bytes,
             "corpus_sha256": digest.hexdigest(), "sources": dict(sorted(counts.items())),
+            "groups_sha256": groups_digest.hexdigest(),
+            "publication_types": dict(sorted(publication_types.items())),
             "fields": ["title", "text"],
         }
         (staging / "manifest.json").write_text(

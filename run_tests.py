@@ -19,6 +19,7 @@ PYTHON_SUITES = {
     ),
     "3": ("test_corpus_export", "test_lab3_demo", "test_lab3_runner"),
     "4": ("test_lemma_dictionary", "test_lemma_evaluation"),
+    "5": ("test_lab5",),
 }
 
 
@@ -28,8 +29,8 @@ def python_modules(lab: str) -> list[str]:
 
 
 def cpp_command(lab: str) -> list[str]:
-    if lab not in ("3", "4", "all"):
-        raise ValueError("C++ tests exist only for labs 3 and 4")
+    if lab not in ("3", "4", "5", "all"):
+        raise ValueError("C++ tests exist for labs 3, 4 and 5")
     label = "" if lab == "all" else " -L lab" + lab
     # Rebuild before testing so that CTest labels and binaries match the sources.
     script = ("cmake -S /src -B /build -G Ninja -DCMAKE_BUILD_TYPE=Release"
@@ -40,7 +41,7 @@ def cpp_command(lab: str) -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--lab", choices=("1", "2", "3", "4", "all"),
+    parser.add_argument("--lab", choices=("1", "2", "3", "4", "5", "all"),
                         help="selected lab, including its C++ tests when applicable")
     kind = parser.add_mutually_exclusive_group()
     kind.add_argument("--python-only", action="store_true")
@@ -55,11 +56,11 @@ def main() -> int:
             print(f"Lab {group}: Python")
             for name in PYTHON_SUITES[group]:
                 print("  tests.python." + name)
-            if group in ("3", "4"):
+            if group in ("3", "4", "5"):
                 print(f"  C++/GoogleTest + CLI: CTest label lab{group}")
         return 0
     try:
-        if lab in ("3", "4", "all") and not args.python_only and (args.lab or args.cpp_only):
+        if lab in ("3", "4", "5", "all") and not args.python_only and (args.lab or args.cpp_only):
             print(f"C++ tests: {lab}", flush=True)
             code = subprocess.run(cpp_command(lab), cwd=ROOT).returncode
             if code:
