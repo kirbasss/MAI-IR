@@ -22,6 +22,7 @@ services:
       - ./data/tokenization:/corpus:ro
       - ./data/lemmas:/lemmas:ro
       - ./data/boolean:/indexes:ro
+      - ./data/positions:/positions:ro
       - tokenizer_test_build:/build
 
 volumes:

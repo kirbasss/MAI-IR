@@ -13,8 +13,9 @@ ROOT = Path(__file__).resolve().parent
 
 
 class NativeSearch:
-    def __init__(self, binary: Path, index: Path, dictionary: Path | None):
+    def __init__(self, binary: Path, index: Path, dictionary: Path | None, positions: Path | None = None):
         self.binary, self.index, self.dictionary = binary, index, dictionary
+        self.positions = positions
 
     def search(self, query: str, space: str):
         if space not in ("surface", "lemma"):
@@ -24,6 +25,8 @@ class NativeSearch:
         if space == "lemma" and not self.dictionary:
             raise ValueError("Для поиска по леммам нужен морфологический словарь")
         command = [str(self.binary), "--index", str(self.index), "--space", space, "--limit", "20"]
+        if self.positions:
+            command += ["--positions", str(self.positions)]
         if space == "lemma":
             command += ["--dict", str(self.dictionary)]
         # stdin preserves UTF-8 on Windows and avoids command-shell interpretation.
@@ -70,7 +73,8 @@ input{{flex:1;min-width:260px}}button{{background:#194da0;color:white;cursor:poi
 <input name="q" aria-label="Запрос" value="{escape(query, quote=True)}" placeholder="doom AND (ремейк OR remake)">
 <select name="space" aria-label="Режим"><option value="surface"{selected("surface")}>Словоформы</option><option value="lemma"{selected("lemma")}>Леммы</option></select>
 <button>Найти</button></form><p class="meta">Операторы: NOT → AND → OR, скобки. Между словами указывайте оператор.
-Пример: (doom OR quake) AND NOT minecraft. Поиск по леммам учитывает все словарные разборы.</p>{body}</html>'''
+Пример: (doom OR quake) AND NOT minecraft. Фразы в двойных кавычках требуют соседства слов в указанном порядке.
+Поиск по леммам учитывает все словарные разборы.</p>{body}</html>'''
 
 
 def handler(backend):
@@ -105,13 +109,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--index", type=Path, required=True)
     parser.add_argument("--dict", type=Path)
+    parser.add_argument("--positions", type=Path, help="positional index for quoted phrases")
     parser.add_argument("--binary", type=Path, default=ROOT/"build/boolean-native/boolean_search.exe")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8080)
     args = parser.parse_args()
     if not args.binary.is_file() or not (args.index/"terms.bin").is_file():
         parser.error("Сначала соберите boolean_search и укажите готовый индекс ЛР7")
-    backend = NativeSearch(args.binary.resolve(), args.index.resolve(), args.dict.resolve() if args.dict else None)
+    backend = NativeSearch(args.binary.resolve(), args.index.resolve(), args.dict.resolve() if args.dict else None,
+                           args.positions.resolve() if args.positions else None)
     # Sequential server bounds simultaneous native workers and dictionary memory.
     with HTTPServer((args.host, args.port), handler(backend)) as server:
         print(f"Поиск: http://{args.host}:{server.server_port}/", flush=True)

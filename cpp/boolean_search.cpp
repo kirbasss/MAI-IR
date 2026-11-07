@@ -83,7 +83,7 @@ void print_document(FILE* out,gaming::BooleanIndex& index,U64 id) {
 }
 }
 
-bool gaming::BooleanSearch::open(const char* directory,TermSpace space,const char* dictionary,const char** error) {
+bool gaming::BooleanSearch::open(const char* directory,TermSpace space,const char* dictionary,const char** error,const char* positions) {
     *error=nullptr;
     try {
         check(index_.open(directory,error),*error);
@@ -93,19 +93,22 @@ bool gaming::BooleanSearch::open(const char* directory,TermSpace space,const cha
             if (hash_file(dictionary)!=index_.dictionary_hash()) throw "Dictionary fingerprint differs from index";
             check(morphology_.load(dictionary,error),*error);
         }
+        if (positions) check(positions_.open(positions,directory,index_,error),*error);
         space_=space; return true;
     } catch (const char* e) { *error=e; return false; }
 }
 
 struct gaming::BooleanQuery::State {
-    enum Kind { term,universe,intersection,unite,difference };
+    enum Kind { term,phrase,universe,intersection,unite,difference };
     struct Node {
         Kind kind=term; int left=-1,right=-1;
         PostingCursor cursor;
+        PhraseQuery* phrase_query=nullptr;
+        ~Node() { delete phrase_query; }
         U64 position=0,head=0;
         bool ready=false,ended=false;
     };
-    enum Lexeme { end,word,land,lor,lnot,lp,rp };
+    enum Lexeme { end,word,quoted,land,lor,lnot,lp,rp };
     BooleanSearch& engine;
     Node nodes[max_nodes]; unsigned used=0,operands=0;
     int root=-1; const char* position; const char* start=nullptr; std::size_t size=0; Lexeme lex=end;
@@ -124,10 +127,14 @@ struct gaming::BooleanQuery::State {
         case '&': lex=land; ++position; return;
         case '|': lex=lor; ++position; return;
         case '!': lex=lnot; ++position; return;
-        case '"': case '\'': throw "Quoted/phrase search is not supported; use Boolean operators";
+        case '"':
+            start=++position;
+            while (*position && *position!='"') ++position;
+            if (!*position) throw "Missing closing quote";
+            size=static_cast<std::size_t>(position-start); ++position; lex=quoted; return;
         default: break;
         }
-        while (*position && !whitespace(*position) && !std::strchr("()&|!\"'",*position)) ++position;
+        while (*position && !whitespace(*position) && !std::strchr("()&|!\"",*position)) ++position;
         size=static_cast<std::size_t>(position-start); lex=word;
         if (size==3 && !std::memcmp(start,"AND",3)) lex=land;
         if (size==2 && !std::memcmp(start,"OR",2)) lex=lor;
@@ -145,6 +152,11 @@ struct gaming::BooleanQuery::State {
     }
     int atom() {
         if (++operands>max_operands) throw "Too many operands (maximum 64)";
+        if (lex==quoted) {
+            const int n=node(phrase); nodes[n].phrase_query=new PhraseQuery; const char* error=nullptr;
+            check(nodes[n].phrase_query->compile(engine.positions(),engine.space(),engine.morphology(),start,size,&error),error);
+            scan(); return n;
+        }
         char normalized[max_query+1]; std::size_t length=0; unsigned count=0;
         gaming::tokenize(std::string_view(start,size),[&](const Token& t) {
             if (++count!=1 || t.term.size()>max_query) throw "Each operand must produce one token; join words with AND";
@@ -163,7 +175,7 @@ struct gaming::BooleanQuery::State {
         if (depth>max_depth) throw "Query nesting too deep (maximum 64)";
         if (lex==lnot) { scan(); const int child=unary(depth+1),all=node(universe); return node(difference,all,child); }
         if (lex==lp) { scan(); const int n=expression(depth+1); if (lex!=rp) throw "Missing closing parenthesis"; scan(); return n; }
-        if (lex!=word) throw "Expected a word, NOT or opening parenthesis";
+        if (lex!=word && lex!=quoted) throw "Expected a word, quoted phrase, NOT or opening parenthesis";
         return atom();
     }
     int conjunction(unsigned depth) {
@@ -180,6 +192,7 @@ struct gaming::BooleanQuery::State {
         Node& n=nodes[id]; if (n.ready) return true; if (n.ended) return false;
         U64 value=0; const char* error=nullptr; bool found=false;
         if (n.kind==term) { found=n.cursor.next(value,&error); if (error) throw error; }
+        else if (n.kind==phrase) { found=n.phrase_query->next(value,&error); if (error) throw error; }
         else if (n.kind==universe) {
             if (n.position<engine.index().documents()) {
                 DocumentInfo d; check(engine.index().document_at(n.position++,d,&error),error);
@@ -258,17 +271,19 @@ void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FI
 }
 int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE* output,FILE* errors) {
     try {
-        const char *directory=nullptr,*dictionary=nullptr,*query=nullptr; TermSpace space=TermSpace::surface; unsigned limit=10;
+        const char *directory=nullptr,*dictionary=nullptr,*query=nullptr,*positions=nullptr; TermSpace space=TermSpace::surface; unsigned limit=10;
         for (int i=1;i<argc;++i) {
             const char* arg=argv[i];
             if (!std::strcmp(arg,"--help")) {
-                std::fputs("UTF-8 Boolean search: boolean_search --index DIR [--space surface|lemma] [--dict FILE] [--limit 0..1000] [--query QUERY]\n"
+                std::fputs("UTF-8 Boolean/phrase search: boolean_search --index DIR [--positions DIR] [--space surface|lemma] [--dict FILE] [--limit 0..1000] [--query QUERY]\n"
                            "Without --query: one query per stdin line; one JSON result per stdout line.\n"
-                           "Operators: NOT > AND > OR, parentheses, aliases ! & |. Explicit operators required.\n",output); return 0;
+                           "Operators: NOT > AND > OR, parentheses, aliases ! & |. Explicit operators required.\n"
+                           "Double quotes require adjacent tokens in order within one field; --positions is required.\n",output); return 0;
             }
             if (i+1==argc) throw "Missing option value";
             const char* value=argv[++i];
             if (!std::strcmp(arg,"--index")) directory=value;
+            else if (!std::strcmp(arg,"--positions")) positions=value;
             else if (!std::strcmp(arg,"--dict")) dictionary=value;
             else if (!std::strcmp(arg,"--query")) query=value;
             else if (!std::strcmp(arg,"--space")) {
@@ -282,7 +297,7 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
             } else throw "Unknown option";
         }
         if (!directory) throw "--index is required";
-        BooleanSearch engine; const char* error=nullptr; check(engine.open(directory,space,dictionary,&error),error);
+        BooleanSearch engine; const char* error=nullptr; check(engine.open(directory,space,dictionary,&error,positions),error);
         bool failed=false;
         auto process=[&](const char* text) {
             try { run_query(engine,text,limit,output); }

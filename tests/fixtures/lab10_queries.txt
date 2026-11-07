@@ -1,0 +1,8 @@
+doom AND eternal
+"doom eternal"
+"eternal doom"
+"doom eternal" AND NOT quake
+god AND of AND war
+"god of war"
+"дата выхода"
+"даты выхода"

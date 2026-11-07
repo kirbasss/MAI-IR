@@ -17,7 +17,8 @@ public:
     BooleanIndex(const BooleanIndex&)=delete;
     BooleanIndex& operator=(const BooleanIndex&)=delete;
     bool open(const char* directory,const char** error);
-    bool lookup(const char* term,std::size_t size,TermSpace space,PostingList& result,const char** error);
+    bool lookup(const char* term,std::size_t size,TermSpace space,PostingList& result,const char** error,
+                std::uint64_t* term_number=nullptr);
     bool document(std::uint64_t id,DocumentInfo& result,const char** error);
     bool document_at(std::uint64_t position,DocumentInfo& result,const char** error);
     bool text(std::uint64_t offset,std::size_t size,char* destination,const char** error);

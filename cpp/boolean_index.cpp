@@ -486,8 +486,9 @@ bool gaming::BooleanIndex::open(const char* directory,const char** error) {
         dictionary_hash_=h[0].dictionary; flags_=h[0].flags; return true;
     } catch (const char* e) { close(); *error=e; return false; }
 }
-bool gaming::BooleanIndex::lookup(const char* word,std::size_t size,TermSpace space,PostingList& result,const char** error) {
+bool gaming::BooleanIndex::lookup(const char* word,std::size_t size,TermSpace space,PostingList& result,const char** error,U64* term_number) {
     result={}; *error=nullptr;
+    if (term_number) *term_number=UINT64_MAX;
     try {
         if (!term_file_) throw "Index is not open";
         if (!word || !size || size>max_field || !utf8(word,size)) throw "Invalid lookup token";
@@ -499,7 +500,7 @@ bool gaming::BooleanIndex::lookup(const char* word,std::size_t size,TermSpace sp
             bounds(r.string,r.size,strings_); bounds(r.offset,r.count*8,postings_*8);
             buffer.resize(r.size); seek(string_file_,header_size+r.string); read(string_file_,buffer.data,buffer.size);
             const Pair p{r.space,r.size,0,buffer.data}; const int c=term_compare(static_cast<unsigned>(space),word,size,p);
-            if (!c) { result={r.offset,r.count}; return true; }
+            if (!c) { result={r.offset,r.count}; if (term_number) *term_number=mid; return true; }
             if (c<0) right=mid; else left=mid+1;
         }
         return true; // a valid absent term has an empty posting list
