@@ -21,6 +21,7 @@ services:
       - ./tests/fixtures:/src/tests/fixtures:ro
       - ./data/tokenization:/corpus:ro
       - ./data/lemmas:/lemmas:ro
+      - ./data/boolean:/indexes:ro
       - tokenizer_test_build:/build
 
 volumes:

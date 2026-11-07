@@ -15,3 +15,7 @@
 Python используется для экспорта и рисунков.
 Отдельное [сравнение словоформ и лемматизации](doc/lab5/comparison/README.md)
 выполнено на том же снимке корпуса с сохранением числа вхождений.
+
+ЛР7: [построение и чтение булева индекса](doc/lab7_run.md),
+[результаты](doc/lab7/README.md), [отчёт PDF](doc/report_lab7.pdf).
+Прямые GoogleTest: `docker compose run --rm --no-deps tokenizer-tests boolean_index_tests`.
