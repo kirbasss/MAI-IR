@@ -1,0 +1,23 @@
+{
+  "version": "lab4-title-diagnostic-v1",
+  "snapshot_sha256": "b77347a9f8a6dc1d739696e4e7b60d799def07c0d8a6ed2671690a804700c8ef",
+  "field": "title",
+  "k": 5,
+  "selection": "Purpose-built diagnostic pool of real publications: Russian inflection, English inflection, game names, and Windows/window ambiguity. Not a random or representative sample.",
+  "judgment_method": "Provisional author judgments from titles and inspected article excerpts, specified by information need before running the ranking comparison. Not independent human assessor judgments; should be reviewed by the student. Every unlisted document in this fixed pool is explicitly judged 0 for that query. Positive grades are 1.",
+  "document_ids": [73, 93, 123, 139, 367, 418, 631, 1132, 1369, 1960, 5186, 6033, 6570, 7875, 9078, 9667, 10155, 12349, 12370, 12454, 12461, 12793, 13249, 13620, 13736, 14783, 14802, 14873, 14936, 14999, 15369, 15437, 15705, 16211, 20003, 20120, 20477],
+  "queries": [
+    {"id": "q01", "text": "обновления Nintendo", "intent": "Материалы об изменениях, внесённых обновлением системы Nintendo 3DS.", "relevant": {"73": 1}},
+    {"id": "q02", "text": "модификации Minecraft", "intent": "Публикации о модификациях и сборках модов для Minecraft; язык публикации не ограничен.", "relevant": {"1132": 1, "9078": 1}},
+    {"id": "q03", "text": "модификации Elden Ring", "intent": "Публикации о модификациях Elden Ring.", "relevant": {"1960": 1}},
+    {"id": "q04", "text": "обзоры гарнитур", "intent": "Обзоры игровых гарнитур, не обзоры самих игр.", "relevant": {"367": 1}},
+    {"id": "q05", "text": "mod Skyrim", "intent": "Публикации о модификациях Skyrim и их поддержке на платформах.", "relevant": {"13249": 1, "14873": 1}},
+    {"id": "q06", "text": "reviews Witcher", "intent": "Обзоры The Witcher; новости о включённых модификациях не являются обзорами.", "relevant": {"10155": 1}},
+    {"id": "q07", "text": "games mod", "intent": "Публикации о модификациях компьютерных игр, на любом из двух языков корпуса.", "relevant": {"1132": 1, "1960": 1, "5186": 1, "6033": 1, "9078": 1, "12793": 1, "13249": 1, "14873": 1}},
+    {"id": "q08", "text": "release windows", "intent": "Новости об ориентировочных сроках выхода игр, не об операционной системе Windows.", "relevant": {"12349": 1, "12454": 1, "13620": 1, "14936": 1, "16211": 1}},
+    {"id": "q09", "text": "Saw", "intent": "Игровые адаптации кинофраншизы Saw (Пила). The Texas Chain Saw Massacre, Saw Shark и Last Time I Saw You относятся к другим сущностям.", "relevant": {"7875": 1, "14783": 1}},
+    {"id": "q10", "text": "Windows", "intent": "Материалы об операционной системе Microsoft Windows, не о сроках выхода игр (release window).", "relevant": {"139": 1, "418": 1, "20003": 1, "20120": 1, "20477": 1}},
+    {"id": "q11", "text": "S.T.A.L.K.E.R.", "intent": "Публикации о серии S.T.A.L.K.E.R. и её создании.", "relevant": {"631": 1, "1369": 1}},
+    {"id": "q12", "text": "Windows 10", "intent": "Материалы о Windows 10: контекстная версия предыдущего запроса.", "relevant": {"139": 1, "418": 1, "20003": 1, "20120": 1, "20477": 1}}
+  ]
+}

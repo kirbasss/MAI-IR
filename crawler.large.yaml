@@ -1,0 +1,33 @@
+db:
+  uri: mongodb://127.0.0.1:27017
+  name: mai_ir
+
+logic:
+  # Refresh only due sources; their MongoDB schedule survives crawler restarts.
+  # Union new URLs with the saved inventory, then seed MongoDB.
+  # max_documents limits requests in this run, not the number of queued URLs.
+  inventory: data/discovery/inventory_all/url_inventory.tsv
+  refresh_sitemaps: true
+  sitemap_sources: [stopgame, playground, ixbt_games, igromania, pcgamer, eurogamer, gamemag, gamingonlinux]
+  discovery_data_dir: data
+  sitemap_refresh_interval_seconds: 86400  # Per site, including across restarts.
+  sitemap_cache_ttl_seconds: 3600          # Child maps without lastmod: at most one hour of staleness.
+  sitemap_recheck_seconds: 86400           # Recheck even unchanged lastmod over HTTP at least daily.
+  download_workers: 4                   # Concurrent downloads across DIFFERENT sites; one per site.
+  parse_mode: deferred                  # Run `python parse_worker.py crawler.large.yaml --follow` separately.
+  disk_watch_paths: ["D:/", "C:/"]      # Docker VHDX and local inventory/cache, NOT just the project disk.
+  min_free_disk_gib: 4.5                 # Stop before new work; never delete data automatically.
+  check_mongo_disk: true                # Also check free space inside Docker's MongoDB filesystem.
+  disk_check_interval_seconds: 5        # MongoDB probe cache; host disks are checked on every guard call.
+  global_delay_seconds: 0.5              # Between HTTP request STARTS, shared by all download threads.
+  local_delay_seconds: 3                 # Default for requests to the same site.
+  source_delays_seconds:
+    stopgame: 5                          # Override for one site; robots Crawl-delay also applies.
+  revisit_seconds: 2592000
+  retry_seconds: 21600
+  lease_seconds: 600
+  request_timeout_seconds: 30
+  seed_batch_size: 500
+  max_documents: 60000
+  run_forever: false
+  poll_seconds: 60

@@ -1,0 +1,34 @@
+services:
+  mongo:
+    image: mongo:8.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  tokenizer-tests:
+    profiles: [tests]
+    build:
+      context: ./docker/tokenizer-tests
+    network_mode: none
+    environment:
+      PATH: /build:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    volumes:
+      - ./CMakeLists.txt:/src/CMakeLists.txt:ro
+      - ./cpp:/src/cpp:ro
+      - ./tests/cpp:/src/tests/cpp:ro
+      - ./tests/fixtures:/src/tests/fixtures:ro
+      - ./data/tokenization:/corpus:ro
+      - ./data/lemmas:/lemmas:ro
+      - ./data/boolean:/indexes:ro
+      - ./data/positions:/positions:ro
+      - ./data/compact:/compact:ro
+      - ./data/skips:/skips:ro
+      - tokenizer_test_build:/build
+
+volumes:
+  mongo_data:
+    name: mai-ir-mongo
+  tokenizer_test_build:
+    name: mai-ir-tokenizer-tests

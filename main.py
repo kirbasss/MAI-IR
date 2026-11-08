@@ -6,6 +6,7 @@ from pathlib import Path
 
 from src.discovery import SITEMAP_ROOTS, discover_sitemaps, merge_inventories
 from src.downloader import collect_file, parse_fixture_manifest, reparse_saved_documents
+from src.inventory_sample import sample_inventory
 from src.statistics import build_statistics
 
 
@@ -78,6 +79,14 @@ def main() -> None:
         help="каталог объединённого инвентаря",
     )
 
+    sample = sub.add_parser(
+        "sample-inventory", help="выбрать воспроизводимую выборку URL по источникам"
+    )
+    sample.add_argument("input", type=Path, help="полный url_inventory.tsv")
+    sample.add_argument("output", type=Path, help="путь для выборки TSV")
+    sample.add_argument("--per-source", type=int, default=100)
+    sample.add_argument("--seed", type=int, default=42)
+
     args = parser.parse_args()
     if args.command == "collect":
         collect_file(args.urls, data_dir=args.data_dir, delay_seconds=args.delay)
@@ -108,6 +117,13 @@ def main() -> None:
     elif args.command == "merge-inventories":
         print(json.dumps(
             merge_inventories(args.input_dirs, args.output_dir),
+            ensure_ascii=False,
+            indent=2,
+        ))
+    elif args.command == "sample-inventory":
+        print(json.dumps(
+            sample_inventory(args.input, args.output, per_source=args.per_source,
+                             seed=args.seed),
             ensure_ascii=False,
             indent=2,
         ))

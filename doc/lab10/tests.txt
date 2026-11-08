@@ -1,0 +1,54 @@
+C++ tests: 10
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build
+[1/7] Building CXX object CMakeFiles/positional_index_core.dir/cpp/positional_index.cpp.o
+[2/7] Linking CXX static library libpositional_index_core.a
+[3/7] Linking CXX executable positional_index
+[4/7] Linking CXX executable boolean_search
+[5/7] Linking CXX executable boolean_search_tests
+[6/7] Building CXX object CMakeFiles/phrase_search_tests.dir/tests/cpp/phrase_search_test_lab10.cpp.o
+[7/7] Linking CXX executable phrase_search_tests
+Internal ctest changing into directory: /build
+Test project /build
+      Start  95: Phrases.AdjacentOrderedTokensAndNoCrossFieldMatch
+ 1/13 Test  #95: Phrases.AdjacentOrderedTokensAndNoCrossFieldMatch ........................   Passed    0.04 sec
+      Start  96: Phrases.RepeatedWordsOverlappingOccurrencesAndUnknownTokens
+ 2/13 Test  #96: Phrases.RepeatedWordsOverlappingOccurrencesAndUnknownTokens ..............   Passed    0.01 sec
+      Start  97: Phrases.PhrasesCombineWithBooleanOperatorsInBothSpaces
+ 3/13 Test  #97: Phrases.PhrasesCombineWithBooleanOperatorsInBothSpaces ...................   Passed    0.01 sec
+      Start  98: Phrases.LemmaAlternativesStayAtOriginalPositionAndDoNotInventNeighbors
+ 4/13 Test  #98: Phrases.LemmaAlternativesStayAtOriginalPositionAndDoNotInventNeighbors ...   Passed    0.02 sec
+      Start  99: Phrases.CoordinatesExposeFieldAndTokenPositionAndVerify
+ 5/13 Test  #99: Phrases.CoordinatesExposeFieldAndTokenPositionAndVerify ..................   Passed    0.01 sec
+      Start 100: Phrases.MalformedQuotesEmptyPhrasesAndMissingPositionsAreErrors
+ 6/13 Test #100: Phrases.MalformedQuotesEmptyPhrasesAndMissingPositionsAreErrors ..........   Passed    0.01 sec
+      Start 101: Phrases.CorruptedTruncatedIncompleteAndWrongBindingAreRejected
+ 7/13 Test #101: Phrases.CorruptedTruncatedIncompleteAndWrongBindingAreRejected ...........   Passed    0.02 sec
+      Start 102: Phrases.WrongCorpusDictionaryAndExistingOutputAreProtected
+ 8/13 Test #102: Phrases.WrongCorpusDictionaryAndExistingOutputAreProtected ...............   Passed    0.01 sec
+      Start 103: Phrases.ExternalMergeAcrossMoreThan24RunsMatchesLargeBufferByteForByte
+ 9/13 Test #103: Phrases.ExternalMergeAcrossMoreThan24RunsMatchesLargeBufferByteForByte ...   Passed    1.49 sec
+      Start 104: Phrases.EmptyCorpusAndSurfaceOnlyCoordinateIndex
+10/13 Test #104: Phrases.EmptyCorpusAndSurfaceOnlyCoordinateIndex .........................   Passed    0.02 sec
+      Start 105: Phrases.GeneratedPhrasesMatchIndependentSlidingWindowReference
+11/13 Test #105: Phrases.GeneratedPhrasesMatchIndependentSlidingWindowReference ...........   Passed    0.02 sec
+      Start 106: Phrases.CliQuotedQueriesAndMalformedLineRecovery
+12/13 Test #106: Phrases.CliQuotedQueriesAndMalformedLineRecovery .........................   Passed    0.02 sec
+      Start 114: PositionalIndexProcess.Help
+13/13 Test #114: PositionalIndexProcess.Help ..............................................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 13
+
+Label Time Summary:
+lab10    =   1.70 sec*proc (13 tests)
+
+Total Test time (real) =   1.72 sec
+Python tests: 10
+test_coordinates_and_quoted_query_reach_native_without_shell (tests.python.test_lab10.PhraseWebTests.test_coordinates_and_quoted_query_reach_native_without_shell) ... ok
+test_native_phrase_errors_remain_visible_to_form (tests.python.test_lab10.PhraseWebTests.test_native_phrase_errors_remain_visible_to_form) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.004s
+
+OK

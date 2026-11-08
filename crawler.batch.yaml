@@ -1,0 +1,26 @@
+db:
+  uri: mongodb://127.0.0.1:27017
+  name: mai_ir
+
+logic:
+  # Generate this file with `python main.py sample-inventory` before running.
+  inventory: data/discovery/inventory_batch/url_inventory.tsv
+  refresh_sitemaps: false  # Fixed sample, not the normal live-discovery mode.
+  download_workers: 1
+  parse_mode: inline
+  disk_watch_paths: ["D:/", "C:/"]
+  min_free_disk_gib: 5
+  check_mongo_disk: true
+  disk_check_interval_seconds: 5
+  global_delay_seconds: 0.5
+  local_delay_seconds: 3
+  source_delays_seconds:
+    stopgame: 5
+  revisit_seconds: 2592000
+  retry_seconds: 21600
+  lease_seconds: 600
+  request_timeout_seconds: 30
+  seed_batch_size: 500
+  max_documents: 250
+  run_forever: false
+  poll_seconds: 60

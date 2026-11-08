@@ -1,0 +1,49 @@
+C++ tests: 5
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build
+ninja: no work to do.
+Internal ctest changing into directory: /build
+Test project /build
+      Start 63: Zipf.CountsActualTokensAndAllGroupDimensions
+ 1/12 Test #63: Zipf.CountsActualTokensAndAllGroupDimensions .......................   Passed    0.03 sec
+      Start 64: Zipf.FieldSelectionAndUnknownSourceAreExplicit
+ 2/12 Test #64: Zipf.FieldSelectionAndUnknownSourceAreExplicit .....................   Passed    0.02 sec
+      Start 65: Zipf.LemmasMergeUnambiguousFormsAndPreserveAmbiguityAndTokenMass
+ 3/12 Test #65: Zipf.LemmasMergeUnambiguousFormsAndPreserveAmbiguityAndTokenMass ...   Passed    0.03 sec
+      Start 66: Zipf.MissingDictionaryIsRejectedBeforeCreatingOutput
+ 4/12 Test #66: Zipf.MissingDictionaryIsRejectedBeforeCreatingOutput ...............   Passed    0.01 sec
+      Start 67: Zipf.NormalizedZipfConservesTheTotalAndSmallFitIsNull
+ 5/12 Test #67: Zipf.NormalizedZipfConservesTheTotalAndSmallFitIsNull ..............   Passed    0.04 sec
+      Start 68: Zipf.PowerFitRecoversAKnownZipfDistribution
+ 6/12 Test #68: Zipf.PowerFitRecoversAKnownZipfDistribution ........................   Passed    0.05 sec
+      Start 69: Zipf.EmptyAndPunctuationOnlyInputsHaveNoInventedTerms
+ 7/12 Test #69: Zipf.EmptyAndPunctuationOnlyInputsHaveNoInventedTerms ..............   Passed    0.01 sec
+      Start 70: Zipf.SpillingAndMultipleMergePassesPreserveEveryFrequency
+ 8/12 Test #70: Zipf.SpillingAndMultipleMergePassesPreserveEveryFrequency ..........   Passed    2.22 sec
+      Start 71: Zipf.MalformedCorpusAndUtf8AreMarkedIncomplete
+ 9/12 Test #71: Zipf.MalformedCorpusAndUtf8AreMarkedIncomplete .....................   Passed    0.01 sec
+      Start 72: Zipf.GroupIdsMustMatchExactlyAndExtraRowsAreRejected
+10/12 Test #72: Zipf.GroupIdsMustMatchExactlyAndExtraRowsAreRejected ...............   Passed    0.01 sec
+      Start 73: Zipf.ExistingOutputAndInvalidOptionsCannotDestroyResults
+11/12 Test #73: Zipf.ExistingOutputAndInvalidOptionsCannotDestroyResults ...........   Passed    0.01 sec
+      Start 78: ZipfProcess.Help
+12/12 Test #78: ZipfProcess.Help ...................................................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 12
+
+Label Time Summary:
+lab5    =   2.44 sec*proc (12 tests)
+
+Total Test time (real) =   2.45 sec
+Python tests: 5
+test_comparison_rejects_token_duplication_and_vocabulary_growth (tests.python.test_lab5.Lab5ExportTests.test_comparison_rejects_token_duplication_and_vocabulary_growth) ... ok
+test_comparison_requires_identical_snapshot_and_parameters (tests.python.test_lab5.Lab5ExportTests.test_comparison_requires_identical_snapshot_and_parameters) ... ok
+test_old_snapshots_without_types_remain_usable_and_corruption_is_rejected (tests.python.test_lab5.Lab5ExportTests.test_old_snapshots_without_types_remain_usable_and_corruption_is_rejected) ... ok
+test_plot_sampling_keeps_head_and_final_tail_and_checks_vocabulary (tests.python.test_lab5.Lab5ExportTests.test_plot_sampling_keeps_head_and_final_tail_and_checks_vocabulary) ... ok
+test_types_follow_document_filtering_and_have_a_verified_sidecar (tests.python.test_lab5.Lab5ExportTests.test_types_follow_document_filtering_and_have_a_verified_sidecar) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.077s
+
+OK

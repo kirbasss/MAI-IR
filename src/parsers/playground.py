@@ -39,6 +39,11 @@ def parse_playground(html: bytes, url: str) -> ParsedDocument:
         metadata["source_category"] = source_category
 
     text = readable_article_text(body) if body else ""
+    media_only = bool(body and title and not text and body.select_one(
+        "pg-embed, iframe, video, embed, img"
+    ))
+    if media_only:
+        metadata["content_kind"] = "media_only"
     return ParsedDocument(
         source="playground",
         url=url,
@@ -50,5 +55,5 @@ def parse_playground(html: bytes, url: str) -> ParsedDocument:
         games=games,
         text=text,
         metadata=metadata,
-        parse_error=None if text else "Не найден div.article-content.",
+        parse_error=None if text or media_only else "Не найден текст в div.article-content.",
     )

@@ -9,6 +9,7 @@ from collections import Counter
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Callable
 from urllib import robotparser
 from urllib.parse import urlsplit
 from xml.etree import ElementTree as ET
@@ -16,7 +17,8 @@ from xml.etree import ElementTree as ET
 import requests
 
 from src.downloader import SOURCE_HOSTS, USER_AGENT, fetch_robots, safe_name
-from src.utils import canonicalize_url, dump_json
+from src.utils import canonicalize_source_url, canonicalize_url, dump_json
+from src.url_policy import is_listing_url
 
 
 @dataclass(frozen=True)
@@ -81,6 +83,12 @@ def _local_name(tag: str) -> str:
 
 def parse_sitemap(xml: bytes) -> tuple[str, list[str]]:
     """Return sitemap kind (``sitemapindex`` or ``urlset``) and its locations."""
+    kind, entries = parse_sitemap_entries(xml)
+    return kind, [url for url, _ in entries]
+
+
+def parse_sitemap_entries(xml: bytes) -> tuple[str, list[tuple[str, str | None]]]:
+    """Keep a child sitemap's lastmod separate from document modification dates."""
     try:
         root = ET.fromstring(xml)
     except ET.ParseError as exc:
@@ -100,7 +108,9 @@ def parse_sitemap(xml: bytes) -> tuple[str, list[str]]:
             if _local_name(node.tag) == "loc" and (node.text or "").strip()
         ), "")
         if location:
-            locations.append(location)
+            lastmod = next(((node.text or "").strip() for node in entry
+                            if _local_name(node.tag) == "lastmod"), "")
+            locations.append((location, lastmod or None))
     return kind, locations
 
 
@@ -171,6 +181,8 @@ def sitemap_category(source: str, sitemap_url: str) -> str | None:
 
 def document_category(source: str, url: str, sitemap_type: str) -> str | None:
     """Map a document URL to the corpus taxonomy used in the URL inventory."""
+    if is_listing_url(source, url):
+        return None
     path = urlsplit(url).path.lower()
 
     if source == "gamemag":
@@ -261,6 +273,9 @@ def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
     rows_seen = 0
     inserted = 0
+    normalized_urls = 0
+    excluded_urls = 0
+    input_added_urls: list[int] = []
 
     with tempfile.TemporaryDirectory(prefix="mai-ir-inventory-") as temporary_dir:
         database_path = Path(temporary_dir) / "inventory.sqlite3"
@@ -278,6 +293,7 @@ def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
             """)
 
             for directory in input_dirs:
+                before = inserted
                 inventory_path = directory / "url_inventory.tsv"
                 if not inventory_path.is_file():
                     raise FileNotFoundError(f"Не найден URL-инвентарь: {inventory_path}")
@@ -290,15 +306,20 @@ def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
                         rows_seen += 1
                         source = row["source"].strip()
                         category = row["category"].strip()
-                        url = canonicalize_url(row["url"])
+                        url = canonicalize_source_url(source, row["url"])
+                        normalized_urls += url != canonicalize_url(row["url"])
                         sitemap_url = canonicalize_url(row["sitemap_url"])
                         if not all((source, category, url, sitemap_url)):
                             raise ValueError(f"Пустое обязательное поле: {inventory_path}")
+                        if is_listing_url(source, url):
+                            excluded_urls += 1
+                            continue
                         cursor = connection.execute(
                             "INSERT OR IGNORE INTO documents VALUES (?, ?, ?, ?)",
                             (url, source, category, sitemap_url),
                         )
                         inserted += cursor.rowcount
+                input_added_urls.append(inserted - before)
             connection.commit()
 
             sources: dict[str, dict] = {}
@@ -332,7 +353,10 @@ def merge_inventories(input_dirs: list[Path], output_dir: Path) -> dict:
         "generated_at": datetime.now(UTC).isoformat(),
         "input_inventories": [str(directory) for directory in input_dirs],
         "input_rows": rows_seen,
-        "duplicate_urls_removed": rows_seen - inserted,
+        "input_added_urls": input_added_urls,
+        "duplicate_urls_removed": rows_seen - inserted - excluded_urls,
+        "excluded_urls": excluded_urls,
+        "normalized_urls": normalized_urls,
         "total_unique_urls": inserted,
         "sources": {
             source: {
@@ -355,6 +379,7 @@ def discover_sitemaps(
     refresh_roots: bool = False,
     roots_only: bool = False,
     cache_only: bool = False,
+    fetcher: Callable[[str, str, str | None], bytes] | None = None,
 ) -> dict:
     """Build a deduplicated inventory of publication URLs listed in sitemaps.
 
@@ -398,6 +423,11 @@ def discover_sitemaps(
                         "error": "Корневой sitemap запрещён сохранённым robots.txt",
                     })
                     continue
+            elif fetcher is not None:
+                root_xml = fetcher(source, root.url, None)
+                root_path = _root_path(data_dir, source)
+                root_path.parent.mkdir(parents=True, exist_ok=True)
+                root_path.write_bytes(root_xml)
             else:
                 robots = fetch_robots(session, source, root.url, data_dir)
                 if not robots.allowed:
@@ -410,21 +440,23 @@ def discover_sitemaps(
                 root_xml = _load_root(
                     session, data_dir, source, refresh=refresh_roots
                 )
-            root_kind, locations = parse_sitemap(root_xml)
+            root_kind, locations = parse_sitemap_entries(root_xml)
         except (OSError, requests.RequestException, ValueError) as exc:
             errors.append({"source": source, "url": root.url, "error": str(exc)})
             continue
 
         if root_kind == "urlset":
-            locations = [root.url]
+            locations = [(root.url, None)]
 
-        queue: list[tuple[str, str, bytes | None]] = []
-        for location in locations:
+        queue: list[tuple[str, str, bytes | None, str | None]] = []
+        for location, lastmod in locations:
+            if not _matches_source(source, location):
+                continue
             category = sitemap_category(source, location)
             if category is None:
                 continue
             canonical_sitemap = canonicalize_url(location)
-            if not roots_only and not _allowed_by_saved_robots(
+            if not roots_only and fetcher is None and not _allowed_by_saved_robots(
                 data_dir, source, canonical_sitemap
             ):
                 errors.append({
@@ -433,7 +465,8 @@ def discover_sitemaps(
                     "error": "Дочерний sitemap запрещён robots.txt",
                 })
                 continue
-            cached_xml = None
+            # A root urlset has already been fetched, so do not request it twice.
+            cached_xml = root_xml if canonical_sitemap == canonicalize_url(root.url) else None
             if cache_only:
                 try:
                     cached_xml = (
@@ -456,7 +489,7 @@ def discover_sitemaps(
                 "category": category,
                 "sitemap_url": canonical_sitemap,
             })
-            queue.append((canonical_sitemap, category, cached_xml))
+            queue.append((canonical_sitemap, category, cached_xml, lastmod))
 
         if roots_only:
             print(f"[{source}] maps={len(queue):3d} (без сетевых запросов)")
@@ -464,28 +497,29 @@ def discover_sitemaps(
 
         source_start = len(inventory)
         while queue:
-            sitemap_url, sitemap_type, cached_xml = queue.pop(0)
+            sitemap_url, sitemap_type, cached_xml, lastmod = queue.pop(0)
             try:
                 if cached_xml is not None:
                     xml = cached_xml
                 elif cache_only:
                     raise OSError("Сохранённый sitemap не найден")
                 else:
-                    xml = _download_sitemap(session, sitemap_url)
+                    xml = (fetcher(source, sitemap_url, lastmod) if fetcher is not None
+                           else _download_sitemap(session, sitemap_url))
                     local_path = _leaf_path(data_dir, source, sitemap_url)
                     local_path.parent.mkdir(parents=True, exist_ok=True)
                     local_path.write_bytes(xml)
-                kind, child_locations = parse_sitemap(xml)
+                kind, child_locations = parse_sitemap_entries(xml)
             except (OSError, requests.RequestException, ValueError) as exc:
                 errors.append({"source": source, "url": sitemap_url, "error": str(exc)})
                 continue
 
             if kind == "sitemapindex":
-                for child_url in child_locations:
+                for child_url, child_lastmod in child_locations:
                     if not _matches_source(source, child_url):
                         continue
                     canonical_child = canonicalize_url(child_url)
-                    if not _allowed_by_saved_robots(data_dir, source, canonical_child):
+                    if fetcher is None and not _allowed_by_saved_robots(data_dir, source, canonical_child):
                         errors.append({
                             "source": source,
                             "url": canonical_child,
@@ -513,15 +547,15 @@ def discover_sitemaps(
                         "category": sitemap_type,
                         "sitemap_url": canonical_child,
                     })
-                    queue.append((canonical_child, sitemap_type, cached_child_xml))
+                    queue.append((canonical_child, sitemap_type, cached_child_xml, child_lastmod))
             else:
-                for document_url in child_locations:
+                for document_url, _document_lastmod in child_locations:
                     if not _matches_source(source, document_url):
                         continue
                     category = document_category(source, document_url, sitemap_type)
                     if category is None:
                         continue
-                    canonical_url = canonicalize_url(document_url)
+                    canonical_url = canonicalize_source_url(source, document_url)
                     if canonical_url in seen_urls:
                         continue
                     seen_urls.add(canonical_url)
@@ -532,7 +566,7 @@ def discover_sitemaps(
                         "sitemap_url": sitemap_url,
                     })
 
-            if queue and not cache_only:
+            if queue and not cache_only and fetcher is None:
                 time.sleep(delay_seconds)
 
         print(f"[{source}] maps={sum(row['source'] == source for row in candidates):3d} "

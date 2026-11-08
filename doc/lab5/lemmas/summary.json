@@ -1,0 +1,1688 @@
+{
+  "statistics": {
+    "format": "MAIIR-ZIPF-v1",
+    "tokenizer": "gaming-v3",
+    "field": "both",
+    "representation": "lemma_unambiguous",
+    "known_tokens": 125127926,
+    "changed_tokens": 36378114,
+    "ambiguous_tokens": 17237972,
+    "dictionary_memory_bytes": 166539865,
+    "dictionary_load_ms": 1092.1847,
+    "documents": 478833,
+    "input_utf8_bytes": 1439905980,
+    "counting_buffer_bytes": 67108864,
+    "counting_runs": 10,
+    "ranking_runs": 6,
+    "temporary_files_created": 18,
+    "elapsed_ms": 178923.7577,
+    "fit_min": 10,
+    "fit_max": 10000,
+    "has_types": true,
+    "groups": [
+      {
+        "name": "all",
+        "documents": 478833,
+        "tokens": 158544765,
+        "vocabulary": 1104683,
+        "hapax": 613533,
+        "top_frequency": 4037757,
+        "harmonic": 14.4922850915,
+        "zipf_c": 10939942.459,
+        "fit_n": 9991,
+        "alpha": 1.09436767218,
+        "power_c": 38531692.0578,
+        "r_squared_log": 0.98529002969
+      },
+      {
+        "name": "source:gamemag",
+        "documents": 73772,
+        "tokens": 13353009,
+        "vocabulary": 232292,
+        "hapax": 123667,
+        "top_frequency": 460488,
+        "harmonic": 12.9329682973,
+        "zipf_c": 1032478.2906,
+        "fit_n": 9991,
+        "alpha": 1.17601295853,
+        "power_c": 5786676.71545,
+        "r_squared_log": 0.984008266128
+      },
+      {
+        "name": "language:ru",
+        "documents": 327897,
+        "tokens": 82263392,
+        "vocabulary": 741955,
+        "hapax": 413366,
+        "top_frequency": 2706809,
+        "harmonic": 14.0942602122,
+        "zipf_c": 5836659.09111,
+        "fit_n": 9991,
+        "alpha": 1.13513486163,
+        "power_c": 26508828.8694,
+        "r_squared_log": 0.984525208116
+      },
+      {
+        "name": "type:article",
+        "documents": 58986,
+        "tokens": 58817679,
+        "vocabulary": 628010,
+        "hapax": 337518,
+        "top_frequency": 1614484,
+        "harmonic": 13.92752783,
+        "zipf_c": 4223124.14077,
+        "fit_n": 9991,
+        "alpha": 1.07700767555,
+        "power_c": 11949934.1066,
+        "r_squared_log": 0.990954795684
+      },
+      {
+        "name": "type:news",
+        "documents": 369663,
+        "tokens": 81625713,
+        "vocabulary": 650031,
+        "hapax": 342901,
+        "top_frequency": 2013782,
+        "harmonic": 13.9619917671,
+        "zipf_c": 5846279.98364,
+        "fit_n": 9991,
+        "alpha": 1.13466454616,
+        "power_c": 27216383.2351,
+        "r_squared_log": 0.981577721015
+      },
+      {
+        "name": "type:review",
+        "documents": 50184,
+        "tokens": 18101373,
+        "vocabulary": 271022,
+        "hapax": 131288,
+        "top_frequency": 409491,
+        "harmonic": 13.0871727871,
+        "zipf_c": 1383138.5353,
+        "fit_n": 9991,
+        "alpha": 1.06526947326,
+        "power_c": 3520567.78961,
+        "r_squared_log": 0.989573451144
+      },
+      {
+        "name": "source:ixbt_games",
+        "documents": 68315,
+        "tokens": 12414301,
+        "vocabulary": 184918,
+        "hapax": 84196,
+        "top_frequency": 414957,
+        "harmonic": 12.7048861314,
+        "zipf_c": 977128.080618,
+        "fit_n": 9991,
+        "alpha": 1.18791215851,
+        "power_c": 5946719.76684,
+        "r_squared_log": 0.981361548365
+      },
+      {
+        "name": "source:stopgame",
+        "documents": 54358,
+        "tokens": 26541703,
+        "vocabulary": 386842,
+        "hapax": 209889,
+        "top_frequency": 902237,
+        "harmonic": 13.4429885773,
+        "zipf_c": 1974390.05823,
+        "fit_n": 9991,
+        "alpha": 1.11346062862,
+        "power_c": 6961154.26718,
+        "r_squared_log": 0.98935361544
+      },
+      {
+        "name": "source:eurogamer",
+        "documents": 77772,
+        "tokens": 39683597,
+        "vocabulary": 287507,
+        "hapax": 148873,
+        "top_frequency": 2055267,
+        "harmonic": 13.1462198907,
+        "zipf_c": 3018631.76866,
+        "fit_n": 9991,
+        "alpha": 1.27503485619,
+        "power_c": 29254932.2573,
+        "r_squared_log": 0.983383366964
+      },
+      {
+        "name": "language:en",
+        "documents": 150936,
+        "tokens": 76281373,
+        "vocabulary": 453003,
+        "hapax": 242705,
+        "top_frequency": 3794802,
+        "harmonic": 13.6008707956,
+        "zipf_c": 5608565.37396,
+        "fit_n": 9991,
+        "alpha": 1.28291278072,
+        "power_c": 59308911.0221,
+        "r_squared_log": 0.983215020711
+      },
+      {
+        "name": "source:gamingonlinux",
+        "documents": 28184,
+        "tokens": 9807109,
+        "vocabulary": 100146,
+        "hapax": 46873,
+        "top_frequency": 405004,
+        "harmonic": 12.0916050578,
+        "zipf_c": 811067.592194,
+        "fit_n": 9991,
+        "alpha": 1.4064824436,
+        "power_c": 16615107.9159,
+        "r_squared_log": 0.984622986109
+      },
+      {
+        "name": "source:igromania",
+        "documents": 50818,
+        "tokens": 15532575,
+        "vocabulary": 258805,
+        "hapax": 126666,
+        "top_frequency": 508591,
+        "harmonic": 13.0410477582,
+        "zipf_c": 1191052.68902,
+        "fit_n": 9991,
+        "alpha": 1.10129697077,
+        "power_c": 3995024.1358,
+        "r_squared_log": 0.984825765503
+      },
+      {
+        "name": "source:pcgamer",
+        "documents": 44980,
+        "tokens": 26790667,
+        "vocabulary": 234987,
+        "hapax": 120127,
+        "top_frequency": 1334531,
+        "harmonic": 12.9445032651,
+        "zipf_c": 2069655.85711,
+        "fit_n": 9991,
+        "alpha": 1.2721022294,
+        "power_c": 19263720.5131,
+        "r_squared_log": 0.98366467405
+      },
+      {
+        "name": "source:playground",
+        "documents": 80634,
+        "tokens": 14421804,
+        "vocabulary": 209109,
+        "hapax": 101890,
+        "top_frequency": 470410,
+        "harmonic": 12.8278289821,
+        "zipf_c": 1124259.1416,
+        "fit_n": 9991,
+        "alpha": 1.18452730579,
+        "power_c": 6698037.08734,
+        "r_squared_log": 0.981340429797
+      }
+    ]
+  },
+  "snapshot": {
+    "format": "MAIIR3-v1",
+    "created_at": "2026-11-07T17:16:06.345899+00:00",
+    "export_started_at": "2026-11-07T17:14:06.987538+00:00",
+    "origin": "mongodb:mai_ir.documents",
+    "documents": 478833,
+    "title_only_documents": 6514,
+    "skipped_documents": 0,
+    "input_utf8_bytes": 1439905980,
+    "corpus_sha256": "ed1e1c2b781a80c92a631f44ac5c647f004c53732eb203b9e3a9851653f24222",
+    "sources": {
+      "eurogamer": 77772,
+      "gamemag": 73772,
+      "gamingonlinux": 28184,
+      "igromania": 50818,
+      "ixbt_games": 68315,
+      "pcgamer": 44980,
+      "playground": 80634,
+      "stopgame": 54358
+    },
+    "groups_sha256": "d4c5995e73ae747c5aa6ca1744ecfc68d0a46b967fff115f60f68a86c1e91650",
+    "publication_types": {
+      "article": 58986,
+      "news": 369663,
+      "review": 50184
+    },
+    "fields": [
+      "title",
+      "text"
+    ]
+  },
+  "provenance": {
+    "binary_sha256": "af6bf8f9d3d667a6fb0175b5ab81988f850d3c3aaf53fb78adf26242a3328c27",
+    "frequencies_sha256": "e3a9ac37bbe56f3650cc9c6d020831f7691e74a903da443fc9241b2f4abeba16",
+    "dictionary_sha256": "9cb2227a073a4ed33cec6e60c9fe43593d1d7750800de7d3ebd5c71b132d27ff",
+    "created_at": "2026-11-07T20:56:59.162658+03:00"
+  },
+  "top_terms": {
+    "all": [
+      {
+        "rank": 1,
+        "term": "the",
+        "frequency": 4037757
+      },
+      {
+        "rank": 2,
+        "term": "в",
+        "frequency": 2706821
+      },
+      {
+        "rank": 3,
+        "term": "и",
+        "frequency": 2530937
+      },
+      {
+        "rank": 4,
+        "term": "to",
+        "frequency": 2131313
+      },
+      {
+        "rank": 5,
+        "term": "of",
+        "frequency": 1997146
+      },
+      {
+        "rank": 6,
+        "term": "a",
+        "frequency": 1967120
+      },
+      {
+        "rank": 7,
+        "term": "and",
+        "frequency": 1874605
+      },
+      {
+        "rank": 8,
+        "term": "на",
+        "frequency": 1399766
+      },
+      {
+        "rank": 9,
+        "term": "in",
+        "frequency": 1139768
+      },
+      {
+        "rank": 10,
+        "term": "не",
+        "frequency": 979516
+      },
+      {
+        "rank": 11,
+        "term": "it",
+        "frequency": 940746
+      },
+      {
+        "rank": 12,
+        "term": "с",
+        "frequency": 911452
+      },
+      {
+        "rank": 13,
+        "term": "игра",
+        "frequency": 874721
+      },
+      {
+        "rank": 14,
+        "term": "что",
+        "frequency": 825320
+      },
+      {
+        "rank": 15,
+        "term": "is",
+        "frequency": 815980
+      },
+      {
+        "rank": 16,
+        "term": "you",
+        "frequency": 791070
+      },
+      {
+        "rank": 17,
+        "term": "for",
+        "frequency": 779441
+      },
+      {
+        "rank": 18,
+        "term": "game",
+        "frequency": 774923
+      },
+      {
+        "rank": 19,
+        "term": "that",
+        "frequency": 762254
+      },
+      {
+        "rank": 20,
+        "term": "on",
+        "frequency": 740260
+      }
+    ],
+    "source:gamemag": [
+      {
+        "rank": 1,
+        "term": "в",
+        "frequency": 460488
+      },
+      {
+        "rank": 2,
+        "term": "и",
+        "frequency": 358417
+      },
+      {
+        "rank": 3,
+        "term": "на",
+        "frequency": 238698
+      },
+      {
+        "rank": 4,
+        "term": "игра",
+        "frequency": 151439
+      },
+      {
+        "rank": 5,
+        "term": "с",
+        "frequency": 137489
+      },
+      {
+        "rank": 6,
+        "term": "что",
+        "frequency": 129150
+      },
+      {
+        "rank": 7,
+        "term": "не",
+        "frequency": 117002
+      },
+      {
+        "rank": 8,
+        "term": "для",
+        "frequency": 99593
+      },
+      {
+        "rank": 9,
+        "term": "по",
+        "frequency": 88379
+      },
+      {
+        "rank": 10,
+        "term": "быть",
+        "frequency": 83857
+      },
+      {
+        "rank": 11,
+        "term": "который",
+        "frequency": 73929
+      },
+      {
+        "rank": 12,
+        "term": "также",
+        "frequency": 70614
+      },
+      {
+        "rank": 13,
+        "term": "год",
+        "frequency": 67123
+      },
+      {
+        "rank": 14,
+        "term": "мы",
+        "frequency": 64108
+      },
+      {
+        "rank": 15,
+        "term": "из",
+        "frequency": 61309
+      },
+      {
+        "rank": 16,
+        "term": "the",
+        "frequency": 54635
+      },
+      {
+        "rank": 17,
+        "term": "от",
+        "frequency": 53778
+      },
+      {
+        "rank": 18,
+        "term": "of",
+        "frequency": 50214
+      },
+      {
+        "rank": 19,
+        "term": "весь",
+        "frequency": 49028
+      },
+      {
+        "rank": 20,
+        "term": "как",
+        "frequency": 48585
+      }
+    ],
+    "language:ru": [
+      {
+        "rank": 1,
+        "term": "в",
+        "frequency": 2706809
+      },
+      {
+        "rank": 2,
+        "term": "и",
+        "frequency": 2530928
+      },
+      {
+        "rank": 3,
+        "term": "на",
+        "frequency": 1399756
+      },
+      {
+        "rank": 4,
+        "term": "не",
+        "frequency": 979514
+      },
+      {
+        "rank": 5,
+        "term": "с",
+        "frequency": 911449
+      },
+      {
+        "rank": 6,
+        "term": "игра",
+        "frequency": 874713
+      },
+      {
+        "rank": 7,
+        "term": "что",
+        "frequency": 825318
+      },
+      {
+        "rank": 8,
+        "term": "для",
+        "frequency": 509089
+      },
+      {
+        "rank": 9,
+        "term": "который",
+        "frequency": 502931
+      },
+      {
+        "rank": 10,
+        "term": "быть",
+        "frequency": 481415
+      },
+      {
+        "rank": 11,
+        "term": "по",
+        "frequency": 479144
+      },
+      {
+        "rank": 12,
+        "term": "а",
+        "frequency": 449091
+      },
+      {
+        "rank": 13,
+        "term": "но",
+        "frequency": 414121
+      },
+      {
+        "rank": 14,
+        "term": "из",
+        "frequency": 398514
+      },
+      {
+        "rank": 15,
+        "term": "как",
+        "frequency": 390183
+      },
+      {
+        "rank": 16,
+        "term": "это",
+        "frequency": 386997
+      },
+      {
+        "rank": 17,
+        "term": "весь",
+        "frequency": 365809
+      },
+      {
+        "rank": 18,
+        "term": "к",
+        "frequency": 334167
+      },
+      {
+        "rank": 19,
+        "term": "год",
+        "frequency": 331408
+      },
+      {
+        "rank": 20,
+        "term": "от",
+        "frequency": 315291
+      }
+    ],
+    "type:article": [
+      {
+        "rank": 1,
+        "term": "the",
+        "frequency": 1614484
+      },
+      {
+        "rank": 2,
+        "term": "и",
+        "frequency": 968424
+      },
+      {
+        "rank": 3,
+        "term": "to",
+        "frequency": 900850
+      },
+      {
+        "rank": 4,
+        "term": "в",
+        "frequency": 883538
+      },
+      {
+        "rank": 5,
+        "term": "a",
+        "frequency": 810960
+      },
+      {
+        "rank": 6,
+        "term": "of",
+        "frequency": 771694
+      },
+      {
+        "rank": 7,
+        "term": "and",
+        "frequency": 767235
+      },
+      {
+        "rank": 8,
+        "term": "in",
+        "frequency": 479802
+      },
+      {
+        "rank": 9,
+        "term": "на",
+        "frequency": 451278
+      },
+      {
+        "rank": 10,
+        "term": "не",
+        "frequency": 449515
+      },
+      {
+        "rank": 11,
+        "term": "you",
+        "frequency": 402159
+      },
+      {
+        "rank": 12,
+        "term": "it",
+        "frequency": 370719
+      },
+      {
+        "rank": 13,
+        "term": "is",
+        "frequency": 322854
+      },
+      {
+        "rank": 14,
+        "term": "с",
+        "frequency": 318971
+      },
+      {
+        "rank": 15,
+        "term": "that",
+        "frequency": 313595
+      },
+      {
+        "rank": 16,
+        "term": "что",
+        "frequency": 295559
+      },
+      {
+        "rank": 17,
+        "term": "for",
+        "frequency": 283239
+      },
+      {
+        "rank": 18,
+        "term": "on",
+        "frequency": 256575
+      },
+      {
+        "rank": 19,
+        "term": "with",
+        "frequency": 251551
+      },
+      {
+        "rank": 20,
+        "term": "игра",
+        "frequency": 238405
+      }
+    ],
+    "type:news": [
+      {
+        "rank": 1,
+        "term": "the",
+        "frequency": 2013782
+      },
+      {
+        "rank": 2,
+        "term": "в",
+        "frequency": 1472687
+      },
+      {
+        "rank": 3,
+        "term": "и",
+        "frequency": 1171124
+      },
+      {
+        "rank": 4,
+        "term": "to",
+        "frequency": 1033937
+      },
+      {
+        "rank": 5,
+        "term": "of",
+        "frequency": 1007227
+      },
+      {
+        "rank": 6,
+        "term": "a",
+        "frequency": 939453
+      },
+      {
+        "rank": 7,
+        "term": "and",
+        "frequency": 909694
+      },
+      {
+        "rank": 8,
+        "term": "на",
+        "frequency": 771597
+      },
+      {
+        "rank": 9,
+        "term": "in",
+        "frequency": 556274
+      },
+      {
+        "rank": 10,
+        "term": "игра",
+        "frequency": 523678
+      },
+      {
+        "rank": 11,
+        "term": "game",
+        "frequency": 479455
+      },
+      {
+        "rank": 12,
+        "term": "it",
+        "frequency": 476220
+      },
+      {
+        "rank": 13,
+        "term": "с",
+        "frequency": 463155
+      },
+      {
+        "rank": 14,
+        "term": "что",
+        "frequency": 436062
+      },
+      {
+        "rank": 15,
+        "term": "for",
+        "frequency": 435221
+      },
+      {
+        "rank": 16,
+        "term": "on",
+        "frequency": 431242
+      },
+      {
+        "rank": 17,
+        "term": "is",
+        "frequency": 403609
+      },
+      {
+        "rank": 18,
+        "term": "не",
+        "frequency": 376836
+      },
+      {
+        "rank": 19,
+        "term": "that",
+        "frequency": 369654
+      },
+      {
+        "rank": 20,
+        "term": "be",
+        "frequency": 366266
+      }
+    ],
+    "type:review": [
+      {
+        "rank": 1,
+        "term": "the",
+        "frequency": 409491
+      },
+      {
+        "rank": 2,
+        "term": "и",
+        "frequency": 391389
+      },
+      {
+        "rank": 3,
+        "term": "в",
+        "frequency": 350596
+      },
+      {
+        "rank": 4,
+        "term": "of",
+        "frequency": 218225
+      },
+      {
+        "rank": 5,
+        "term": "a",
+        "frequency": 216707
+      },
+      {
+        "rank": 6,
+        "term": "and",
+        "frequency": 197676
+      },
+      {
+        "rank": 7,
+        "term": "to",
+        "frequency": 196526
+      },
+      {
+        "rank": 8,
+        "term": "на",
+        "frequency": 176891
+      },
+      {
+        "rank": 9,
+        "term": "не",
+        "frequency": 153165
+      },
+      {
+        "rank": 10,
+        "term": "с",
+        "frequency": 129326
+      },
+      {
+        "rank": 11,
+        "term": "игра",
+        "frequency": 112638
+      },
+      {
+        "rank": 12,
+        "term": "in",
+        "frequency": 103692
+      },
+      {
+        "rank": 13,
+        "term": "you",
+        "frequency": 94101
+      },
+      {
+        "rank": 14,
+        "term": "it",
+        "frequency": 93807
+      },
+      {
+        "rank": 15,
+        "term": "что",
+        "frequency": 93699
+      },
+      {
+        "rank": 16,
+        "term": "is",
+        "frequency": 89517
+      },
+      {
+        "rank": 17,
+        "term": "that",
+        "frequency": 79005
+      },
+      {
+        "rank": 18,
+        "term": "но",
+        "frequency": 71636
+      },
+      {
+        "rank": 19,
+        "term": "который",
+        "frequency": 70355
+      },
+      {
+        "rank": 20,
+        "term": "а",
+        "frequency": 70184
+      }
+    ],
+    "source:ixbt_games": [
+      {
+        "rank": 1,
+        "term": "в",
+        "frequency": 414957
+      },
+      {
+        "rank": 2,
+        "term": "и",
+        "frequency": 328487
+      },
+      {
+        "rank": 3,
+        "term": "на",
+        "frequency": 216291
+      },
+      {
+        "rank": 4,
+        "term": "игра",
+        "frequency": 160808
+      },
+      {
+        "rank": 5,
+        "term": "с",
+        "frequency": 135665
+      },
+      {
+        "rank": 6,
+        "term": "что",
+        "frequency": 123454
+      },
+      {
+        "rank": 7,
+        "term": "не",
+        "frequency": 121093
+      },
+      {
+        "rank": 8,
+        "term": "для",
+        "frequency": 90195
+      },
+      {
+        "rank": 9,
+        "term": "который",
+        "frequency": 83623
+      },
+      {
+        "rank": 10,
+        "term": "быть",
+        "frequency": 69895
+      },
+      {
+        "rank": 11,
+        "term": "по",
+        "frequency": 68821
+      },
+      {
+        "rank": 12,
+        "term": "год",
+        "frequency": 66541
+      },
+      {
+        "rank": 13,
+        "term": "из",
+        "frequency": 56318
+      },
+      {
+        "rank": 14,
+        "term": "о",
+        "frequency": 56038
+      },
+      {
+        "rank": 15,
+        "term": "а",
+        "frequency": 53769
+      },
+      {
+        "rank": 16,
+        "term": "the",
+        "frequency": 49671
+      },
+      {
+        "rank": 17,
+        "term": "но",
+        "frequency": 47761
+      },
+      {
+        "rank": 18,
+        "term": "of",
+        "frequency": 46880
+      },
+      {
+        "rank": 19,
+        "term": "за",
+        "frequency": 44594
+      },
+      {
+        "rank": 20,
+        "term": "2",
+        "frequency": 44055
+      }
+    ],
+    "source:stopgame": [
+      {
+        "rank": 1,
+        "term": "и",
+        "frequency": 902237
+      },
+      {
+        "rank": 2,
+        "term": "в",
+        "frequency": 852363
+      },
+      {
+        "rank": 3,
+        "term": "на",
+        "frequency": 423832
+      },
+      {
+        "rank": 4,
+        "term": "не",
+        "frequency": 417758
+      },
+      {
+        "rank": 5,
+        "term": "с",
+        "frequency": 299065
+      },
+      {
+        "rank": 6,
+        "term": "что",
+        "frequency": 294971
+      },
+      {
+        "rank": 7,
+        "term": "игра",
+        "frequency": 250409
+      },
+      {
+        "rank": 8,
+        "term": "но",
+        "frequency": 183982
+      },
+      {
+        "rank": 9,
+        "term": "я",
+        "frequency": 183532
+      },
+      {
+        "rank": 10,
+        "term": "а",
+        "frequency": 178868
+      },
+      {
+        "rank": 11,
+        "term": "который",
+        "frequency": 167414
+      },
+      {
+        "rank": 12,
+        "term": "быть",
+        "frequency": 164360
+      },
+      {
+        "rank": 13,
+        "term": "это",
+        "frequency": 163532
+      },
+      {
+        "rank": 14,
+        "term": "как",
+        "frequency": 160145
+      },
+      {
+        "rank": 15,
+        "term": "по",
+        "frequency": 151774
+      },
+      {
+        "rank": 16,
+        "term": "весь",
+        "frequency": 146809
+      },
+      {
+        "rank": 17,
+        "term": "из",
+        "frequency": 135359
+      },
+      {
+        "rank": 18,
+        "term": "для",
+        "frequency": 128775
+      },
+      {
+        "rank": 19,
+        "term": "к",
+        "frequency": 119388
+      },
+      {
+        "rank": 20,
+        "term": "вы",
+        "frequency": 109686
+      }
+    ],
+    "source:eurogamer": [
+      {
+        "rank": 1,
+        "term": "the",
+        "frequency": 2055267
+      },
+      {
+        "rank": 2,
+        "term": "to",
+        "frequency": 1104095
+      },
+      {
+        "rank": 3,
+        "term": "and",
+        "frequency": 980957
+      },
+      {
+        "rank": 4,
+        "term": "of",
+        "frequency": 969468
+      },
+      {
+        "rank": 5,
+        "term": "a",
+        "frequency": 967135
+      },
+      {
+        "rank": 6,
+        "term": "in",
+        "frequency": 618996
+      },
+      {
+        "rank": 7,
+        "term": "it",
+        "frequency": 463608
+      },
+      {
+        "rank": 8,
+        "term": "is",
+        "frequency": 411128
+      },
+      {
+        "rank": 9,
+        "term": "you",
+        "frequency": 404132
+      },
+      {
+        "rank": 10,
+        "term": "on",
+        "frequency": 400942
+      },
+      {
+        "rank": 11,
+        "term": "for",
+        "frequency": 385757
+      },
+      {
+        "rank": 12,
+        "term": "that",
+        "frequency": 376443
+      },
+      {
+        "rank": 13,
+        "term": "game",
+        "frequency": 349110
+      },
+      {
+        "rank": 14,
+        "term": "be",
+        "frequency": 340192
+      },
+      {
+        "rank": 15,
+        "term": "with",
+        "frequency": 308835
+      },
+      {
+        "rank": 16,
+        "term": "as",
+        "frequency": 274893
+      },
+      {
+        "rank": 17,
+        "term": "this",
+        "frequency": 264195
+      },
+      {
+        "rank": 18,
+        "term": "have",
+        "frequency": 206867
+      },
+      {
+        "rank": 19,
+        "term": "but",
+        "frequency": 186212
+      },
+      {
+        "rank": 20,
+        "term": "will",
+        "frequency": 177535
+      }
+    ],
+    "language:en": [
+      {
+        "rank": 1,
+        "term": "the",
+        "frequency": 3794802
+      },
+      {
+        "rank": 2,
+        "term": "to",
+        "frequency": 2115784
+      },
+      {
+        "rank": 3,
+        "term": "a",
+        "frequency": 1943092
+      },
+      {
+        "rank": 4,
+        "term": "and",
+        "frequency": 1851829
+      },
+      {
+        "rank": 5,
+        "term": "of",
+        "frequency": 1774361
+      },
+      {
+        "rank": 6,
+        "term": "in",
+        "frequency": 1125544
+      },
+      {
+        "rank": 7,
+        "term": "it",
+        "frequency": 935841
+      },
+      {
+        "rank": 8,
+        "term": "is",
+        "frequency": 806982
+      },
+      {
+        "rank": 9,
+        "term": "you",
+        "frequency": 785898
+      },
+      {
+        "rank": 10,
+        "term": "for",
+        "frequency": 761481
+      },
+      {
+        "rank": 11,
+        "term": "that",
+        "frequency": 760160
+      },
+      {
+        "rank": 12,
+        "term": "on",
+        "frequency": 732130
+      },
+      {
+        "rank": 13,
+        "term": "game",
+        "frequency": 647390
+      },
+      {
+        "rank": 14,
+        "term": "be",
+        "frequency": 640161
+      },
+      {
+        "rank": 15,
+        "term": "with",
+        "frequency": 631804
+      },
+      {
+        "rank": 16,
+        "term": "as",
+        "frequency": 503133
+      },
+      {
+        "rank": 17,
+        "term": "this",
+        "frequency": 464146
+      },
+      {
+        "rank": 18,
+        "term": "have",
+        "frequency": 407859
+      },
+      {
+        "rank": 19,
+        "term": "but",
+        "frequency": 386504
+      },
+      {
+        "rank": 20,
+        "term": "i",
+        "frequency": 381852
+      }
+    ],
+    "source:gamingonlinux": [
+      {
+        "rank": 1,
+        "term": "the",
+        "frequency": 405004
+      },
+      {
+        "rank": 2,
+        "term": "to",
+        "frequency": 278306
+      },
+      {
+        "rank": 3,
+        "term": "a",
+        "frequency": 246368
+      },
+      {
+        "rank": 4,
+        "term": "and",
+        "frequency": 238357
+      },
+      {
+        "rank": 5,
+        "term": "of",
+        "frequency": 179629
+      },
+      {
+        "rank": 6,
+        "term": "it",
+        "frequency": 140889
+      },
+      {
+        "rank": 7,
+        "term": "you",
+        "frequency": 125041
+      },
+      {
+        "rank": 8,
+        "term": "on",
+        "frequency": 114235
+      },
+      {
+        "rank": 9,
+        "term": "in",
+        "frequency": 114138
+      },
+      {
+        "rank": 10,
+        "term": "for",
+        "frequency": 111083
+      },
+      {
+        "rank": 11,
+        "term": "game",
+        "frequency": 106191
+      },
+      {
+        "rank": 12,
+        "term": "with",
+        "frequency": 103926
+      },
+      {
+        "rank": 13,
+        "term": "is",
+        "frequency": 102499
+      },
+      {
+        "rank": 14,
+        "term": "be",
+        "frequency": 76912
+      },
+      {
+        "rank": 15,
+        "term": "that",
+        "frequency": 74251
+      },
+      {
+        "rank": 16,
+        "term": "from",
+        "frequency": 70293
+      },
+      {
+        "rank": 17,
+        "term": "as",
+        "frequency": 59904
+      },
+      {
+        "rank": 18,
+        "term": "linux",
+        "frequency": 59589
+      },
+      {
+        "rank": 19,
+        "term": "steam",
+        "frequency": 59335
+      },
+      {
+        "rank": 20,
+        "term": "have",
+        "frequency": 55924
+      }
+    ],
+    "source:igromania": [
+      {
+        "rank": 1,
+        "term": "в",
+        "frequency": 508591
+      },
+      {
+        "rank": 2,
+        "term": "и",
+        "frequency": 484423
+      },
+      {
+        "rank": 3,
+        "term": "на",
+        "frequency": 278248
+      },
+      {
+        "rank": 4,
+        "term": "не",
+        "frequency": 183910
+      },
+      {
+        "rank": 5,
+        "term": "с",
+        "frequency": 173178
+      },
+      {
+        "rank": 6,
+        "term": "что",
+        "frequency": 139648
+      },
+      {
+        "rank": 7,
+        "term": "игра",
+        "frequency": 127751
+      },
+      {
+        "rank": 8,
+        "term": "а",
+        "frequency": 97379
+      },
+      {
+        "rank": 9,
+        "term": "по",
+        "frequency": 95267
+      },
+      {
+        "rank": 10,
+        "term": "для",
+        "frequency": 85729
+      },
+      {
+        "rank": 11,
+        "term": "быть",
+        "frequency": 79999
+      },
+      {
+        "rank": 12,
+        "term": "который",
+        "frequency": 78942
+      },
+      {
+        "rank": 13,
+        "term": "весь",
+        "frequency": 78001
+      },
+      {
+        "rank": 14,
+        "term": "но",
+        "frequency": 75847
+      },
+      {
+        "rank": 15,
+        "term": "из",
+        "frequency": 74647
+      },
+      {
+        "rank": 16,
+        "term": "к",
+        "frequency": 70467
+      },
+      {
+        "rank": 17,
+        "term": "как",
+        "frequency": 66410
+      },
+      {
+        "rank": 18,
+        "term": "это",
+        "frequency": 61573
+      },
+      {
+        "rank": 19,
+        "term": "за",
+        "frequency": 57373
+      },
+      {
+        "rank": 20,
+        "term": "вы",
+        "frequency": 56989
+      }
+    ],
+    "source:pcgamer": [
+      {
+        "rank": 1,
+        "term": "the",
+        "frequency": 1334531
+      },
+      {
+        "rank": 2,
+        "term": "to",
+        "frequency": 733383
+      },
+      {
+        "rank": 3,
+        "term": "a",
+        "frequency": 729589
+      },
+      {
+        "rank": 4,
+        "term": "and",
+        "frequency": 632515
+      },
+      {
+        "rank": 5,
+        "term": "of",
+        "frequency": 625264
+      },
+      {
+        "rank": 6,
+        "term": "in",
+        "frequency": 392410
+      },
+      {
+        "rank": 7,
+        "term": "it",
+        "frequency": 331344
+      },
+      {
+        "rank": 8,
+        "term": "that",
+        "frequency": 309466
+      },
+      {
+        "rank": 9,
+        "term": "is",
+        "frequency": 293355
+      },
+      {
+        "rank": 10,
+        "term": "for",
+        "frequency": 264641
+      },
+      {
+        "rank": 11,
+        "term": "you",
+        "frequency": 256725
+      },
+      {
+        "rank": 12,
+        "term": "be",
+        "frequency": 223057
+      },
+      {
+        "rank": 13,
+        "term": "with",
+        "frequency": 219043
+      },
+      {
+        "rank": 14,
+        "term": "on",
+        "frequency": 216953
+      },
+      {
+        "rank": 15,
+        "term": "game",
+        "frequency": 192089
+      },
+      {
+        "rank": 16,
+        "term": "i",
+        "frequency": 177897
+      },
+      {
+        "rank": 17,
+        "term": "as",
+        "frequency": 168336
+      },
+      {
+        "rank": 18,
+        "term": "but",
+        "frequency": 165366
+      },
+      {
+        "rank": 19,
+        "term": "this",
+        "frequency": 145241
+      },
+      {
+        "rank": 20,
+        "term": "have",
+        "frequency": 145068
+      }
+    ],
+    "source:playground": [
+      {
+        "rank": 1,
+        "term": "в",
+        "frequency": 470410
+      },
+      {
+        "rank": 2,
+        "term": "и",
+        "frequency": 457364
+      },
+      {
+        "rank": 3,
+        "term": "на",
+        "frequency": 242687
+      },
+      {
+        "rank": 4,
+        "term": "игра",
+        "frequency": 184306
+      },
+      {
+        "rank": 5,
+        "term": "с",
+        "frequency": 166052
+      },
+      {
+        "rank": 6,
+        "term": "не",
+        "frequency": 139751
+      },
+      {
+        "rank": 7,
+        "term": "что",
+        "frequency": 138095
+      },
+      {
+        "rank": 8,
+        "term": "для",
+        "frequency": 104797
+      },
+      {
+        "rank": 9,
+        "term": "который",
+        "frequency": 99023
+      },
+      {
+        "rank": 10,
+        "term": "быть",
+        "frequency": 83304
+      },
+      {
+        "rank": 11,
+        "term": "это",
+        "frequency": 75211
+      },
+      {
+        "rank": 12,
+        "term": "по",
+        "frequency": 74903
+      },
+      {
+        "rank": 13,
+        "term": "как",
+        "frequency": 72164
+      },
+      {
+        "rank": 14,
+        "term": "а",
+        "frequency": 71822
+      },
+      {
+        "rank": 15,
+        "term": "из",
+        "frequency": 70881
+      },
+      {
+        "rank": 16,
+        "term": "игрок",
+        "frequency": 70492
+      },
+      {
+        "rank": 17,
+        "term": "но",
+        "frequency": 62837
+      },
+      {
+        "rank": 18,
+        "term": "год",
+        "frequency": 62311
+      },
+      {
+        "rank": 19,
+        "term": "от",
+        "frequency": 59763
+      },
+      {
+        "rank": 20,
+        "term": "к",
+        "frequency": 56973
+      }
+    ]
+  }
+}

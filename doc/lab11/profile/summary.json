@@ -1,0 +1,2200 @@
+{
+  "date_utc": "2026-11-08T00:29:06.038160+00:00",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "repeats": 7,
+  "compact_binary_sha256": "2ee0ca18ed632a417e43931545ffa6934ea58dd2739b044eae85ecc4cbe38b96",
+  "search_binary_sha256": "76d56fa033d5f00e7b953605e36894d05e62dc3f4c50e0863d3f73449c62b5e4",
+  "lists": [
+    {
+      "space": "surface",
+      "term": "god",
+      "kind": "postings",
+      "count": 10194,
+      "raw_bytes": 81552,
+      "vb_bytes": 11059,
+      "checksum": "ffd707d3ff78b7bb",
+      "samples": [
+        {
+          "kind": "postings",
+          "repeat": 0,
+          "count": 10194,
+          "raw_bytes": 81552,
+          "vb_bytes": 11059,
+          "raw_read_ms": 0.0053,
+          "vb_read_ms": 0.0043,
+          "raw_decode_ms": 0.0101,
+          "vb_decode_ms": 0.0328,
+          "raw_cursor_ms": 0.3962,
+          "vb_cursor_ms": 0.3134,
+          "checksum": "ffd707d3ff78b7bb"
+        },
+        {
+          "kind": "postings",
+          "repeat": 1,
+          "count": 10194,
+          "raw_bytes": 81552,
+          "vb_bytes": 11059,
+          "raw_read_ms": 0.0089,
+          "vb_read_ms": 0.0043,
+          "raw_decode_ms": 0.01,
+          "vb_decode_ms": 0.0329,
+          "raw_cursor_ms": 0.3317,
+          "vb_cursor_ms": 0.3018,
+          "checksum": "ffd707d3ff78b7bb"
+        },
+        {
+          "kind": "postings",
+          "repeat": 2,
+          "count": 10194,
+          "raw_bytes": 81552,
+          "vb_bytes": 11059,
+          "raw_read_ms": 0.0054,
+          "vb_read_ms": 0.004,
+          "raw_decode_ms": 0.01,
+          "vb_decode_ms": 0.0322,
+          "raw_cursor_ms": 0.3659,
+          "vb_cursor_ms": 0.2986,
+          "checksum": "ffd707d3ff78b7bb"
+        },
+        {
+          "kind": "postings",
+          "repeat": 3,
+          "count": 10194,
+          "raw_bytes": 81552,
+          "vb_bytes": 11059,
+          "raw_read_ms": 0.0057,
+          "vb_read_ms": 0.0037,
+          "raw_decode_ms": 0.01,
+          "vb_decode_ms": 0.0323,
+          "raw_cursor_ms": 0.382,
+          "vb_cursor_ms": 0.2993,
+          "checksum": "ffd707d3ff78b7bb"
+        },
+        {
+          "kind": "postings",
+          "repeat": 4,
+          "count": 10194,
+          "raw_bytes": 81552,
+          "vb_bytes": 11059,
+          "raw_read_ms": 0.0074,
+          "vb_read_ms": 0.0049,
+          "raw_decode_ms": 0.01,
+          "vb_decode_ms": 0.0326,
+          "raw_cursor_ms": 0.3931,
+          "vb_cursor_ms": 0.4488,
+          "checksum": "ffd707d3ff78b7bb"
+        },
+        {
+          "kind": "postings",
+          "repeat": 5,
+          "count": 10194,
+          "raw_bytes": 81552,
+          "vb_bytes": 11059,
+          "raw_read_ms": 0.013,
+          "vb_read_ms": 0.0084,
+          "raw_decode_ms": 0.01,
+          "vb_decode_ms": 0.0495,
+          "raw_cursor_ms": 0.3729,
+          "vb_cursor_ms": 0.442,
+          "checksum": "ffd707d3ff78b7bb"
+        },
+        {
+          "kind": "postings",
+          "repeat": 6,
+          "count": 10194,
+          "raw_bytes": 81552,
+          "vb_bytes": 11059,
+          "raw_read_ms": 0.0058,
+          "vb_read_ms": 0.0075,
+          "raw_decode_ms": 0.01,
+          "vb_decode_ms": 0.0336,
+          "raw_cursor_ms": 0.7083,
+          "vb_cursor_ms": 0.3681,
+          "checksum": "ffd707d3ff78b7bb"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 0.0058,
+        "vb_read_ms": 0.0043,
+        "raw_decode_ms": 0.01,
+        "vb_decode_ms": 0.0328,
+        "raw_cursor_ms": 0.382,
+        "vb_cursor_ms": 0.3134
+      }
+    },
+    {
+      "space": "surface",
+      "term": "god",
+      "kind": "coordinates",
+      "count": 20155,
+      "raw_bytes": 161240,
+      "vb_bytes": 50716,
+      "checksum": "cf3da753c8ab7a61",
+      "samples": [
+        {
+          "kind": "coordinates",
+          "repeat": 0,
+          "count": 20155,
+          "raw_bytes": 161240,
+          "vb_bytes": 50716,
+          "raw_read_ms": 0.013,
+          "vb_read_ms": 0.0101,
+          "raw_decode_ms": 0.0198,
+          "vb_decode_ms": 0.2288,
+          "raw_cursor_ms": 0.8088,
+          "vb_cursor_ms": 1.2755,
+          "checksum": "cf3da753c8ab7a61"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 1,
+          "count": 20155,
+          "raw_bytes": 161240,
+          "vb_bytes": 50716,
+          "raw_read_ms": 0.0149,
+          "vb_read_ms": 0.0068,
+          "raw_decode_ms": 0.0197,
+          "vb_decode_ms": 0.226,
+          "raw_cursor_ms": 0.6844,
+          "vb_cursor_ms": 1.2817,
+          "checksum": "cf3da753c8ab7a61"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 2,
+          "count": 20155,
+          "raw_bytes": 161240,
+          "vb_bytes": 50716,
+          "raw_read_ms": 0.0072,
+          "vb_read_ms": 0.0062,
+          "raw_decode_ms": 0.0197,
+          "vb_decode_ms": 0.2225,
+          "raw_cursor_ms": 0.6812,
+          "vb_cursor_ms": 1.2331,
+          "checksum": "cf3da753c8ab7a61"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 3,
+          "count": 20155,
+          "raw_bytes": 161240,
+          "vb_bytes": 50716,
+          "raw_read_ms": 0.0114,
+          "vb_read_ms": 0.0056,
+          "raw_decode_ms": 0.0198,
+          "vb_decode_ms": 0.224,
+          "raw_cursor_ms": 0.6886,
+          "vb_cursor_ms": 1.2288,
+          "checksum": "cf3da753c8ab7a61"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 4,
+          "count": 20155,
+          "raw_bytes": 161240,
+          "vb_bytes": 50716,
+          "raw_read_ms": 0.0075,
+          "vb_read_ms": 0.0057,
+          "raw_decode_ms": 0.0197,
+          "vb_decode_ms": 0.2233,
+          "raw_cursor_ms": 0.7485,
+          "vb_cursor_ms": 1.2295,
+          "checksum": "cf3da753c8ab7a61"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 5,
+          "count": 20155,
+          "raw_bytes": 161240,
+          "vb_bytes": 50716,
+          "raw_read_ms": 0.008,
+          "vb_read_ms": 0.0059,
+          "raw_decode_ms": 0.0197,
+          "vb_decode_ms": 0.2233,
+          "raw_cursor_ms": 0.911,
+          "vb_cursor_ms": 1.2417,
+          "checksum": "cf3da753c8ab7a61"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 6,
+          "count": 20155,
+          "raw_bytes": 161240,
+          "vb_bytes": 50716,
+          "raw_read_ms": 0.0118,
+          "vb_read_ms": 0.0092,
+          "raw_decode_ms": 0.0198,
+          "vb_decode_ms": 0.2465,
+          "raw_cursor_ms": 0.7947,
+          "vb_cursor_ms": 1.55,
+          "checksum": "cf3da753c8ab7a61"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 0.0114,
+        "vb_read_ms": 0.0062,
+        "raw_decode_ms": 0.0197,
+        "vb_decode_ms": 0.224,
+        "raw_cursor_ms": 0.7485,
+        "vb_cursor_ms": 1.2417
+      }
+    },
+    {
+      "space": "surface",
+      "term": "of",
+      "kind": "postings",
+      "count": 224581,
+      "raw_bytes": 1796648,
+      "vb_bytes": 224608,
+      "checksum": "84cad89330899259",
+      "samples": [
+        {
+          "kind": "postings",
+          "repeat": 0,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.5253,
+          "vb_read_ms": 0.0352,
+          "raw_decode_ms": 0.2496,
+          "vb_decode_ms": 0.5503,
+          "raw_cursor_ms": 7.493,
+          "vb_cursor_ms": 7.2405,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 1,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.6148,
+          "vb_read_ms": 0.0413,
+          "raw_decode_ms": 0.2508,
+          "vb_decode_ms": 0.7051,
+          "raw_cursor_ms": 11.2956,
+          "vb_cursor_ms": 6.8088,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 2,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.3626,
+          "vb_read_ms": 0.0338,
+          "raw_decode_ms": 0.2314,
+          "vb_decode_ms": 0.5619,
+          "raw_cursor_ms": 8.5044,
+          "vb_cursor_ms": 6.1856,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 3,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.3682,
+          "vb_read_ms": 0.0306,
+          "raw_decode_ms": 0.2335,
+          "vb_decode_ms": 0.5572,
+          "raw_cursor_ms": 8.6899,
+          "vb_cursor_ms": 6.0876,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 4,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.3429,
+          "vb_read_ms": 0.0325,
+          "raw_decode_ms": 0.2304,
+          "vb_decode_ms": 0.5572,
+          "raw_cursor_ms": 8.1344,
+          "vb_cursor_ms": 6.1236,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 5,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.4471,
+          "vb_read_ms": 0.0323,
+          "raw_decode_ms": 0.2451,
+          "vb_decode_ms": 0.5565,
+          "raw_cursor_ms": 8.6565,
+          "vb_cursor_ms": 5.8149,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 6,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.5358,
+          "vb_read_ms": 0.0309,
+          "raw_decode_ms": 0.2346,
+          "vb_decode_ms": 0.5552,
+          "raw_cursor_ms": 8.2722,
+          "vb_cursor_ms": 6.1828,
+          "checksum": "84cad89330899259"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 0.4471,
+        "vb_read_ms": 0.0325,
+        "raw_decode_ms": 0.2346,
+        "vb_decode_ms": 0.5572,
+        "raw_cursor_ms": 8.5044,
+        "vb_cursor_ms": 6.1828
+      }
+    },
+    {
+      "space": "surface",
+      "term": "of",
+      "kind": "coordinates",
+      "count": 1997146,
+      "raw_bytes": 15977168,
+      "vb_bytes": 4365398,
+      "checksum": "4c19a8775c75ec53",
+      "samples": [
+        {
+          "kind": "coordinates",
+          "repeat": 0,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 5.3217,
+          "vb_read_ms": 0.9326,
+          "raw_decode_ms": 2.2156,
+          "vb_decode_ms": 17.9135,
+          "raw_cursor_ms": 81.3809,
+          "vb_cursor_ms": 127.4536,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 1,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 6.7166,
+          "vb_read_ms": 1.6527,
+          "raw_decode_ms": 2.4576,
+          "vb_decode_ms": 18.7032,
+          "raw_cursor_ms": 88.5407,
+          "vb_cursor_ms": 144.1945,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 2,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 6.3697,
+          "vb_read_ms": 1.375,
+          "raw_decode_ms": 2.3652,
+          "vb_decode_ms": 18.5006,
+          "raw_cursor_ms": 82.929,
+          "vb_cursor_ms": 113.9793,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 3,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 3.5403,
+          "vb_read_ms": 0.9215,
+          "raw_decode_ms": 2.052,
+          "vb_decode_ms": 18.3143,
+          "raw_cursor_ms": 81.5334,
+          "vb_cursor_ms": 118.7158,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 4,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 7.6604,
+          "vb_read_ms": 1.5154,
+          "raw_decode_ms": 2.4973,
+          "vb_decode_ms": 31.7676,
+          "raw_cursor_ms": 139.6487,
+          "vb_cursor_ms": 150.0586,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 5,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 3.5854,
+          "vb_read_ms": 1.2605,
+          "raw_decode_ms": 2.0542,
+          "vb_decode_ms": 23.996,
+          "raw_cursor_ms": 94.2983,
+          "vb_cursor_ms": 119.7209,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 6,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 3.8949,
+          "vb_read_ms": 0.9782,
+          "raw_decode_ms": 2.2962,
+          "vb_decode_ms": 17.9631,
+          "raw_cursor_ms": 78.1377,
+          "vb_cursor_ms": 115.108,
+          "checksum": "4c19a8775c75ec53"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 5.3217,
+        "vb_read_ms": 1.2605,
+        "raw_decode_ms": 2.2962,
+        "vb_decode_ms": 18.5006,
+        "raw_cursor_ms": 82.929,
+        "vb_cursor_ms": 119.7209
+      }
+    },
+    {
+      "space": "surface",
+      "term": "war",
+      "kind": "postings",
+      "count": 27836,
+      "raw_bytes": 222688,
+      "vb_bytes": 28161,
+      "checksum": "dc11d167d1c4148e",
+      "samples": [
+        {
+          "kind": "postings",
+          "repeat": 0,
+          "count": 27836,
+          "raw_bytes": 222688,
+          "vb_bytes": 28161,
+          "raw_read_ms": 0.0147,
+          "vb_read_ms": 0.0184,
+          "raw_decode_ms": 0.0273,
+          "vb_decode_ms": 0.1272,
+          "raw_cursor_ms": 1.7049,
+          "vb_cursor_ms": 1.3461,
+          "checksum": "dc11d167d1c4148e"
+        },
+        {
+          "kind": "postings",
+          "repeat": 1,
+          "count": 27836,
+          "raw_bytes": 222688,
+          "vb_bytes": 28161,
+          "raw_read_ms": 0.0588,
+          "vb_read_ms": 0.0109,
+          "raw_decode_ms": 0.0279,
+          "vb_decode_ms": 0.1358,
+          "raw_cursor_ms": 1.5025,
+          "vb_cursor_ms": 1.387,
+          "checksum": "dc11d167d1c4148e"
+        },
+        {
+          "kind": "postings",
+          "repeat": 2,
+          "count": 27836,
+          "raw_bytes": 222688,
+          "vb_bytes": 28161,
+          "raw_read_ms": 0.0298,
+          "vb_read_ms": 0.011,
+          "raw_decode_ms": 0.1358,
+          "vb_decode_ms": 0.0721,
+          "raw_cursor_ms": 1.2435,
+          "vb_cursor_ms": 0.846,
+          "checksum": "dc11d167d1c4148e"
+        },
+        {
+          "kind": "postings",
+          "repeat": 3,
+          "count": 27836,
+          "raw_bytes": 222688,
+          "vb_bytes": 28161,
+          "raw_read_ms": 0.0236,
+          "vb_read_ms": 0.005,
+          "raw_decode_ms": 0.0274,
+          "vb_decode_ms": 0.0718,
+          "raw_cursor_ms": 1.1176,
+          "vb_cursor_ms": 0.8516,
+          "checksum": "dc11d167d1c4148e"
+        },
+        {
+          "kind": "postings",
+          "repeat": 4,
+          "count": 27836,
+          "raw_bytes": 222688,
+          "vb_bytes": 28161,
+          "raw_read_ms": 0.0191,
+          "vb_read_ms": 0.0098,
+          "raw_decode_ms": 0.0273,
+          "vb_decode_ms": 0.0723,
+          "raw_cursor_ms": 1.0733,
+          "vb_cursor_ms": 1.1708,
+          "checksum": "dc11d167d1c4148e"
+        },
+        {
+          "kind": "postings",
+          "repeat": 5,
+          "count": 27836,
+          "raw_bytes": 222688,
+          "vb_bytes": 28161,
+          "raw_read_ms": 0.0441,
+          "vb_read_ms": 0.0113,
+          "raw_decode_ms": 0.0291,
+          "vb_decode_ms": 0.106,
+          "raw_cursor_ms": 1.04,
+          "vb_cursor_ms": 0.9463,
+          "checksum": "dc11d167d1c4148e"
+        },
+        {
+          "kind": "postings",
+          "repeat": 6,
+          "count": 27836,
+          "raw_bytes": 222688,
+          "vb_bytes": 28161,
+          "raw_read_ms": 0.022,
+          "vb_read_ms": 0.008,
+          "raw_decode_ms": 0.0274,
+          "vb_decode_ms": 0.0727,
+          "raw_cursor_ms": 1.0462,
+          "vb_cursor_ms": 0.8525,
+          "checksum": "dc11d167d1c4148e"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 0.0236,
+        "vb_read_ms": 0.0109,
+        "raw_decode_ms": 0.0274,
+        "vb_decode_ms": 0.0727,
+        "raw_cursor_ms": 1.1176,
+        "vb_cursor_ms": 0.9463
+      }
+    },
+    {
+      "space": "surface",
+      "term": "war",
+      "kind": "coordinates",
+      "count": 66585,
+      "raw_bytes": 532680,
+      "vb_bytes": 161210,
+      "checksum": "950ed1fc90ad1eea",
+      "samples": [
+        {
+          "kind": "coordinates",
+          "repeat": 0,
+          "count": 66585,
+          "raw_bytes": 532680,
+          "vb_bytes": 161210,
+          "raw_read_ms": 0.0353,
+          "vb_read_ms": 0.0158,
+          "raw_decode_ms": 0.066,
+          "vb_decode_ms": 0.7694,
+          "raw_cursor_ms": 2.3981,
+          "vb_cursor_ms": 5.5366,
+          "checksum": "950ed1fc90ad1eea"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 1,
+          "count": 66585,
+          "raw_bytes": 532680,
+          "vb_bytes": 161210,
+          "raw_read_ms": 0.0684,
+          "vb_read_ms": 0.0178,
+          "raw_decode_ms": 0.0707,
+          "vb_decode_ms": 0.7999,
+          "raw_cursor_ms": 2.3188,
+          "vb_cursor_ms": 4.9178,
+          "checksum": "950ed1fc90ad1eea"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 2,
+          "count": 66585,
+          "raw_bytes": 532680,
+          "vb_bytes": 161210,
+          "raw_read_ms": 0.0412,
+          "vb_read_ms": 0.0243,
+          "raw_decode_ms": 0.0685,
+          "vb_decode_ms": 1.199,
+          "raw_cursor_ms": 2.1791,
+          "vb_cursor_ms": 4.6122,
+          "checksum": "950ed1fc90ad1eea"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 3,
+          "count": 66585,
+          "raw_bytes": 532680,
+          "vb_bytes": 161210,
+          "raw_read_ms": 0.0665,
+          "vb_read_ms": 0.0166,
+          "raw_decode_ms": 0.0726,
+          "vb_decode_ms": 0.7745,
+          "raw_cursor_ms": 2.2842,
+          "vb_cursor_ms": 4.5048,
+          "checksum": "950ed1fc90ad1eea"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 4,
+          "count": 66585,
+          "raw_bytes": 532680,
+          "vb_bytes": 161210,
+          "raw_read_ms": 0.0414,
+          "vb_read_ms": 0.0263,
+          "raw_decode_ms": 0.0699,
+          "vb_decode_ms": 1.0332,
+          "raw_cursor_ms": 2.367,
+          "vb_cursor_ms": 4.1912,
+          "checksum": "950ed1fc90ad1eea"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 5,
+          "count": 66585,
+          "raw_bytes": 532680,
+          "vb_bytes": 161210,
+          "raw_read_ms": 0.1488,
+          "vb_read_ms": 0.0119,
+          "raw_decode_ms": 0.0931,
+          "vb_decode_ms": 0.7743,
+          "raw_cursor_ms": 2.4836,
+          "vb_cursor_ms": 4.9726,
+          "checksum": "950ed1fc90ad1eea"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 6,
+          "count": 66585,
+          "raw_bytes": 532680,
+          "vb_bytes": 161210,
+          "raw_read_ms": 0.0438,
+          "vb_read_ms": 0.0248,
+          "raw_decode_ms": 0.0693,
+          "vb_decode_ms": 0.7625,
+          "raw_cursor_ms": 2.323,
+          "vb_cursor_ms": 3.7703,
+          "checksum": "950ed1fc90ad1eea"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 0.0438,
+        "vb_read_ms": 0.0178,
+        "raw_decode_ms": 0.0699,
+        "vb_decode_ms": 0.7745,
+        "raw_cursor_ms": 2.323,
+        "vb_cursor_ms": 4.6122
+      }
+    },
+    {
+      "space": "lemma",
+      "term": "god",
+      "kind": "postings",
+      "count": 12241,
+      "raw_bytes": 97928,
+      "vb_bytes": 13011,
+      "checksum": "4b068672eec0191f",
+      "samples": [
+        {
+          "kind": "postings",
+          "repeat": 0,
+          "count": 12241,
+          "raw_bytes": 97928,
+          "vb_bytes": 13011,
+          "raw_read_ms": 0.0104,
+          "vb_read_ms": 0.0082,
+          "raw_decode_ms": 0.0126,
+          "vb_decode_ms": 0.0373,
+          "raw_cursor_ms": 0.8157,
+          "vb_cursor_ms": 0.3795,
+          "checksum": "4b068672eec0191f"
+        },
+        {
+          "kind": "postings",
+          "repeat": 1,
+          "count": 12241,
+          "raw_bytes": 97928,
+          "vb_bytes": 13011,
+          "raw_read_ms": 0.0307,
+          "vb_read_ms": 0.006,
+          "raw_decode_ms": 0.012,
+          "vb_decode_ms": 0.0521,
+          "raw_cursor_ms": 0.6183,
+          "vb_cursor_ms": 0.6242,
+          "checksum": "4b068672eec0191f"
+        },
+        {
+          "kind": "postings",
+          "repeat": 2,
+          "count": 12241,
+          "raw_bytes": 97928,
+          "vb_bytes": 13011,
+          "raw_read_ms": 0.0162,
+          "vb_read_ms": 0.0097,
+          "raw_decode_ms": 0.0123,
+          "vb_decode_ms": 0.0428,
+          "raw_cursor_ms": 0.6838,
+          "vb_cursor_ms": 0.3802,
+          "checksum": "4b068672eec0191f"
+        },
+        {
+          "kind": "postings",
+          "repeat": 3,
+          "count": 12241,
+          "raw_bytes": 97928,
+          "vb_bytes": 13011,
+          "raw_read_ms": 0.0119,
+          "vb_read_ms": 0.0042,
+          "raw_decode_ms": 0.012,
+          "vb_decode_ms": 0.0366,
+          "raw_cursor_ms": 0.4712,
+          "vb_cursor_ms": 0.3522,
+          "checksum": "4b068672eec0191f"
+        },
+        {
+          "kind": "postings",
+          "repeat": 4,
+          "count": 12241,
+          "raw_bytes": 97928,
+          "vb_bytes": 13011,
+          "raw_read_ms": 0.0062,
+          "vb_read_ms": 0.0042,
+          "raw_decode_ms": 0.012,
+          "vb_decode_ms": 0.0371,
+          "raw_cursor_ms": 0.4548,
+          "vb_cursor_ms": 0.6293,
+          "checksum": "4b068672eec0191f"
+        },
+        {
+          "kind": "postings",
+          "repeat": 5,
+          "count": 12241,
+          "raw_bytes": 97928,
+          "vb_bytes": 13011,
+          "raw_read_ms": 0.0153,
+          "vb_read_ms": 0.0123,
+          "raw_decode_ms": 0.012,
+          "vb_decode_ms": 0.0623,
+          "raw_cursor_ms": 0.4028,
+          "vb_cursor_ms": 0.4253,
+          "checksum": "4b068672eec0191f"
+        },
+        {
+          "kind": "postings",
+          "repeat": 6,
+          "count": 12241,
+          "raw_bytes": 97928,
+          "vb_bytes": 13011,
+          "raw_read_ms": 0.0062,
+          "vb_read_ms": 0.0048,
+          "raw_decode_ms": 0.0121,
+          "vb_decode_ms": 0.0377,
+          "raw_cursor_ms": 0.3823,
+          "vb_cursor_ms": 0.3533,
+          "checksum": "4b068672eec0191f"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 0.0119,
+        "vb_read_ms": 0.006,
+        "raw_decode_ms": 0.012,
+        "vb_decode_ms": 0.0377,
+        "raw_cursor_ms": 0.4712,
+        "vb_cursor_ms": 0.3802
+      }
+    },
+    {
+      "space": "lemma",
+      "term": "god",
+      "kind": "coordinates",
+      "count": 24496,
+      "raw_bytes": 195968,
+      "vb_bytes": 61522,
+      "checksum": "584c12bbd3a16916",
+      "samples": [
+        {
+          "kind": "coordinates",
+          "repeat": 0,
+          "count": 24496,
+          "raw_bytes": 195968,
+          "vb_bytes": 61522,
+          "raw_read_ms": 0.0123,
+          "vb_read_ms": 0.0085,
+          "raw_decode_ms": 0.024,
+          "vb_decode_ms": 0.2644,
+          "raw_cursor_ms": 0.7801,
+          "vb_cursor_ms": 1.4203,
+          "checksum": "584c12bbd3a16916"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 1,
+          "count": 24496,
+          "raw_bytes": 195968,
+          "vb_bytes": 61522,
+          "raw_read_ms": 0.0194,
+          "vb_read_ms": 0.0056,
+          "raw_decode_ms": 0.024,
+          "vb_decode_ms": 0.2713,
+          "raw_cursor_ms": 0.7514,
+          "vb_cursor_ms": 1.3783,
+          "checksum": "584c12bbd3a16916"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 2,
+          "count": 24496,
+          "raw_bytes": 195968,
+          "vb_bytes": 61522,
+          "raw_read_ms": 0.0093,
+          "vb_read_ms": 0.0091,
+          "raw_decode_ms": 0.024,
+          "vb_decode_ms": 0.2594,
+          "raw_cursor_ms": 0.7545,
+          "vb_cursor_ms": 1.4395,
+          "checksum": "584c12bbd3a16916"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 3,
+          "count": 24496,
+          "raw_bytes": 195968,
+          "vb_bytes": 61522,
+          "raw_read_ms": 0.0477,
+          "vb_read_ms": 0.0063,
+          "raw_decode_ms": 0.0273,
+          "vb_decode_ms": 0.2568,
+          "raw_cursor_ms": 1.2728,
+          "vb_cursor_ms": 1.8505,
+          "checksum": "584c12bbd3a16916"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 4,
+          "count": 24496,
+          "raw_bytes": 195968,
+          "vb_bytes": 61522,
+          "raw_read_ms": 0.1381,
+          "vb_read_ms": 0.0177,
+          "raw_decode_ms": 0.0251,
+          "vb_decode_ms": 0.3964,
+          "raw_cursor_ms": 0.9449,
+          "vb_cursor_ms": 1.842,
+          "checksum": "584c12bbd3a16916"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 5,
+          "count": 24496,
+          "raw_bytes": 195968,
+          "vb_bytes": 61522,
+          "raw_read_ms": 0.0292,
+          "vb_read_ms": 0.0105,
+          "raw_decode_ms": 0.0246,
+          "vb_decode_ms": 0.2813,
+          "raw_cursor_ms": 0.921,
+          "vb_cursor_ms": 1.5332,
+          "checksum": "584c12bbd3a16916"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 6,
+          "count": 24496,
+          "raw_bytes": 195968,
+          "vb_bytes": 61522,
+          "raw_read_ms": 0.0144,
+          "vb_read_ms": 0.0101,
+          "raw_decode_ms": 0.024,
+          "vb_decode_ms": 0.2839,
+          "raw_cursor_ms": 0.9275,
+          "vb_cursor_ms": 1.591,
+          "checksum": "584c12bbd3a16916"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 0.0194,
+        "vb_read_ms": 0.0091,
+        "raw_decode_ms": 0.024,
+        "vb_decode_ms": 0.2713,
+        "raw_cursor_ms": 0.921,
+        "vb_cursor_ms": 1.5332
+      }
+    },
+    {
+      "space": "lemma",
+      "term": "of",
+      "kind": "postings",
+      "count": 224581,
+      "raw_bytes": 1796648,
+      "vb_bytes": 224608,
+      "checksum": "84cad89330899259",
+      "samples": [
+        {
+          "kind": "postings",
+          "repeat": 0,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.2727,
+          "vb_read_ms": 0.0348,
+          "raw_decode_ms": 0.2238,
+          "vb_decode_ms": 0.55,
+          "raw_cursor_ms": 10.0584,
+          "vb_cursor_ms": 6.0724,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 1,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.368,
+          "vb_read_ms": 0.0262,
+          "raw_decode_ms": 0.2271,
+          "vb_decode_ms": 0.5504,
+          "raw_cursor_ms": 8.5801,
+          "vb_cursor_ms": 7.7817,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 2,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.3625,
+          "vb_read_ms": 0.0342,
+          "raw_decode_ms": 0.2292,
+          "vb_decode_ms": 0.6,
+          "raw_cursor_ms": 9.4894,
+          "vb_cursor_ms": 5.8463,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 3,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.4238,
+          "vb_read_ms": 0.0238,
+          "raw_decode_ms": 0.2285,
+          "vb_decode_ms": 0.5498,
+          "raw_cursor_ms": 7.9146,
+          "vb_cursor_ms": 6.5162,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 4,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.2605,
+          "vb_read_ms": 0.0537,
+          "raw_decode_ms": 0.2316,
+          "vb_decode_ms": 0.7949,
+          "raw_cursor_ms": 11.829,
+          "vb_cursor_ms": 6.9583,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 5,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.4165,
+          "vb_read_ms": 0.0281,
+          "raw_decode_ms": 0.2283,
+          "vb_decode_ms": 0.5506,
+          "raw_cursor_ms": 8.2052,
+          "vb_cursor_ms": 5.9035,
+          "checksum": "84cad89330899259"
+        },
+        {
+          "kind": "postings",
+          "repeat": 6,
+          "count": 224581,
+          "raw_bytes": 1796648,
+          "vb_bytes": 224608,
+          "raw_read_ms": 0.3122,
+          "vb_read_ms": 0.0568,
+          "raw_decode_ms": 0.2298,
+          "vb_decode_ms": 1.9625,
+          "raw_cursor_ms": 11.0686,
+          "vb_cursor_ms": 7.4425,
+          "checksum": "84cad89330899259"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 0.3625,
+        "vb_read_ms": 0.0342,
+        "raw_decode_ms": 0.2285,
+        "vb_decode_ms": 0.5506,
+        "raw_cursor_ms": 9.4894,
+        "vb_cursor_ms": 6.5162
+      }
+    },
+    {
+      "space": "lemma",
+      "term": "of",
+      "kind": "coordinates",
+      "count": 1997146,
+      "raw_bytes": 15977168,
+      "vb_bytes": 4365398,
+      "checksum": "4c19a8775c75ec53",
+      "samples": [
+        {
+          "kind": "coordinates",
+          "repeat": 0,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 4.2893,
+          "vb_read_ms": 1.5971,
+          "raw_decode_ms": 2.0655,
+          "vb_decode_ms": 18.8596,
+          "raw_cursor_ms": 80.8779,
+          "vb_cursor_ms": 115.0738,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 1,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 4.6426,
+          "vb_read_ms": 0.9749,
+          "raw_decode_ms": 2.1702,
+          "vb_decode_ms": 17.8889,
+          "raw_cursor_ms": 73.5534,
+          "vb_cursor_ms": 115.352,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 2,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 3.7259,
+          "vb_read_ms": 1.1828,
+          "raw_decode_ms": 2.0515,
+          "vb_decode_ms": 18.1544,
+          "raw_cursor_ms": 76.5809,
+          "vb_cursor_ms": 111.1325,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 3,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 3.9136,
+          "vb_read_ms": 1.0459,
+          "raw_decode_ms": 2.0662,
+          "vb_decode_ms": 20.144,
+          "raw_cursor_ms": 79.8131,
+          "vb_cursor_ms": 136.6824,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 4,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 6.4912,
+          "vb_read_ms": 1.1571,
+          "raw_decode_ms": 2.6218,
+          "vb_decode_ms": 18.0856,
+          "raw_cursor_ms": 99.7166,
+          "vb_cursor_ms": 135.3168,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 5,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 5.5802,
+          "vb_read_ms": 1.5595,
+          "raw_decode_ms": 2.2895,
+          "vb_decode_ms": 30.0966,
+          "raw_cursor_ms": 88.08,
+          "vb_cursor_ms": 181.2711,
+          "checksum": "4c19a8775c75ec53"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 6,
+          "count": 1997146,
+          "raw_bytes": 15977168,
+          "vb_bytes": 4365398,
+          "raw_read_ms": 6.9098,
+          "vb_read_ms": 0.9864,
+          "raw_decode_ms": 2.1546,
+          "vb_decode_ms": 17.9535,
+          "raw_cursor_ms": 73.467,
+          "vb_cursor_ms": 122.9073,
+          "checksum": "4c19a8775c75ec53"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 4.6426,
+        "vb_read_ms": 1.1571,
+        "raw_decode_ms": 2.1546,
+        "vb_decode_ms": 18.1544,
+        "raw_cursor_ms": 79.8131,
+        "vb_cursor_ms": 122.9073
+      }
+    },
+    {
+      "space": "lemma",
+      "term": "war",
+      "kind": "postings",
+      "count": 40129,
+      "raw_bytes": 321032,
+      "vb_bytes": 40341,
+      "checksum": "2fc9760166c8f338",
+      "samples": [
+        {
+          "kind": "postings",
+          "repeat": 0,
+          "count": 40129,
+          "raw_bytes": 321032,
+          "vb_bytes": 40341,
+          "raw_read_ms": 0.0391,
+          "vb_read_ms": 0.0197,
+          "raw_decode_ms": 0.0402,
+          "vb_decode_ms": 0.1629,
+          "raw_cursor_ms": 2.128,
+          "vb_cursor_ms": 1.7764,
+          "checksum": "2fc9760166c8f338"
+        },
+        {
+          "kind": "postings",
+          "repeat": 1,
+          "count": 40129,
+          "raw_bytes": 321032,
+          "vb_bytes": 40341,
+          "raw_read_ms": 0.0411,
+          "vb_read_ms": 0.0151,
+          "raw_decode_ms": 0.0392,
+          "vb_decode_ms": 0.1734,
+          "raw_cursor_ms": 1.3023,
+          "vb_cursor_ms": 1.2528,
+          "checksum": "2fc9760166c8f338"
+        },
+        {
+          "kind": "postings",
+          "repeat": 2,
+          "count": 40129,
+          "raw_bytes": 321032,
+          "vb_bytes": 40341,
+          "raw_read_ms": 0.0259,
+          "vb_read_ms": 0.0135,
+          "raw_decode_ms": 0.0393,
+          "vb_decode_ms": 0.1012,
+          "raw_cursor_ms": 2.1366,
+          "vb_cursor_ms": 1.0796,
+          "checksum": "2fc9760166c8f338"
+        },
+        {
+          "kind": "postings",
+          "repeat": 3,
+          "count": 40129,
+          "raw_bytes": 321032,
+          "vb_bytes": 40341,
+          "raw_read_ms": 0.0357,
+          "vb_read_ms": 0.0066,
+          "raw_decode_ms": 0.0936,
+          "vb_decode_ms": 0.1007,
+          "raw_cursor_ms": 1.4011,
+          "vb_cursor_ms": 1.1073,
+          "checksum": "2fc9760166c8f338"
+        },
+        {
+          "kind": "postings",
+          "repeat": 4,
+          "count": 40129,
+          "raw_bytes": 321032,
+          "vb_bytes": 40341,
+          "raw_read_ms": 0.0195,
+          "vb_read_ms": 0.0108,
+          "raw_decode_ms": 0.0393,
+          "vb_decode_ms": 0.1011,
+          "raw_cursor_ms": 1.4406,
+          "vb_cursor_ms": 1.066,
+          "checksum": "2fc9760166c8f338"
+        },
+        {
+          "kind": "postings",
+          "repeat": 5,
+          "count": 40129,
+          "raw_bytes": 321032,
+          "vb_bytes": 40341,
+          "raw_read_ms": 0.0167,
+          "vb_read_ms": 0.0054,
+          "raw_decode_ms": 0.0403,
+          "vb_decode_ms": 0.1007,
+          "raw_cursor_ms": 1.4246,
+          "vb_cursor_ms": 1.0964,
+          "checksum": "2fc9760166c8f338"
+        },
+        {
+          "kind": "postings",
+          "repeat": 6,
+          "count": 40129,
+          "raw_bytes": 321032,
+          "vb_bytes": 40341,
+          "raw_read_ms": 0.0118,
+          "vb_read_ms": 0.0084,
+          "raw_decode_ms": 0.0393,
+          "vb_decode_ms": 0.1005,
+          "raw_cursor_ms": 1.4302,
+          "vb_cursor_ms": 1.0896,
+          "checksum": "2fc9760166c8f338"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 0.0259,
+        "vb_read_ms": 0.0108,
+        "raw_decode_ms": 0.0393,
+        "vb_decode_ms": 0.1011,
+        "raw_cursor_ms": 1.4302,
+        "vb_cursor_ms": 1.0964
+      }
+    },
+    {
+      "space": "lemma",
+      "term": "war",
+      "kind": "coordinates",
+      "count": 102986,
+      "raw_bytes": 823888,
+      "vb_bytes": 246857,
+      "checksum": "782946466d7c7db8",
+      "samples": [
+        {
+          "kind": "coordinates",
+          "repeat": 0,
+          "count": 102986,
+          "raw_bytes": 823888,
+          "vb_bytes": 246857,
+          "raw_read_ms": 0.0728,
+          "vb_read_ms": 0.0335,
+          "raw_decode_ms": 0.1011,
+          "vb_decode_ms": 1.2108,
+          "raw_cursor_ms": 3.85,
+          "vb_cursor_ms": 6.7813,
+          "checksum": "782946466d7c7db8"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 1,
+          "count": 102986,
+          "raw_bytes": 823888,
+          "vb_bytes": 246857,
+          "raw_read_ms": 0.1381,
+          "vb_read_ms": 0.017,
+          "raw_decode_ms": 0.1133,
+          "vb_decode_ms": 1.1862,
+          "raw_cursor_ms": 4.9427,
+          "vb_cursor_ms": 9.2224,
+          "checksum": "782946466d7c7db8"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 2,
+          "count": 102986,
+          "raw_bytes": 823888,
+          "vb_bytes": 246857,
+          "raw_read_ms": 0.1099,
+          "vb_read_ms": 0.0571,
+          "raw_decode_ms": 0.1376,
+          "vb_decode_ms": 2.5179,
+          "raw_cursor_ms": 5.6736,
+          "vb_cursor_ms": 10.6186,
+          "checksum": "782946466d7c7db8"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 3,
+          "count": 102986,
+          "raw_bytes": 823888,
+          "vb_bytes": 246857,
+          "raw_read_ms": 0.1039,
+          "vb_read_ms": 0.06,
+          "raw_decode_ms": 0.1136,
+          "vb_decode_ms": 1.8323,
+          "raw_cursor_ms": 3.9763,
+          "vb_cursor_ms": 9.6885,
+          "checksum": "782946466d7c7db8"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 4,
+          "count": 102986,
+          "raw_bytes": 823888,
+          "vb_bytes": 246857,
+          "raw_read_ms": 0.0852,
+          "vb_read_ms": 0.068,
+          "raw_decode_ms": 0.1131,
+          "vb_decode_ms": 1.6134,
+          "raw_cursor_ms": 4.7637,
+          "vb_cursor_ms": 6.8152,
+          "checksum": "782946466d7c7db8"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 5,
+          "count": 102986,
+          "raw_bytes": 823888,
+          "vb_bytes": 246857,
+          "raw_read_ms": 0.1945,
+          "vb_read_ms": 0.0296,
+          "raw_decode_ms": 0.1247,
+          "vb_decode_ms": 1.3328,
+          "raw_cursor_ms": 4.0054,
+          "vb_cursor_ms": 8.5857,
+          "checksum": "782946466d7c7db8"
+        },
+        {
+          "kind": "coordinates",
+          "repeat": 6,
+          "count": 102986,
+          "raw_bytes": 823888,
+          "vb_bytes": 246857,
+          "raw_read_ms": 0.0605,
+          "vb_read_ms": 0.034,
+          "raw_decode_ms": 0.1088,
+          "vb_decode_ms": 1.1943,
+          "raw_cursor_ms": 3.7194,
+          "vb_cursor_ms": 6.4403,
+          "checksum": "782946466d7c7db8"
+        }
+      ],
+      "median": {
+        "raw_read_ms": 0.1039,
+        "vb_read_ms": 0.034,
+        "raw_decode_ms": 0.1133,
+        "vb_decode_ms": 1.3328,
+        "raw_cursor_ms": 4.0054,
+        "vb_cursor_ms": 8.5857
+      }
+    }
+  ],
+  "search": [
+    {
+      "space": "surface",
+      "variant": "raw",
+      "query": "\"god of war\"",
+      "total": 5804,
+      "results": [
+        {
+          "id": 352,
+          "title": "В PS Store стартовала новая распродажа: God of War, Metro Redux, WWE 2K15 и другие",
+          "url": "https://gamemag.ru/news/102143/v-ps-store-startovala-novaya-rasprodazha-god-of-war-metro-re",
+          "source": "gamemag"
+        },
+        {
+          "id": 430,
+          "title": "СМИ: God of War III Remastered Edition выйдет на PlayStation 4 (UPD.)",
+          "url": "https://gamemag.ru/news/102310/smi-god-of-war-iii-remastered-edition-vyydet-na-playstation-",
+          "source": "gamemag"
+        },
+        {
+          "id": 434,
+          "title": "Первое видео переиздания God Of War 3 для PS4, игра выйдет 14 июля",
+          "url": "https://gamemag.ru/news/102317/pervoe-video-pereizdaniya-god-of-war-3-dlya-ps4-igra-vyydet-",
+          "source": "gamemag"
+        },
+        {
+          "id": 470,
+          "title": "God of War III Remastered - в планы разработчиков не входит переиздание других игр серии",
+          "url": "https://gamemag.ru/news/102386/god-of-war-iii-remastered-v-plany-razrabotchikov-ne-vhodit-p",
+          "source": "gamemag"
+        },
+        {
+          "id": 657,
+          "title": "Анонсированы новые футболки по God of War",
+          "url": "https://gamemag.ru/news/102822/anonsirovany-novye-futbolki-po-god-of-war",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 124.809,
+      "samples_ms": [
+        117.552,
+        128.897,
+        118.605,
+        127.194,
+        116.358,
+        141.296,
+        157.272
+      ],
+      "median_ms": 127.194
+    },
+    {
+      "space": "surface",
+      "variant": "raw",
+      "query": "god AND of AND war",
+      "total": 6498,
+      "results": [
+        {
+          "id": 352,
+          "title": "В PS Store стартовала новая распродажа: God of War, Metro Redux, WWE 2K15 и другие",
+          "url": "https://gamemag.ru/news/102143/v-ps-store-startovala-novaya-rasprodazha-god-of-war-metro-re",
+          "source": "gamemag"
+        },
+        {
+          "id": 373,
+          "title": "Atlus сообщила о проведении большой распродажи в PSN",
+          "url": "https://gamemag.ru/news/102187/atlus-soobschila-o-provedenii-bolshoy-rasprodazhi-v-psn",
+          "source": "gamemag"
+        },
+        {
+          "id": 430,
+          "title": "СМИ: God of War III Remastered Edition выйдет на PlayStation 4 (UPD.)",
+          "url": "https://gamemag.ru/news/102310/smi-god-of-war-iii-remastered-edition-vyydet-na-playstation-",
+          "source": "gamemag"
+        },
+        {
+          "id": 434,
+          "title": "Первое видео переиздания God Of War 3 для PS4, игра выйдет 14 июля",
+          "url": "https://gamemag.ru/news/102317/pervoe-video-pereizdaniya-god-of-war-3-dlya-ps4-igra-vyydet-",
+          "source": "gamemag"
+        },
+        {
+          "id": 470,
+          "title": "God of War III Remastered - в планы разработчиков не входит переиздание других игр серии",
+          "url": "https://gamemag.ru/news/102386/god-of-war-iii-remastered-v-plany-razrabotchikov-ne-vhodit-p",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 13.851,
+      "samples_ms": [
+        13.982,
+        10.237,
+        13.713,
+        18.854,
+        14.494,
+        21.135,
+        23.449
+      ],
+      "median_ms": 14.494
+    },
+    {
+      "space": "surface",
+      "variant": "raw",
+      "query": "\"doom eternal\"",
+      "total": 1274,
+      "results": [
+        {
+          "id": 72,
+          "title": "Прохождение игры Дум Этернал на 100%",
+          "url": "https://gamemag.ru/articles/146296/dum-eternal-prokhozhdenie",
+          "source": "gamemag"
+        },
+        {
+          "id": 10846,
+          "title": "Объявлены итоги Game Critics Awards 2018 - журналисты назвали лучшие игры прошедшей E3",
+          "url": "https://gamemag.ru/news/129321/obyavleny-itogi-game-critics-awards-2018-zhurnalisty-nazvali-luchshie-igry-proshedshey-e3",
+          "source": "gamemag"
+        },
+        {
+          "id": 11011,
+          "title": "Bethesda: Prey, Dishonored, Wolfenstein и The Evil Within не могут продаваться такими же тиражами, как Fallout и The Elder Scrolls",
+          "url": "https://gamemag.ru/news/129741/bethesda-prey-dishonored-wolfenstein-i-the-evil-within-ne-mogut-prodavatsya-takzhe-kak-fallout-i-the",
+          "source": "gamemag"
+        },
+        {
+          "id": 11229,
+          "title": "DOOM - Microsoft рассылает пользователям письма с сообщением о скором появлении шутера в каталоге Xbox Game Pass",
+          "url": "https://gamemag.ru/news/130284/doom-microsoft-rassylaet-polzovatelyam-pisma-s-soobscheniem-o-skorom-poyavlenii-shutera-v-kataloge-x",
+          "source": "gamemag"
+        },
+        {
+          "id": 11250,
+          "title": "QuakeCon 2018: DOOM Eternal - первый геймплей, скриншоты, подробности и анонс версии для Switch (Обновлено)",
+          "url": "https://gamemag.ru/news/130345/quakecon-2018-bethesda-predstavila-pervyy-geympleynyy-treyler-doom-eternal",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 5.231,
+      "samples_ms": [
+        5.253,
+        5.57,
+        4.685,
+        8.116,
+        5.794,
+        7.6,
+        4.956
+      ],
+      "median_ms": 5.57
+    },
+    {
+      "space": "surface",
+      "variant": "raw",
+      "query": "\"eternal doom\"",
+      "total": 18,
+      "results": [
+        {
+          "id": 16788,
+          "title": "DOOM Eternal побил рекорды серии в Steam и стартовал на вершине недельного чарта",
+          "url": "https://gamemag.ru/news/144569/steam-weekly-top-sellers-update-22-march",
+          "source": "gamemag"
+        },
+        {
+          "id": 73896,
+          "title": "ДНК главного шутера индустрии. Почему DOOM захватила умы и до сих пор любима геймерами",
+          "url": "https://ixbt.games/articles/2025/04/23/smerti-festival-dnk-serii-doom.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 74986,
+          "title": "Эксперты Digital Foundry составили рейтинг игр с лучшей графикой 2020 года",
+          "url": "https://ixbt.games/news/2020/12/25/eksperty-digital-foundry-sostavili-reiting-igr-s-lucsei-grafikoi-2020-goda.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 99683,
+          "title": "В IGN обновили рейтинг игр DOOM — The Dark Ages не смогла превзойти Eternal и DOOM (2016)",
+          "url": "https://ixbt.games/news/2025/05/18/ign-predstavili-reiting-igr-doom-the-dark-ages-ne-smogla-prevzoiti-eternal-i-doom-2016.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 110268,
+          "title": "Все будет на Unreal Engine: массовые увольнения в Xbox могут поставить крест на движке id Tech",
+          "url": "https://ixbt.games/news/2026/07/10/422979-vse-budet-na-unreal-engine-massovye-uvolneniia-v-xbox-mogut-postavit-krest-na-dvizke-id-tech.html",
+          "source": "ixbt_games"
+        }
+      ],
+      "warmup_ms": 1.627,
+      "samples_ms": [
+        1.695,
+        1.757,
+        1.581,
+        2.741,
+        1.639,
+        3.069,
+        1.601
+      ],
+      "median_ms": 1.695
+    },
+    {
+      "space": "surface",
+      "variant": "packed",
+      "query": "\"god of war\"",
+      "total": 5804,
+      "results": [
+        {
+          "id": 352,
+          "title": "В PS Store стартовала новая распродажа: God of War, Metro Redux, WWE 2K15 и другие",
+          "url": "https://gamemag.ru/news/102143/v-ps-store-startovala-novaya-rasprodazha-god-of-war-metro-re",
+          "source": "gamemag"
+        },
+        {
+          "id": 430,
+          "title": "СМИ: God of War III Remastered Edition выйдет на PlayStation 4 (UPD.)",
+          "url": "https://gamemag.ru/news/102310/smi-god-of-war-iii-remastered-edition-vyydet-na-playstation-",
+          "source": "gamemag"
+        },
+        {
+          "id": 434,
+          "title": "Первое видео переиздания God Of War 3 для PS4, игра выйдет 14 июля",
+          "url": "https://gamemag.ru/news/102317/pervoe-video-pereizdaniya-god-of-war-3-dlya-ps4-igra-vyydet-",
+          "source": "gamemag"
+        },
+        {
+          "id": 470,
+          "title": "God of War III Remastered - в планы разработчиков не входит переиздание других игр серии",
+          "url": "https://gamemag.ru/news/102386/god-of-war-iii-remastered-v-plany-razrabotchikov-ne-vhodit-p",
+          "source": "gamemag"
+        },
+        {
+          "id": 657,
+          "title": "Анонсированы новые футболки по God of War",
+          "url": "https://gamemag.ru/news/102822/anonsirovany-novye-futbolki-po-god-of-war",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 174.956,
+      "samples_ms": [
+        177.609,
+        159.192,
+        166.069,
+        166.868,
+        179.733,
+        165.767,
+        189.315
+      ],
+      "median_ms": 166.868
+    },
+    {
+      "space": "surface",
+      "variant": "packed",
+      "query": "god AND of AND war",
+      "total": 6498,
+      "results": [
+        {
+          "id": 352,
+          "title": "В PS Store стартовала новая распродажа: God of War, Metro Redux, WWE 2K15 и другие",
+          "url": "https://gamemag.ru/news/102143/v-ps-store-startovala-novaya-rasprodazha-god-of-war-metro-re",
+          "source": "gamemag"
+        },
+        {
+          "id": 373,
+          "title": "Atlus сообщила о проведении большой распродажи в PSN",
+          "url": "https://gamemag.ru/news/102187/atlus-soobschila-o-provedenii-bolshoy-rasprodazhi-v-psn",
+          "source": "gamemag"
+        },
+        {
+          "id": 430,
+          "title": "СМИ: God of War III Remastered Edition выйдет на PlayStation 4 (UPD.)",
+          "url": "https://gamemag.ru/news/102310/smi-god-of-war-iii-remastered-edition-vyydet-na-playstation-",
+          "source": "gamemag"
+        },
+        {
+          "id": 434,
+          "title": "Первое видео переиздания God Of War 3 для PS4, игра выйдет 14 июля",
+          "url": "https://gamemag.ru/news/102317/pervoe-video-pereizdaniya-god-of-war-3-dlya-ps4-igra-vyydet-",
+          "source": "gamemag"
+        },
+        {
+          "id": 470,
+          "title": "God of War III Remastered - в планы разработчиков не входит переиздание других игр серии",
+          "url": "https://gamemag.ru/news/102386/god-of-war-iii-remastered-v-plany-razrabotchikov-ne-vhodit-p",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 9.893,
+      "samples_ms": [
+        9.653,
+        9.988,
+        9.983,
+        11.335,
+        14.646,
+        10.472,
+        11.401
+      ],
+      "median_ms": 10.472
+    },
+    {
+      "space": "surface",
+      "variant": "packed",
+      "query": "\"doom eternal\"",
+      "total": 1274,
+      "results": [
+        {
+          "id": 72,
+          "title": "Прохождение игры Дум Этернал на 100%",
+          "url": "https://gamemag.ru/articles/146296/dum-eternal-prokhozhdenie",
+          "source": "gamemag"
+        },
+        {
+          "id": 10846,
+          "title": "Объявлены итоги Game Critics Awards 2018 - журналисты назвали лучшие игры прошедшей E3",
+          "url": "https://gamemag.ru/news/129321/obyavleny-itogi-game-critics-awards-2018-zhurnalisty-nazvali-luchshie-igry-proshedshey-e3",
+          "source": "gamemag"
+        },
+        {
+          "id": 11011,
+          "title": "Bethesda: Prey, Dishonored, Wolfenstein и The Evil Within не могут продаваться такими же тиражами, как Fallout и The Elder Scrolls",
+          "url": "https://gamemag.ru/news/129741/bethesda-prey-dishonored-wolfenstein-i-the-evil-within-ne-mogut-prodavatsya-takzhe-kak-fallout-i-the",
+          "source": "gamemag"
+        },
+        {
+          "id": 11229,
+          "title": "DOOM - Microsoft рассылает пользователям письма с сообщением о скором появлении шутера в каталоге Xbox Game Pass",
+          "url": "https://gamemag.ru/news/130284/doom-microsoft-rassylaet-polzovatelyam-pisma-s-soobscheniem-o-skorom-poyavlenii-shutera-v-kataloge-x",
+          "source": "gamemag"
+        },
+        {
+          "id": 11250,
+          "title": "QuakeCon 2018: DOOM Eternal - первый геймплей, скриншоты, подробности и анонс версии для Switch (Обновлено)",
+          "url": "https://gamemag.ru/news/130345/quakecon-2018-bethesda-predstavila-pervyy-geympleynyy-treyler-doom-eternal",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 7.867,
+      "samples_ms": [
+        6.888,
+        5.618,
+        5.676,
+        7.286,
+        9.036,
+        6.274,
+        6.383
+      ],
+      "median_ms": 6.383
+    },
+    {
+      "space": "surface",
+      "variant": "packed",
+      "query": "\"eternal doom\"",
+      "total": 18,
+      "results": [
+        {
+          "id": 16788,
+          "title": "DOOM Eternal побил рекорды серии в Steam и стартовал на вершине недельного чарта",
+          "url": "https://gamemag.ru/news/144569/steam-weekly-top-sellers-update-22-march",
+          "source": "gamemag"
+        },
+        {
+          "id": 73896,
+          "title": "ДНК главного шутера индустрии. Почему DOOM захватила умы и до сих пор любима геймерами",
+          "url": "https://ixbt.games/articles/2025/04/23/smerti-festival-dnk-serii-doom.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 74986,
+          "title": "Эксперты Digital Foundry составили рейтинг игр с лучшей графикой 2020 года",
+          "url": "https://ixbt.games/news/2020/12/25/eksperty-digital-foundry-sostavili-reiting-igr-s-lucsei-grafikoi-2020-goda.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 99683,
+          "title": "В IGN обновили рейтинг игр DOOM — The Dark Ages не смогла превзойти Eternal и DOOM (2016)",
+          "url": "https://ixbt.games/news/2025/05/18/ign-predstavili-reiting-igr-doom-the-dark-ages-ne-smogla-prevzoiti-eternal-i-doom-2016.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 110268,
+          "title": "Все будет на Unreal Engine: массовые увольнения в Xbox могут поставить крест на движке id Tech",
+          "url": "https://ixbt.games/news/2026/07/10/422979-vse-budet-na-unreal-engine-massovye-uvolneniia-v-xbox-mogut-postavit-krest-na-dvizke-id-tech.html",
+          "source": "ixbt_games"
+        }
+      ],
+      "warmup_ms": 2.707,
+      "samples_ms": [
+        2.605,
+        2.341,
+        2.346,
+        2.98,
+        3.616,
+        2.547,
+        2.459
+      ],
+      "median_ms": 2.547
+    },
+    {
+      "space": "lemma",
+      "variant": "packed",
+      "query": "\"god of war\"",
+      "total": 5809,
+      "results": [
+        {
+          "id": 352,
+          "title": "В PS Store стартовала новая распродажа: God of War, Metro Redux, WWE 2K15 и другие",
+          "url": "https://gamemag.ru/news/102143/v-ps-store-startovala-novaya-rasprodazha-god-of-war-metro-re",
+          "source": "gamemag"
+        },
+        {
+          "id": 430,
+          "title": "СМИ: God of War III Remastered Edition выйдет на PlayStation 4 (UPD.)",
+          "url": "https://gamemag.ru/news/102310/smi-god-of-war-iii-remastered-edition-vyydet-na-playstation-",
+          "source": "gamemag"
+        },
+        {
+          "id": 434,
+          "title": "Первое видео переиздания God Of War 3 для PS4, игра выйдет 14 июля",
+          "url": "https://gamemag.ru/news/102317/pervoe-video-pereizdaniya-god-of-war-3-dlya-ps4-igra-vyydet-",
+          "source": "gamemag"
+        },
+        {
+          "id": 470,
+          "title": "God of War III Remastered - в планы разработчиков не входит переиздание других игр серии",
+          "url": "https://gamemag.ru/news/102386/god-of-war-iii-remastered-v-plany-razrabotchikov-ne-vhodit-p",
+          "source": "gamemag"
+        },
+        {
+          "id": 657,
+          "title": "Анонсированы новые футболки по God of War",
+          "url": "https://gamemag.ru/news/102822/anonsirovany-novye-futbolki-po-god-of-war",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 175.51,
+      "samples_ms": [
+        167.839,
+        174.316,
+        155.156,
+        173.414,
+        155.346,
+        161.048,
+        166.309
+      ],
+      "median_ms": 166.309
+    },
+    {
+      "space": "lemma",
+      "variant": "packed",
+      "query": "god AND of AND war",
+      "total": 7097,
+      "results": [
+        {
+          "id": 352,
+          "title": "В PS Store стартовала новая распродажа: God of War, Metro Redux, WWE 2K15 и другие",
+          "url": "https://gamemag.ru/news/102143/v-ps-store-startovala-novaya-rasprodazha-god-of-war-metro-re",
+          "source": "gamemag"
+        },
+        {
+          "id": 373,
+          "title": "Atlus сообщила о проведении большой распродажи в PSN",
+          "url": "https://gamemag.ru/news/102187/atlus-soobschila-o-provedenii-bolshoy-rasprodazhi-v-psn",
+          "source": "gamemag"
+        },
+        {
+          "id": 430,
+          "title": "СМИ: God of War III Remastered Edition выйдет на PlayStation 4 (UPD.)",
+          "url": "https://gamemag.ru/news/102310/smi-god-of-war-iii-remastered-edition-vyydet-na-playstation-",
+          "source": "gamemag"
+        },
+        {
+          "id": 434,
+          "title": "Первое видео переиздания God Of War 3 для PS4, игра выйдет 14 июля",
+          "url": "https://gamemag.ru/news/102317/pervoe-video-pereizdaniya-god-of-war-3-dlya-ps4-igra-vyydet-",
+          "source": "gamemag"
+        },
+        {
+          "id": 470,
+          "title": "God of War III Remastered - в планы разработчиков не входит переиздание других игр серии",
+          "url": "https://gamemag.ru/news/102386/god-of-war-iii-remastered-v-plany-razrabotchikov-ne-vhodit-p",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 15.489,
+      "samples_ms": [
+        11.327,
+        10.459,
+        11.867,
+        16.001,
+        12.721,
+        9.984,
+        10.73
+      ],
+      "median_ms": 11.327
+    },
+    {
+      "space": "lemma",
+      "variant": "packed",
+      "query": "\"doom eternal\"",
+      "total": 1274,
+      "results": [
+        {
+          "id": 72,
+          "title": "Прохождение игры Дум Этернал на 100%",
+          "url": "https://gamemag.ru/articles/146296/dum-eternal-prokhozhdenie",
+          "source": "gamemag"
+        },
+        {
+          "id": 10846,
+          "title": "Объявлены итоги Game Critics Awards 2018 - журналисты назвали лучшие игры прошедшей E3",
+          "url": "https://gamemag.ru/news/129321/obyavleny-itogi-game-critics-awards-2018-zhurnalisty-nazvali-luchshie-igry-proshedshey-e3",
+          "source": "gamemag"
+        },
+        {
+          "id": 11011,
+          "title": "Bethesda: Prey, Dishonored, Wolfenstein и The Evil Within не могут продаваться такими же тиражами, как Fallout и The Elder Scrolls",
+          "url": "https://gamemag.ru/news/129741/bethesda-prey-dishonored-wolfenstein-i-the-evil-within-ne-mogut-prodavatsya-takzhe-kak-fallout-i-the",
+          "source": "gamemag"
+        },
+        {
+          "id": 11229,
+          "title": "DOOM - Microsoft рассылает пользователям письма с сообщением о скором появлении шутера в каталоге Xbox Game Pass",
+          "url": "https://gamemag.ru/news/130284/doom-microsoft-rassylaet-polzovatelyam-pisma-s-soobscheniem-o-skorom-poyavlenii-shutera-v-kataloge-x",
+          "source": "gamemag"
+        },
+        {
+          "id": 11250,
+          "title": "QuakeCon 2018: DOOM Eternal - первый геймплей, скриншоты, подробности и анонс версии для Switch (Обновлено)",
+          "url": "https://gamemag.ru/news/130345/quakecon-2018-bethesda-predstavila-pervyy-geympleynyy-treyler-doom-eternal",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 7.146,
+      "samples_ms": [
+        6.434,
+        5.89,
+        5.634,
+        5.689,
+        6.355,
+        5.539,
+        6.085
+      ],
+      "median_ms": 5.89
+    },
+    {
+      "space": "lemma",
+      "variant": "packed",
+      "query": "\"eternal doom\"",
+      "total": 18,
+      "results": [
+        {
+          "id": 16788,
+          "title": "DOOM Eternal побил рекорды серии в Steam и стартовал на вершине недельного чарта",
+          "url": "https://gamemag.ru/news/144569/steam-weekly-top-sellers-update-22-march",
+          "source": "gamemag"
+        },
+        {
+          "id": 73896,
+          "title": "ДНК главного шутера индустрии. Почему DOOM захватила умы и до сих пор любима геймерами",
+          "url": "https://ixbt.games/articles/2025/04/23/smerti-festival-dnk-serii-doom.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 74986,
+          "title": "Эксперты Digital Foundry составили рейтинг игр с лучшей графикой 2020 года",
+          "url": "https://ixbt.games/news/2020/12/25/eksperty-digital-foundry-sostavili-reiting-igr-s-lucsei-grafikoi-2020-goda.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 99683,
+          "title": "В IGN обновили рейтинг игр DOOM — The Dark Ages не смогла превзойти Eternal и DOOM (2016)",
+          "url": "https://ixbt.games/news/2025/05/18/ign-predstavili-reiting-igr-doom-the-dark-ages-ne-smogla-prevzoiti-eternal-i-doom-2016.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 110268,
+          "title": "Все будет на Unreal Engine: массовые увольнения в Xbox могут поставить крест на движке id Tech",
+          "url": "https://ixbt.games/news/2026/07/10/422979-vse-budet-na-unreal-engine-massovye-uvolneniia-v-xbox-mogut-postavit-krest-na-dvizke-id-tech.html",
+          "source": "ixbt_games"
+        }
+      ],
+      "warmup_ms": 2.827,
+      "samples_ms": [
+        2.672,
+        2.705,
+        2.442,
+        2.59,
+        3.026,
+        2.905,
+        2.797
+      ],
+      "median_ms": 2.705
+    },
+    {
+      "space": "lemma",
+      "variant": "raw",
+      "query": "\"god of war\"",
+      "total": 5809,
+      "results": [
+        {
+          "id": 352,
+          "title": "В PS Store стартовала новая распродажа: God of War, Metro Redux, WWE 2K15 и другие",
+          "url": "https://gamemag.ru/news/102143/v-ps-store-startovala-novaya-rasprodazha-god-of-war-metro-re",
+          "source": "gamemag"
+        },
+        {
+          "id": 430,
+          "title": "СМИ: God of War III Remastered Edition выйдет на PlayStation 4 (UPD.)",
+          "url": "https://gamemag.ru/news/102310/smi-god-of-war-iii-remastered-edition-vyydet-na-playstation-",
+          "source": "gamemag"
+        },
+        {
+          "id": 434,
+          "title": "Первое видео переиздания God Of War 3 для PS4, игра выйдет 14 июля",
+          "url": "https://gamemag.ru/news/102317/pervoe-video-pereizdaniya-god-of-war-3-dlya-ps4-igra-vyydet-",
+          "source": "gamemag"
+        },
+        {
+          "id": 470,
+          "title": "God of War III Remastered - в планы разработчиков не входит переиздание других игр серии",
+          "url": "https://gamemag.ru/news/102386/god-of-war-iii-remastered-v-plany-razrabotchikov-ne-vhodit-p",
+          "source": "gamemag"
+        },
+        {
+          "id": 657,
+          "title": "Анонсированы новые футболки по God of War",
+          "url": "https://gamemag.ru/news/102822/anonsirovany-novye-futbolki-po-god-of-war",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 140.862,
+      "samples_ms": [
+        116.904,
+        135.386,
+        142.474,
+        120.328,
+        177.447,
+        117.732,
+        127.859
+      ],
+      "median_ms": 127.859
+    },
+    {
+      "space": "lemma",
+      "variant": "raw",
+      "query": "god AND of AND war",
+      "total": 7097,
+      "results": [
+        {
+          "id": 352,
+          "title": "В PS Store стартовала новая распродажа: God of War, Metro Redux, WWE 2K15 и другие",
+          "url": "https://gamemag.ru/news/102143/v-ps-store-startovala-novaya-rasprodazha-god-of-war-metro-re",
+          "source": "gamemag"
+        },
+        {
+          "id": 373,
+          "title": "Atlus сообщила о проведении большой распродажи в PSN",
+          "url": "https://gamemag.ru/news/102187/atlus-soobschila-o-provedenii-bolshoy-rasprodazhi-v-psn",
+          "source": "gamemag"
+        },
+        {
+          "id": 430,
+          "title": "СМИ: God of War III Remastered Edition выйдет на PlayStation 4 (UPD.)",
+          "url": "https://gamemag.ru/news/102310/smi-god-of-war-iii-remastered-edition-vyydet-na-playstation-",
+          "source": "gamemag"
+        },
+        {
+          "id": 434,
+          "title": "Первое видео переиздания God Of War 3 для PS4, игра выйдет 14 июля",
+          "url": "https://gamemag.ru/news/102317/pervoe-video-pereizdaniya-god-of-war-3-dlya-ps4-igra-vyydet-",
+          "source": "gamemag"
+        },
+        {
+          "id": 470,
+          "title": "God of War III Remastered - в планы разработчиков не входит переиздание других игр серии",
+          "url": "https://gamemag.ru/news/102386/god-of-war-iii-remastered-v-plany-razrabotchikov-ne-vhodit-p",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 14.415,
+      "samples_ms": [
+        13.214,
+        16.032,
+        16.058,
+        18.723,
+        14.954,
+        13.342,
+        20.504
+      ],
+      "median_ms": 16.032
+    },
+    {
+      "space": "lemma",
+      "variant": "raw",
+      "query": "\"doom eternal\"",
+      "total": 1274,
+      "results": [
+        {
+          "id": 72,
+          "title": "Прохождение игры Дум Этернал на 100%",
+          "url": "https://gamemag.ru/articles/146296/dum-eternal-prokhozhdenie",
+          "source": "gamemag"
+        },
+        {
+          "id": 10846,
+          "title": "Объявлены итоги Game Critics Awards 2018 - журналисты назвали лучшие игры прошедшей E3",
+          "url": "https://gamemag.ru/news/129321/obyavleny-itogi-game-critics-awards-2018-zhurnalisty-nazvali-luchshie-igry-proshedshey-e3",
+          "source": "gamemag"
+        },
+        {
+          "id": 11011,
+          "title": "Bethesda: Prey, Dishonored, Wolfenstein и The Evil Within не могут продаваться такими же тиражами, как Fallout и The Elder Scrolls",
+          "url": "https://gamemag.ru/news/129741/bethesda-prey-dishonored-wolfenstein-i-the-evil-within-ne-mogut-prodavatsya-takzhe-kak-fallout-i-the",
+          "source": "gamemag"
+        },
+        {
+          "id": 11229,
+          "title": "DOOM - Microsoft рассылает пользователям письма с сообщением о скором появлении шутера в каталоге Xbox Game Pass",
+          "url": "https://gamemag.ru/news/130284/doom-microsoft-rassylaet-polzovatelyam-pisma-s-soobscheniem-o-skorom-poyavlenii-shutera-v-kataloge-x",
+          "source": "gamemag"
+        },
+        {
+          "id": 11250,
+          "title": "QuakeCon 2018: DOOM Eternal - первый геймплей, скриншоты, подробности и анонс версии для Switch (Обновлено)",
+          "url": "https://gamemag.ru/news/130345/quakecon-2018-bethesda-predstavila-pervyy-geympleynyy-treyler-doom-eternal",
+          "source": "gamemag"
+        }
+      ],
+      "warmup_ms": 4.871,
+      "samples_ms": [
+        4.971,
+        5.098,
+        6.542,
+        8.611,
+        11.872,
+        5.508,
+        8.609
+      ],
+      "median_ms": 6.542
+    },
+    {
+      "space": "lemma",
+      "variant": "raw",
+      "query": "\"eternal doom\"",
+      "total": 18,
+      "results": [
+        {
+          "id": 16788,
+          "title": "DOOM Eternal побил рекорды серии в Steam и стартовал на вершине недельного чарта",
+          "url": "https://gamemag.ru/news/144569/steam-weekly-top-sellers-update-22-march",
+          "source": "gamemag"
+        },
+        {
+          "id": 73896,
+          "title": "ДНК главного шутера индустрии. Почему DOOM захватила умы и до сих пор любима геймерами",
+          "url": "https://ixbt.games/articles/2025/04/23/smerti-festival-dnk-serii-doom.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 74986,
+          "title": "Эксперты Digital Foundry составили рейтинг игр с лучшей графикой 2020 года",
+          "url": "https://ixbt.games/news/2020/12/25/eksperty-digital-foundry-sostavili-reiting-igr-s-lucsei-grafikoi-2020-goda.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 99683,
+          "title": "В IGN обновили рейтинг игр DOOM — The Dark Ages не смогла превзойти Eternal и DOOM (2016)",
+          "url": "https://ixbt.games/news/2025/05/18/ign-predstavili-reiting-igr-doom-the-dark-ages-ne-smogla-prevzoiti-eternal-i-doom-2016.html",
+          "source": "ixbt_games"
+        },
+        {
+          "id": 110268,
+          "title": "Все будет на Unreal Engine: массовые увольнения в Xbox могут поставить крест на движке id Tech",
+          "url": "https://ixbt.games/news/2026/07/10/422979-vse-budet-na-unreal-engine-massovye-uvolneniia-v-xbox-mogut-postavit-krest-na-dvizke-id-tech.html",
+          "source": "ixbt_games"
+        }
+      ],
+      "warmup_ms": 1.829,
+      "samples_ms": [
+        1.624,
+        1.778,
+        2.336,
+        2.715,
+        1.706,
+        2.8,
+        1.961
+      ],
+      "median_ms": 1.961
+    }
+  ],
+  "method": "One untimed warm-up per list, one discarded query batch per process; OS cache retained. Raw/VB list order alternates per repetition. Buffers allocated and touched before timing. Memory decoding includes reconstruction and an identical rolling checksum. Cursor scans use production FILE readers, including opening and closing. Complete list scans are a separate workload, not an additive query-time breakdown."
+}

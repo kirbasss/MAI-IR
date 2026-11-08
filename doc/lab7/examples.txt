@@ -1,0 +1,14 @@
+term	doom
+space	surface
+document_frequency	7469
+document_ids	72	133	165	595	747
+
+term	minecraft
+space	surface
+document_frequency	5824
+document_ids	272	316	368	530	536
+
+term	skyrim
+space	surface
+document_frequency	4635
+document_ids	446	665	1118	1310	1419

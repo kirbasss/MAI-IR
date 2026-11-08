@@ -1,0 +1,141 @@
+
+COMMAND: docker compose run --rm -T --no-deps tokenizer-tests
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build
+ninja: no work to do.
+Internal ctest changing into directory: /build
+Test project /build
+      Start  1: TokenizerRules.RussianEnglishCaseDigitsAndYo
+ 1/55 Test  #1: TokenizerRules.RussianEnglishCaseDigitsAndYo .............................   Passed    0.02 sec
+      Start  2: TokenizerRules.InternalConnectorsAreNormalized
+ 2/55 Test  #2: TokenizerRules.InternalConnectorsAreNormalized ...........................   Passed    0.00 sec
+      Start  3: TokenizerRules.OffsetsReferToOriginalUtf8Bytes
+ 3/55 Test  #3: TokenizerRules.OffsetsReferToOriginalUtf8Bytes ...........................   Passed    0.00 sec
+      Start  4: TokenizerRules.LatinAccentsAndCombiningMarksWithoutNfc
+ 4/55 Test  #4: TokenizerRules.LatinAccentsAndCombiningMarksWithoutNfc ...................   Passed    0.00 sec
+      Start  5: TokenizerRules.PunctuationEmojiNulBomAndLineBreaks
+ 5/55 Test  #5: TokenizerRules.PunctuationEmojiNulBomAndLineBreaks .......................   Passed    0.00 sec
+      Start  6: TokenizerRules.EmptyInputAndSeparatorsHaveNoTokens
+ 6/55 Test  #6: TokenizerRules.EmptyInputAndSeparatorsHaveNoTokens .......................   Passed    0.00 sec
+      Start  7: TokenizerRules.DifficultGamingNames
+ 7/55 Test  #7: TokenizerRules.DifficultGamingNames ......................................   Passed    0.00 sec
+      Start  8: TokenizerRules.DottedAcronymsRequireThreeSingleLetters
+ 8/55 Test  #8: TokenizerRules.DottedAcronymsRequireThreeSingleLetters ...................   Passed    0.01 sec
+      Start  9: TokenizerRules.ShortAndOrdinaryDottedSegmentsDoNotMerge
+ 9/55 Test  #9: TokenizerRules.ShortAndOrdinaryDottedSegmentsDoNotMerge ..................   Passed    0.00 sec
+      Start 10: TokenizerRules.AcronymSpansIncludeDotsButNormalizedLengthDoesNot
+10/55 Test #10: TokenizerRules.AcronymSpansIncludeDotsButNormalizedLengthDoesNot .........   Passed    0.00 sec
+      Start 11: TokenizerRules.LongDottedChains
+11/55 Test #11: TokenizerRules.LongDottedChains ..........................................   Passed    0.01 sec
+      Start 12: TokenizerRules.LanguageNamesBoundariesAndStandards
+12/55 Test #12: TokenizerRules.LanguageNamesBoundariesAndStandards .......................   Passed    0.00 sec
+      Start 13: TokenizerRules.VersionsDecimalsAndSentenceDots
+13/55 Test #13: TokenizerRules.VersionsDecimalsAndSentenceDots ...........................   Passed    0.00 sec
+      Start 14: TokenizerRules.SpecialTokenSpansAndCharacterCounts
+14/55 Test #14: TokenizerRules.SpecialTokenSpansAndCharacterCounts .......................   Passed    0.01 sec
+      Start 15: TokenizerRules.RealCorpusFixtures
+15/55 Test #15: TokenizerRules.RealCorpusFixtures ........................................   Passed    0.01 sec
+      Start 16: TokenizerRules.MalformedUtf8Throws
+16/55 Test #16: TokenizerRules.MalformedUtf8Throws .......................................   Passed    0.02 sec
+      Start 17: TokenizerRules.LargeMultilingualField
+17/55 Test #17: TokenizerRules.LargeMultilingualField ....................................   Passed    0.01 sec
+      Start 18: TokenizerCli.TextReturnsTsvAndJsonStatistics
+18/55 Test #18: TokenizerCli.TextReturnsTsvAndJsonStatistics .............................   Passed    0.01 sec
+      Start 19: TokenizerCli.EmptyInputHasZeroCountersAndValidJson
+19/55 Test #19: TokenizerCli.EmptyInputHasZeroCountersAndValidJson .......................   Passed    0.01 sec
+      Start 20: TokenizerCli.CorpusFieldsTitleOnlyLimitAndStatistics
+20/55 Test #20: TokenizerCli.CorpusFieldsTitleOnlyLimitAndStatistics .....................   Passed    0.01 sec
+      Start 21: TokenizerCli.CorruptCorpusAndOversizedFieldAreRejected
+21/55 Test #21: TokenizerCli.CorruptCorpusAndOversizedFieldAreRejected ...................   Passed    0.01 sec
+      Start 22: TokenizerCli.InvalidSourceAndRepeatedDocumentIdAreRejected
+22/55 Test #22: TokenizerCli.InvalidSourceAndRepeatedDocumentIdAreRejected ...............   Passed    0.01 sec
+      Start 23: TokenizerCli.FailedUtf8DoesNotPublishPartialFile
+23/55 Test #23: TokenizerCli.FailedUtf8DoesNotPublishPartialFile .........................   Passed    0.00 sec
+      Start 24: TokenizerCli.ExistingOutputAndStatisticsAreNeverOverwritten
+24/55 Test #24: TokenizerCli.ExistingOutputAndStatisticsAreNeverOverwritten ..............   Passed    0.00 sec
+      Start 25: TokenizerCli.IdenticalOutputPathsAreRejected
+25/55 Test #25: TokenizerCli.IdenticalOutputPathsAreRejected .............................   Passed    0.01 sec
+      Start 26: TokenizerCli.InvalidArgumentsReturnNonzero
+26/55 Test #26: TokenizerCli.InvalidArgumentsReturnNonzero ...............................   Passed    0.01 sec
+      Start 27: TokenizerDemo.DefaultsShowActualMetadataAndAllThreeRules
+27/55 Test #27: TokenizerDemo.DefaultsShowActualMetadataAndAllThreeRules .................   Passed    0.02 sec
+      Start 28: TokenizerDemo.ByteOffsetsAndPositionsReferToTheWholeOriginalField
+28/55 Test #28: TokenizerDemo.ByteOffsetsAndPositionsReferToTheWholeOriginalField ........   Passed    0.01 sec
+      Start 29: TokenizerDemo.CustomTitleAndAbsentFragment
+29/55 Test #29: TokenizerDemo.CustomTitleAndAbsentFragment ...............................   Passed    0.01 sec
+      Start 30: TokenizerDemo.LatestSnapshotIgnoresUnpublishedAndInvalidExports
+30/55 Test #30: TokenizerDemo.LatestSnapshotIgnoresUnpublishedAndInvalidExports ..........   Passed    0.01 sec
+      Start 31: TokenizerDemo.CliOutputIsUtf8AndDoesNotOverwriteTranscript
+31/55 Test #31: TokenizerDemo.CliOutputIsUtf8AndDoesNotOverwriteTranscript ...............   Passed    0.01 sec
+      Start 32: TokenizerDemo.BadOptionsCorruptCorpusAndMissingMetadataFail
+32/55 Test #32: TokenizerDemo.BadOptionsCorruptCorpusAndMissingMetadataFail ..............   Passed    0.12 sec
+      Start 33: Lemmatizer.Fixture.RussianInflectionsAndLemmaAreEquivalent
+33/55 Test #33: Lemmatizer.Fixture.RussianInflectionsAndLemmaAreEquivalent ...............   Passed    0.01 sec
+      Start 34: Lemmatizer.Fixture.AmbiguityIsRetainedNotArbitrarilyResolved
+34/55 Test #34: Lemmatizer.Fixture.AmbiguityIsRetainedNotArbitrarilyResolved .............   Passed    0.00 sec
+      Start 35: Lemmatizer.Fixture.YoIsPreservedNotConflatedWithE
+35/55 Test #35: Lemmatizer.Fixture.YoIsPreservedNotConflatedWithE ........................   Passed    0.00 sec
+      Start 36: Lemmatizer.Fixture.EnglishRegularFormsAreDictionaryValidated
+36/55 Test #36: Lemmatizer.Fixture.EnglishRegularFormsAreDictionaryValidated .............   Passed    0.00 sec
+      Start 37: Lemmatizer.Fixture.EnglishExceptionsAndPosAmbiguity
+37/55 Test #37: Lemmatizer.Fixture.EnglishExceptionsAndPosAmbiguity ......................   Passed    0.00 sec
+      Start 38: Lemmatizer.Fixture.SpecialAndUnknownTokensSurvive
+38/55 Test #38: Lemmatizer.Fixture.SpecialAndUnknownTokensSurvive ........................   Passed    0.00 sec
+      Start 39: Lemmatizer.Fixture.UnknownLongTokenHasNoTruncation
+39/55 Test #39: Lemmatizer.Fixture.UnknownLongTokenHasNoTruncation .......................   Passed    0.00 sec
+      Start 40: Lemmatizer.Fixture.EmptyInputHasNoLemma
+40/55 Test #40: Lemmatizer.Fixture.EmptyInputHasNoLemma ..................................   Passed    0.00 sec
+      Start 41: Lemmatizer.Fixture.LoadedDictionaryIsReusableAndViewStable
+41/55 Test #41: Lemmatizer.Fixture.LoadedDictionaryIsReusableAndViewStable ...............   Passed    0.01 sec
+      Start 42: Lemmatizer.Fixture.HashCollisionsStillFindEveryKey
+42/55 Test #42: Lemmatizer.Fixture.HashCollisionsStillFindEveryKey .......................   Passed    0.00 sec
+      Start 43: Lemmatizer.Fixture.FailureToLoadLeavesSafeUnloadedState
+43/55 Test #43: Lemmatizer.Fixture.FailureToLoadLeavesSafeUnloadedState ..................   Passed    0.01 sec
+      Start 44: Lemmatizer.Fixture.TruncatedExtendedAndBadChecksumRejected
+44/55 Test #44: Lemmatizer.Fixture.TruncatedExtendedAndBadChecksumRejected ...............   Passed    0.00 sec
+      Start 45: Lemmatizer.Fixture.WrongHeaderAndHostileSizeRejected
+45/55 Test #45: Lemmatizer.Fixture.WrongHeaderAndHostileSizeRejected .....................   Passed    0.00 sec
+      Start 46: Lemmatizer.Fixture.InvalidUtf8EmptyLemmaAndTooManyAlternativesRejected
+46/55 Test #46: Lemmatizer.Fixture.InvalidUtf8EmptyLemmaAndTooManyAlternativesRejected ...   Passed    0.01 sec
+      Start 47: Lemmatizer.Fixture.CliRealTokenizerPreservesUtf8OffsetsAndAlternatives
+47/55 Test #47: Lemmatizer.Fixture.CliRealTokenizerPreservesUtf8OffsetsAndAlternatives ...   Passed    0.01 sec
+      Start 48: Lemmatizer.Fixture.CliCorpusStreamsFieldsTitleOnlyAndLimit
+48/55 Test #48: Lemmatizer.Fixture.CliCorpusStreamsFieldsTitleOnlyAndLimit ...............   Passed    0.00 sec
+      Start 49: Lemmatizer.Fixture.CliErrorsDoNotPublishPartialOutputOrOverwrite
+49/55 Test #49: Lemmatizer.Fixture.CliErrorsDoNotPublishPartialOutputOrOverwrite .........   Passed    0.01 sec
+      Start 50: Lemmatizer.Fixture.CliMalformedUtf8RejectsAndRemovesPartial
+50/55 Test #50: Lemmatizer.Fixture.CliMalformedUtf8RejectsAndRemovesPartial ..............   Passed    0.01 sec
+      Start 51: Lemmatizer.Fixture.CliArgumentErrors
+51/55 Test #51: Lemmatizer.Fixture.CliArgumentErrors .....................................   Passed    0.01 sec
+      Start 52: Lemmatizer.Fixture.CliNoOutputHasStatisticsButNoTsv
+52/55 Test #52: Lemmatizer.Fixture.CliNoOutputHasStatisticsButNoTsv ......................   Passed    0.00 sec
+      Start 53: TokenizerProcess.Help
+53/55 Test #53: TokenizerProcess.Help ....................................................   Passed    0.01 sec
+      Start 54: TokenizerProcess.UnknownMode
+54/55 Test #54: TokenizerProcess.UnknownMode .............................................   Passed    0.00 sec
+      Start 55: LemmatizerProcess.Help
+55/55 Test #55: LemmatizerProcess.Help ...................................................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 55
+
+Total Test time (real) =   0.52 sec
+
+COMMAND: C:\Users\Kirbass\Desktop\PROGR\MAI-IR\.venv\Scripts\python.exe -m unittest -v tests.test_lemma_dictionary
+test_dedup_binary_offsets_checksum_and_determinism (tests.test_lemma_dictionary.LemmaDictionaryTests.test_dedup_binary_offsets_checksum_and_determinism) ... ok
+test_existing_output_preserved (tests.test_lemma_dictionary.LemmaDictionaryTests.test_existing_output_preserved) ... ok
+test_failed_build_cleans_private_staging (tests.test_lemma_dictionary.LemmaDictionaryTests.test_failed_build_cleans_private_staging) ... ok
+test_packaged_cli_downloads_only_wordnet_not_unavailable_xml (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_cli_downloads_only_wordnet_not_unavailable_xml) ... ok
+test_packaged_data_ambiguity_and_yo_survive_conversion (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_data_ambiguity_and_yo_survive_conversion) ... ok
+test_packaged_data_reconstructs_prefix_suffix_and_empty_suffix (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_data_reconstructs_prefix_suffix_and_empty_suffix) ... ok
+test_packaged_data_rejects_corrupt_paradigms_references_and_affixes (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_data_rejects_corrupt_paradigms_references_and_affixes) ... ok
+test_packaged_data_requires_expected_format_and_language (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_data_requires_expected_format_and_language) ... ok
+test_packaged_source_hashes_legacy_prefix_file_when_used (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_source_hashes_legacy_prefix_file_when_used) ... ok
+test_packaged_source_records_versions_and_actual_data_hashes (tests.test_lemma_dictionary.LemmaDictionaryTests.test_packaged_source_records_versions_and_actual_data_hashes) ... ok
+test_wordnet_indices_exceptions_and_compounds (tests.test_lemma_dictionary.LemmaDictionaryTests.test_wordnet_indices_exceptions_and_compounds) ... ok
+test_xml_forms_multiple_lemmas_and_yo (tests.test_lemma_dictionary.LemmaDictionaryTests.test_xml_forms_multiple_lemmas_and_yo) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.142s
+
+OK

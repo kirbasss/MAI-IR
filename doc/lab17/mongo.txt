@@ -1,0 +1,3 @@
+ffd6a0b2df375dc3200494877d1b9f452abcdf298079b044e06969e916c571f3
+Ready on 127.0.0.1:30605; isolated ephemeral container
+Stopped: True

@@ -1,8 +1,33 @@
 .venv/
 __pycache__/
 data/
+build/
 *.py[cod]
 *.aux
 *.log
 *.out
 *.toc
+report_example.pdf
+CONTEXT.md
+.agents/
+.codex/
+.aws/
+.env
+.env.local
+*.part
+
+# Local IDE settings and tool caches
+.vscode/
+.idea/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Auxiliary LaTeX output (keep report sources and PDFs)
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.xdv
+*.nav
+*.snm
+*.vrb

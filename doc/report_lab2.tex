@@ -1,0 +1,314 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english,russian]{babel}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{qrcode}
+\usepackage{tabularx}
+\usepackage{tocloft}
+\geometry{margin=25mm}
+\hypersetup{unicode=true,colorlinks=true,urlcolor=blue,linkcolor=black}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{1em}
+\setcounter{tocdepth}{2}
+\setlength{\cftbeforesecskip}{5pt}
+\setlength{\cftbeforesubsecskip}{1pt}
+\renewcommand{\cftsecfont}{\normalsize\bfseries}
+\renewcommand{\cftsecpagefont}{\normalsize\normalfont}
+\renewcommand{\cftsubsecfont}{\normalsize\normalfont}
+\renewcommand{\cftsubsecpagefont}{\normalsize\normalfont}
+\renewcommand{\cftdotsep}{1}
+\renewcommand{\labelitemi}{\textendash}
+\DeclareCaptionLabelSeparator{emdash}{\space---\space}
+\captionsetup[figure]{
+  justification=centering,
+  singlelinecheck=false,
+  labelsep=emdash
+}
+\addto\captionsrussian{\renewcommand{\figurename}{Рис.}}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+{\large МОСКОВСКИЙ АВИАЦИОННЫЙ ИНСТИТУТ\\ (НАЦИОНАЛЬНЫЙ ИССЛЕДОВАТЕЛЬСКИЙ УНИВЕРСИТЕТ)}
+
+\vspace{18pt}
+{\large Факультет информационных технологий и прикладной математики}
+
+{\large Кафедра вычислительной математики и~программирования}
+
+\vfill
+{\large \textbf{Лабораторная работа №2 по курсу\\ «Информационный поиск»}}
+
+\vspace{12mm}
+{\large \textbf{Поисковый робот}}
+
+\vfill
+\begin{flushright}
+\begin{tabular}{@{}r@{:\hspace{0.6em}}l@{}}
+\textit{Студент} & К.\,А. Арусланов\\
+\textit{Группа} & М8О-403Б-23\\
+\textit{Преподаватель} & А.\,А. Кухтичев\\
+\textit{Дата} & 08.10.2026\\
+\textit{Оценка} &
+\end{tabular}
+\end{flushright}
+\vfill
+Москва, 2026
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Постановка задачи}
+
+Для корпуса игровых публикаций из первой лабораторной работы требуется
+разработать поисковый робот:
+
+\begin{itemize}
+  \item реализовать обкачку документов;
+  \item принимать при обычном запуске один аргумент --- путь к YAML-файлу с
+  данными базы в секции \code{db} и параметрами робота в секции \code{logic},
+  в том числе задержкой между запросами;
+  \item сохранять в базе нормализованный URL, сырой HTML, название источника
+  и дату загрузки в формате Unix timestamp;
+  \item после остановки продолжать обход с незавершённого документа;
+  \item периодически проверять загруженные страницы и обновлять сохранённые
+  документы только при изменении содержимого.
+\end{itemize}
+
+\section{Метод решения}
+
+\subsection{Источники и входные данные}
+
+В качестве корпуса выбраны публикации восьми игровых сайтов.
+Русскоязычные источники --- PlayGround, StopGame, IXBT.games, Игромания
+и GameMAG; англоязычные --- PC Gamer, Eurogamer и GamingOnLinux.
+Входом служит UTF-8 TSV-файл: короткий \code{urls.txt} из
+первой лабораторной либо объединённый инвентарь sitemap. Последний содержит
+1\,055\,674 URL-кандидата, но это ещё не число пригодных документов.
+
+Файл читается построчно и импортируется в MongoDB партиями, без загрузки
+всего списка в память. URL очищается от параметров отслеживания, его хост
+сверяется с разрешённым списком. Пробная выборка воспроизводима по
+заданному seed; порядок очереди перемешивается устойчивым хешем URL.
+
+\subsection{Очередь и сохранение документов}
+
+Для хранения выбрана MongoDB. Очередь и содержимое страницы разделены по
+коллекциям, чтобы просмотр результатов разбора не загружал большой HTML:
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.13}
+\begin{tabularx}{\textwidth}{@{}P{0.25\textwidth}X@{}}
+\toprule
+Коллекция & Содержимое \\
+\midrule
+\code{frontier} & URL, источник, состояние, время следующей попытки,
+число попыток, HTTP-заголовки и последняя ошибка \\
+\code{raw_pages} & Нормализованный URL, источник, Unix-время загрузки,
+сырой HTML и SHA-256 ответа \\
+\code{documents} & Результат разбора, HTTP-метаданные, время загрузки и
+ссылка \code{raw_page_id} на исходный HTML \\
+\code{crawler_meta} & Метка импорта инвентаря и паузы для отдельных сайтов \\
+\bottomrule
+\end{tabularx}
+\end{center}
+\normalsize
+
+Ключ \code{_id} у заданий и документов равен нормализованному URL, поэтому
+повторная загрузка не создаёт дубликатов. Сначала сохраняется сырой HTML,
+затем результат разбора и только после этого завершается задание очереди.
+Если выполнение прервётся между этими шагами, при следующей попытке
+согласованность записей проверяется по SHA-256.
+
+Робот атомарно выбирает доступный URL и отмечает его как обрабатываемый.
+Затем он проверяет \code{robots.txt} и делает запрос с паузой для каждого
+хоста. Редиректы проверяются по отдельности: переход за пределы источника
+не выполняется. При перезапуске незавершённые URL возвращаются в начало
+очереди. Механизм рассчитан на один процесс робота.
+
+\subsection{Проверка изменений}
+
+При повторном запросе робот использует сохранённые \code{ETag} и
+\code{Last-Modified}. Ответ \code{304} оставляет HTML неизменным. Если сервер
+возвращает \code{200}, вычисляется SHA-256 исходного ответа: при совпадении
+хеша обе записи не перезаписываются. Для изменённого ответа обновляются
+\code{raw_pages}, \code{documents} и \code{fetched_at}. Если одна из двух
+записей отсутствует либо их хеши расходятся, робот повторно получает HTML
+и восстанавливает согласованное состояние. Время каждой проверки хранится в
+\code{frontier.last_checked_at}. При ошибках попытка откладывается:
+\code{404}/\code{410} и запрет \code{robots.txt} проверяются реже, для
+\code{429} учитывается \code{Retry-After}. Пауза одного источника хранится
+в MongoDB и не останавливает другие сайты. У завершённого задания
+время следующей проверки задаётся полем \code{available_at} через
+\code{revisit_seconds} после последней проверки. Обычный запуск берёт
+новые URL и повторы их временных ошибок. Повторная проверка выполняется
+отдельной командой \code{python revisit.py crawler.example.yaml}, только
+когда наступил назначенный срок. Эта команда не импортирует новые URL;
+после сбоя или остановки повторное задание остаётся за ней.
+
+\section{Результаты}
+
+\subsection{Запуск и автотесты}
+
+Код робота запускается командой \code{python crawler.py crawler.example.yaml}.
+В примере ограничение \code{max_documents: 10} позволяет проверить небольшую
+часть списка \code{urls.txt}. Команда \code{python run_tests.py} проверяет
+систему без сервера MongoDB и без обращений к сайтам.
+
+Успешно прошли 64 теста, в том числе 25 сценариев работы робота. Они охватывают
+сохранение HTML и времени Unix, продолжение после остановки, ответы
+\code{304} и \code{200}, контрольную сумму, \code{robots.txt} и
+\code{Retry-After}, а также отделение повторных проверок от первичной
+загрузки. Локальные HTML-образцы первой работы проверяются прежними тестами.
+
+\subsection{Пробная обкачка}
+
+MongoDB запускалась локально через Docker Compose. Сначала робот сохранил
+24 проверочные страницы из \code{urls.txt}, затем выборка была расширена.
+На 8 октября 2026 года в очереди находилось 824 URL: 368 завершённых,
+441 ожидающий, 14 исключённых и один оставшийся в обработке после остановки. Большой
+инвентарь в миллион URL в базу пока не импортировался.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Источник & Скачано & В корпусе & С текстом & Только заголовок \\
+\midrule
+PlayGround & 46 & 46 & 42 & 4 \\
+StopGame & 51 & 51 & 51 & 0 \\
+IXBT.games & 46 & 46 & 46 & 0 \\
+Игромания & 36 & 36 & 36 & 0 \\
+GameMAG & 54 & 54 & 53 & 1 \\
+PC Gamer & 56 & 54 & 54 & 0 \\
+Eurogamer & 39 & 36 & 36 & 0 \\
+GamingOnLinux & 46 & 45 & 45 & 0 \\
+\midrule
+\textbf{Всего} & \textbf{374} & \textbf{368} & \textbf{363} & \textbf{5} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\normalsize
+
+Все 374 записи \code{documents} имеют соответствующие страницы
+\code{raw_pages}; их контрольные суммы совпадают, пустого HTML и
+потерянных исходных страниц нет. Таблица отдельно показывает пригодные
+для индексации документы и страницы без основного текста, у которых
+можно использовать заголовок.
+
+Первоначальные 124 записи были перенесены из формата со встроенным HTML
+в раздельные коллекции после резервного копирования базы. Средний размер
+записи в \code{documents} уменьшился примерно с 470 до 7~КБ, что удобнее
+для просмотра результатов разбора.
+
+\newpage
+\subsection{Репозиторий}
+
+Исходный код, конфигурации, тесты и отчёт размещены в ветке \code{lab2}
+репозитория: \url{https://github.com/kirbasss/MAI-IR/tree/lab2}.
+Сырые страницы и содержимое базы данных в GitHub не загружаются.
+
+\begin{figure}[H]
+\centering
+\href{https://github.com/kirbasss/MAI-IR/tree/lab2}{\includegraphics[width=28mm]{img/qr_lab2.png}}
+\caption{QR-код для перехода к ветке \code{lab2} репозитория.}
+\end{figure}
+
+\section{Вывод}
+
+В этой работе я дополнил сбор игровых публикаций устойчивой очередью в MongoDB.
+Теперь робот может продолжить обход после остановки и периодически проверять
+уже сохранённые страницы. Было полезно разобраться, как связать состояние
+очереди с сохранением документа и зачем при повторной проверке нужны
+\code{ETag}, \code{Last-Modified} и контрольная сумма ответа.
+
+Я проверил робота тестами и пробной загрузкой в MongoDB. На практике
+выяснилось, что даже успешный ответ сайта не всегда означает пригодный
+текстовый документ: в sitemap встречаются страницы категорий, а у некоторых
+публикаций иная разметка. Перед массовой обкачкой нужно следить за долей
+непригодных страниц и расходом места.
+
+\clearpage
+\section*{Приложение А. Примеры запросов к MongoDB}
+\phantomsection
+\addcontentsline{toc}{section}{Приложение А. Примеры запросов к MongoDB}
+
+Ниже приведены читающие запросы к базе \code{mai_ir} и ответы на них
+после пробной обкачки 8 октября 2026 года. При продолжении загрузки
+числа изменятся.
+
+\begingroup
+\small
+\subsection*{А.1 Состояние очереди}
+
+\begin{verbatim}
+db.frontier.aggregate([
+  { $group: { _id: "$state", count: { $sum: 1 } } },
+  { $sort: { _id: 1 } }
+])
+\end{verbatim}
+\noindent Ответ: \code{done: 368}, \code{excluded: 14},
+\code{in_progress: 1}, \code{pending: 441}.
+
+\subsection*{А.2 Интервал до повторной проверки}
+
+\begin{verbatim}
+db.frontier.aggregate([
+  { $match: { state: "done" } },
+  { $group: {
+      _id: { $subtract: ["$available_at", "$last_checked_at"] },
+      count: { $sum: 1 }
+  } }
+])
+\end{verbatim}
+\noindent Ответ: \code{[{_id: 2592000, count: 368}]}. Таким образом,
+для всех завершённых заданий следующая проверка назначена через
+2\,592\,000 секунд, то есть через 30 дней после предыдущей.
+
+\subsection*{А.3 Связь разобранных документов с HTML}
+
+\begin{verbatim}
+db.documents.aggregate([
+  { $lookup: {
+      from: "raw_pages", localField: "raw_page_id",
+      foreignField: "_id", as: "raw"
+  } },
+  { $unwind: "$raw" },
+  { $match: { $expr: {
+      $eq: ["$content_sha256",
+            "$raw.content_sha256"]
+  } } },
+  { $count: "matched" }
+])
+\end{verbatim}
+\noindent Ответ: \code{[{matched: 374}]}. Каждый из 374 разобранных
+документов нашёл соответствующий сырой HTML с тем же хешем.
+
+\subsection*{А.4 Документы без выделенного текста}
+
+\begin{verbatim}
+db.documents.countDocuments(
+  { "parsed.parse_error": { $type: "string" } })
+\end{verbatim}
+\noindent Ответ: \code{6}. Все шесть записей исключены из будущего
+поискового индекса; у пригодных документов ошибок разбора нет.
+\endgroup
+
+\end{document}

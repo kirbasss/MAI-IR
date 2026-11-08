@@ -1,0 +1,32 @@
+db:
+  uri: mongodb://127.0.0.1:27017
+  name: mai_ir
+
+logic:
+  # Created automatically from sitemaps; no manual discover command is needed.
+  # All discovered URLs are queued, but at most 10 tasks are processed per run.
+  inventory: data/discovery/inventory_example/url_inventory.tsv
+  refresh_sitemaps: true
+  sitemap_sources: [stopgame]
+  discovery_data_dir: data
+  sitemap_refresh_interval_seconds: 86400
+  sitemap_cache_ttl_seconds: 3600
+  sitemap_recheck_seconds: 86400
+  download_workers: 1  # Increase to 4 for parallel downloads across different sites.
+  parse_mode: inline  # deferred saves HTML only; a separate parse_worker.py fills documents.
+  disk_watch_paths: ["D:/", "C:/"]  # Adjust if your Docker data/cache live on other disks.
+  min_free_disk_gib: 5
+  check_mongo_disk: true
+  disk_check_interval_seconds: 5
+  global_delay_seconds: 0.5
+  local_delay_seconds: 3
+  source_delays_seconds:
+    stopgame: 5
+  revisit_seconds: 2592000
+  retry_seconds: 3600
+  lease_seconds: 600
+  request_timeout_seconds: 30
+  seed_batch_size: 500
+  max_documents: 10
+  run_forever: false
+  poll_seconds: 60

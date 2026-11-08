@@ -1,0 +1,96 @@
+
+COMMAND: docker compose run --rm -T --no-deps tokenizer-tests
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build
+ninja: no work to do.
+Internal ctest changing into directory: /build
+Test project /build
+      Start  1: TokenizerRules.RussianEnglishCaseDigitsAndYo
+ 1/34 Test  #1: TokenizerRules.RussianEnglishCaseDigitsAndYo ........................   Passed    0.01 sec
+      Start  2: TokenizerRules.InternalConnectorsAreNormalized
+ 2/34 Test  #2: TokenizerRules.InternalConnectorsAreNormalized ......................   Passed    0.00 sec
+      Start  3: TokenizerRules.OffsetsReferToOriginalUtf8Bytes
+ 3/34 Test  #3: TokenizerRules.OffsetsReferToOriginalUtf8Bytes ......................   Passed    0.00 sec
+      Start  4: TokenizerRules.LatinAccentsAndCombiningMarksWithoutNfc
+ 4/34 Test  #4: TokenizerRules.LatinAccentsAndCombiningMarksWithoutNfc ..............   Passed    0.00 sec
+      Start  5: TokenizerRules.PunctuationEmojiNulBomAndLineBreaks
+ 5/34 Test  #5: TokenizerRules.PunctuationEmojiNulBomAndLineBreaks ..................   Passed    0.01 sec
+      Start  6: TokenizerRules.EmptyInputAndSeparatorsHaveNoTokens
+ 6/34 Test  #6: TokenizerRules.EmptyInputAndSeparatorsHaveNoTokens ..................   Passed    0.00 sec
+      Start  7: TokenizerRules.DifficultGamingNames
+ 7/34 Test  #7: TokenizerRules.DifficultGamingNames .................................   Passed    0.00 sec
+      Start  8: TokenizerRules.DottedAcronymsRequireThreeSingleLetters
+ 8/34 Test  #8: TokenizerRules.DottedAcronymsRequireThreeSingleLetters ..............   Passed    0.00 sec
+      Start  9: TokenizerRules.ShortAndOrdinaryDottedSegmentsDoNotMerge
+ 9/34 Test  #9: TokenizerRules.ShortAndOrdinaryDottedSegmentsDoNotMerge .............   Passed    0.00 sec
+      Start 10: TokenizerRules.AcronymSpansIncludeDotsButNormalizedLengthDoesNot
+10/34 Test #10: TokenizerRules.AcronymSpansIncludeDotsButNormalizedLengthDoesNot ....   Passed    0.00 sec
+      Start 11: TokenizerRules.LongDottedChains
+11/34 Test #11: TokenizerRules.LongDottedChains .....................................   Passed    0.00 sec
+      Start 12: TokenizerRules.LanguageNamesBoundariesAndStandards
+12/34 Test #12: TokenizerRules.LanguageNamesBoundariesAndStandards ..................   Passed    0.00 sec
+      Start 13: TokenizerRules.VersionsDecimalsAndSentenceDots
+13/34 Test #13: TokenizerRules.VersionsDecimalsAndSentenceDots ......................   Passed    0.00 sec
+      Start 14: TokenizerRules.SpecialTokenSpansAndCharacterCounts
+14/34 Test #14: TokenizerRules.SpecialTokenSpansAndCharacterCounts ..................   Passed    0.00 sec
+      Start 15: TokenizerRules.RealCorpusFixtures
+15/34 Test #15: TokenizerRules.RealCorpusFixtures ...................................   Passed    0.01 sec
+      Start 16: TokenizerRules.MalformedUtf8Throws
+16/34 Test #16: TokenizerRules.MalformedUtf8Throws ..................................   Passed    0.01 sec
+      Start 17: TokenizerRules.LargeMultilingualField
+17/34 Test #17: TokenizerRules.LargeMultilingualField ...............................   Passed    0.01 sec
+      Start 18: TokenizerCli.TextReturnsTsvAndJsonStatistics
+18/34 Test #18: TokenizerCli.TextReturnsTsvAndJsonStatistics ........................   Passed    0.01 sec
+      Start 19: TokenizerCli.EmptyInputHasZeroCountersAndValidJson
+19/34 Test #19: TokenizerCli.EmptyInputHasZeroCountersAndValidJson ..................   Passed    0.00 sec
+      Start 20: TokenizerCli.CorpusFieldsTitleOnlyLimitAndStatistics
+20/34 Test #20: TokenizerCli.CorpusFieldsTitleOnlyLimitAndStatistics ................   Passed    0.01 sec
+      Start 21: TokenizerCli.CorruptCorpusAndOversizedFieldAreRejected
+21/34 Test #21: TokenizerCli.CorruptCorpusAndOversizedFieldAreRejected ..............   Passed    0.01 sec
+      Start 22: TokenizerCli.InvalidSourceAndRepeatedDocumentIdAreRejected
+22/34 Test #22: TokenizerCli.InvalidSourceAndRepeatedDocumentIdAreRejected ..........   Passed    0.01 sec
+      Start 23: TokenizerCli.FailedUtf8DoesNotPublishPartialFile
+23/34 Test #23: TokenizerCli.FailedUtf8DoesNotPublishPartialFile ....................   Passed    0.01 sec
+      Start 24: TokenizerCli.ExistingOutputAndStatisticsAreNeverOverwritten
+24/34 Test #24: TokenizerCli.ExistingOutputAndStatisticsAreNeverOverwritten .........   Passed    0.01 sec
+      Start 25: TokenizerCli.IdenticalOutputPathsAreRejected
+25/34 Test #25: TokenizerCli.IdenticalOutputPathsAreRejected ........................   Passed    0.00 sec
+      Start 26: TokenizerCli.InvalidArgumentsReturnNonzero
+26/34 Test #26: TokenizerCli.InvalidArgumentsReturnNonzero ..........................   Passed    0.00 sec
+      Start 27: TokenizerDemo.DefaultsShowActualMetadataAndAllThreeRules
+27/34 Test #27: TokenizerDemo.DefaultsShowActualMetadataAndAllThreeRules ............   Passed    0.01 sec
+      Start 28: TokenizerDemo.ByteOffsetsAndPositionsReferToTheWholeOriginalField
+28/34 Test #28: TokenizerDemo.ByteOffsetsAndPositionsReferToTheWholeOriginalField ...   Passed    0.00 sec
+      Start 29: TokenizerDemo.CustomTitleAndAbsentFragment
+29/34 Test #29: TokenizerDemo.CustomTitleAndAbsentFragment ..........................   Passed    0.00 sec
+      Start 30: TokenizerDemo.LatestSnapshotIgnoresUnpublishedAndInvalidExports
+30/34 Test #30: TokenizerDemo.LatestSnapshotIgnoresUnpublishedAndInvalidExports .....   Passed    0.01 sec
+      Start 31: TokenizerDemo.CliOutputIsUtf8AndDoesNotOverwriteTranscript
+31/34 Test #31: TokenizerDemo.CliOutputIsUtf8AndDoesNotOverwriteTranscript ..........   Passed    0.00 sec
+      Start 32: TokenizerDemo.BadOptionsCorruptCorpusAndMissingMetadataFail
+32/34 Test #32: TokenizerDemo.BadOptionsCorruptCorpusAndMissingMetadataFail .........   Passed    0.11 sec
+      Start 33: TokenizerProcess.Help
+33/34 Test #33: TokenizerProcess.Help ...............................................   Passed    0.00 sec
+      Start 34: TokenizerProcess.UnknownMode
+34/34 Test #34: TokenizerProcess.UnknownMode ........................................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 34
+
+Total Test time (real) =   0.30 sec
+
+COMMAND: C:\Users\Kirbass\Desktop\PROGR\MAI-IR\.venv\Scripts\python.exe -m unittest -v tests.test_corpus_export tests.test_lab3_demo
+test_existing_snapshot_is_preserved (tests.test_corpus_export.CorpusExportTests.test_existing_snapshot_is_preserved) ... ok
+test_failed_export_is_not_published (tests.test_corpus_export.CorpusExportTests.test_failed_export_is_not_published) ... ok
+test_filters_excluded_errors_and_empty_but_keeps_title_only (tests.test_corpus_export.CorpusExportTests.test_filters_excluded_errors_and_empty_but_keeps_title_only) ... ok
+test_reader_rejects_bad_header_and_partial_records (tests.test_corpus_export.CorpusExportTests.test_reader_rejects_bad_header_and_partial_records) ... ok
+test_byte_offsets_refer_to_original_full_utf8_field (tests.test_lab3_demo.Lab3DemoTests.test_byte_offsets_refer_to_original_full_utf8_field) ... ok
+test_cli_output_is_utf8_and_refuses_overwrite (tests.test_lab3_demo.Lab3DemoTests.test_cli_output_is_utf8_and_refuses_overwrite) ... ok
+test_custom_title_and_missing_fragment (tests.test_lab3_demo.Lab3DemoTests.test_custom_title_and_missing_fragment) ... ok
+test_default_demo_uses_real_metadata_and_native_rules (tests.test_lab3_demo.Lab3DemoTests.test_default_demo_uses_real_metadata_and_native_rules) ... ok
+test_latest_snapshot_ignores_unpublished_directory (tests.test_lab3_demo.Lab3DemoTests.test_latest_snapshot_ignores_unpublished_directory) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.904s
+
+OK

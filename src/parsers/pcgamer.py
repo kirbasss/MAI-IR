@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import copy
+import re
 
 from src.model import ParsedDocument
 from src.parsers.common import article_metadata, unique_strings
@@ -8,6 +9,7 @@ from src.utils import clean_text, meta_content, readable_article_text, soup
 
 
 BODY_SELECTOR = "div#article-body"
+GALLERY_SELECTOR = "#gallery-body .gallery-image .gallery-text"
 
 
 def _category(page) -> str:
@@ -41,19 +43,37 @@ def _body_text(body) -> str:
     return readable_article_text(cleaned)
 
 
+def _gallery_text(page) -> str:
+    """Collect slide captions once; some galleries repeat all prose per slide."""
+    parts = []
+    seen = set()
+    for block in page.select(GALLERY_SELECTOR):
+        value = _body_text(block)
+        key = re.sub(r"\s+([’'.,;:!?])", r"\1", clean_text(value))
+        if key and key not in seen:
+            seen.add(key)
+            parts.append(value)
+    return clean_text("\n\n".join(parts))
+
+
 def parse_pcgamer(html: bytes, url: str) -> ParsedDocument:
     """Parse PC Gamer articles from the stable ``article-body`` container."""
     page = soup(html)
     data, metadata = article_metadata(page)
     body = page.select_one(BODY_SELECTOR)
     text = _body_text(body) if body else ""
+    if not text:
+        text = _gallery_text(page)
+        if text:
+            metadata["body_selector"] = GALLERY_SELECTOR
+            metadata["content_kind"] = "gallery"
 
     title_tag = page.select_one("h1")
     title = clean_text(title_tag.get_text(" ")) if title_tag else data["title"]
     author = meta_content(page, property_="mrf:authors") or data["author"]
     section = data["category"]
 
-    if body:
+    if body and not metadata.get("body_selector"):
         metadata["body_selector"] = BODY_SELECTOR
     if section:
         metadata["source_category"] = section
@@ -68,5 +88,5 @@ def parse_pcgamer(html: bytes, url: str) -> ParsedDocument:
         tags=unique_strings(data["tags"] + _meta_tags(page)),
         text=text,
         metadata=metadata,
-        parse_error=None if text else f"Не найден {BODY_SELECTOR}.",
+        parse_error=None if text else f"Не найден текст в {BODY_SELECTOR} или {GALLERY_SELECTOR}.",
     )

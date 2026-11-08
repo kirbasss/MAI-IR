@@ -1,0 +1,23 @@
+{
+  "revision_base": "6e6dec12959500d2abc3181cd875ca3e1f21bd7e",
+  "cpp_ctest": 147,
+  "python_unittest": 291,
+  "python_skipped": 0,
+  "image_build_seconds": 0.0,
+  "image": "mai-ir-tokenizer-tests:latest",
+  "image_reused": true,
+  "suite_wall_seconds": 26.337,
+  "source_sha256": {
+    "CMakeLists.txt": "6e3deec4fc86be089e809c52b2583579ca13ceb0b206be315b30867304895eac",
+    "run_tests.py": "19445d215c0bd4f9b3c8f3c50ac6b4133d6c03ba91f5940bd543a54cf59d15a3",
+    "run_lab17.py": "dea5dcff758aa45ce8737a3957894b87404008157cddc341219f4709d8270558",
+    "tests\\cpp\\unit_test_lab17.cpp": "58af526a17022e1cfd396276b7eb68f9cc34f5285d01a3411b9c31592e7b7204",
+    "tests\\python\\test_lab17.py": "80747973695f54f0023523d9f5a1e5b3586235d36091a4179d0ddaa3b6ce0173"
+  },
+  "test_mongodb": "isolated ephemeral mongo:8.0 container",
+  "logs": {
+    "build": "build.txt",
+    "mongo": "mongo.txt",
+    "tests": "tests.txt"
+  }
+}

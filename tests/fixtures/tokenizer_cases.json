@@ -1,0 +1,32 @@
+[
+  {
+    "url": "https://gamemag.ru/news/11344/pobediteli-kri-awards-2004",
+    "text": "S.T.A.L.K.E.R: Shadow of Chernobyl",
+    "expected": ["stalker", "shadow", "of", "chernobyl"],
+    "issue": "Dotted single-letter names are normalized to the same term as their undotted spelling."
+  },
+  {
+    "url": "https://www.pcgamer.com/if-it-werent-for-ram-there-would-be-70-fewer-windows-patches/",
+    "text": "C and C++ (along with C#",
+    "expected": ["c", "and", "c++", "along", "with", "c#"],
+    "issue": "C, C++ and C# are now distinct terms."
+  },
+  {
+    "url": "https://gamemag.ru/news/163686/playstation-5-destruction-all-stars-free-2-play",
+    "text": "новый патч 3.0.1",
+    "expected": ["новый", "патч", "3.0.1"],
+    "issue": "The version is preserved as a single term."
+  },
+  {
+    "url": "https://gamemag.ru/news/116043/black-mesa-novyy-skrinshot-glavy-xen",
+    "text": "Half-Life",
+    "expected": ["half-life"],
+    "issue": "Preserved name; the alternative spelling Half Life produces two tokens."
+  },
+  {
+    "url": "https://ixbt.games/news/2026/04/01/408172-patentnoe-vedomstvo-ssa-otozvalo-patent-nintendo-na-igrovuiu-mexaniku-prizyva-personazei.html",
+    "text": "Pokémon",
+    "expected": ["pokémon"],
+    "issue": "The accent is preserved; Pokemon is a different term."
+  }
+]

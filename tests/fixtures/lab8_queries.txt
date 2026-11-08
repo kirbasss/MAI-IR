@@ -1,0 +1,10 @@
+doom
+doom AND quake
+doom OR quake
+(doom OR quake) AND NOT minecraft
+NOT doom
+games AND doom
+игры AND doom
+игрой AND doom
+(skyrim OR fallout) AND bethesda
+doom AND zzzmissingterm12345
