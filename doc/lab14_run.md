@@ -51,6 +51,27 @@ build/boolean-native/boolean_search.exe --index data/compact/lab11_vb_packed_202
 python serve_search.py --index data/compact/lab11_vb_packed_2026-11-08/index --positions data/compact/lab11_vb_packed_2026-11-08/positions --compact data/compact/lab11_vb_packed_2026-11-08/compact --dict data/lemmas/ru_en_v1/dictionary.bin --norms data/tfidf/lab13_2026-11-08 --corpus data/zipf/run_2026-11-07/snapshot/corpus.bin --snippet-index data/snippets/lab14_offsets.bin
 ```
 
+Для фильтров по сайту, типу и году публикации один раз создайте локальный
+каталог из того же снимка. Даты берутся из MongoDB по URL и контрольной сумме
+содержимого; год загрузки страницы вместо года публикации не используется.
+
+```bash
+./.venv/Scripts/python.exe build_search_filters.py --snapshot data/zipf/run_2026-11-07/snapshot --output data/search_filters/lab17_2026-11-08.bin --config crawler.large.yaml
+```
+
+Добавьте к команде веб-формы
+`--filters data/search_filters/lab17_2026-11-08.bin`.
+Те же фильтры работают в CLI, например:
+
+```bash
+build/boolean-native/boolean_search.exe --index data/compact/lab11_vb_packed_2026-11-08/index --positions data/compact/lab11_vb_packed_2026-11-08/positions --compact data/compact/lab11_vb_packed_2026-11-08/compact --ranking tfidf --norms data/tfidf/lab13_2026-11-08 --filters data/search_filters/lab17_2026-11-08.bin --filter-source pcgamer --filter-type review --filter-year 2024 --query "doom eternal"
+```
+
+Допустимые типы: `news`, `article`, `review`, `blog`, `unknown`.
+Год можно выбрать только для публикаций с известной датой; без даты документ
+остаётся в выдаче при выборе «Все годы». Без `--config` скрипт использует
+`published_at` из `documents.jsonl` новых снимков.
+
 Откройте <http://127.0.0.1:8080/>. В HTML совпадения подсвечены через
 `<mark>` после экранирования текста. Для повторения примеров на полном
 снимке: `python run_lab14.py`; результаты сохраняются в `doc/lab14/`.

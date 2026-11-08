@@ -15,7 +15,7 @@ class CorpusExportTests(unittest.TestCase):
         db = mongomock.MongoClient().test
         db.documents.insert_many([
             {"_id": "c", "source": "stopgame", "parsed": {"title": "Фото", "text": ""}},
-            {"_id": "b", "source": "pcgamer", "parsed": {"title": "PS5", "text": "a\n\x00b"}},
+            {"_id": "b", "source": "pcgamer", "parsed": {"title": "PS5", "text": "a\n\x00b", "published_at": "2024-03-12"}},
             {"_id": "a", "source": "stopgame", "indexable": False, "parsed": {"title": "Category"}},
             {"_id": "d", "source": "stopgame", "parsed": {"parse_error": "bad", "text": "Ignore"}},
             {"_id": "e", "source": "stopgame", "parsed": {"title": None, "text": "\n "}},
@@ -32,6 +32,7 @@ class CorpusExportTests(unittest.TestCase):
                                        (2, "stopgame", "Фото".encode(), b"")])
             metadata = [json.loads(line) for line in (output / "documents.jsonl").read_text(encoding="utf-8").splitlines()]
             self.assertEqual([row["url"] for row in metadata], ["b", "c"])
+            self.assertEqual(metadata[0]["published_at"], "2024-03-12")
             self.assertNotIn("text", metadata[0])
         self.assertEqual(list(db.documents.find()), before)
 

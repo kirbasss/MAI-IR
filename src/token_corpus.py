@@ -25,7 +25,7 @@ def mongo_documents(db, *, batch_size: int = 100) -> Iterator[dict]:
         {"indexable": {"$ne": False}, "parsed.parse_error": None},
         {"url": 1, "source": 1, "fetched_at": 1, "content_sha256": 1,
          "parsed.title": 1, "parsed.text": 1, "parsed.parse_error": 1,
-         "parsed.category": 1, "parsed.metadata.content_kind": 1},
+         "parsed.category": 1, "parsed.published_at": 1, "parsed.metadata.content_kind": 1},
     ).sort("_id", 1).batch_size(batch_size)
     try:
         yield from cursor
@@ -124,6 +124,7 @@ def export_snapshot(documents: Iterable[dict], output: Path, *, origin: str) -> 
                     "fetched_at": document.get("fetched_at"),
                     "content_sha256": document.get("content_sha256"),
                     "category": category, "publication_type": publication_type, "content_kind": content_kind,
+                    "published_at": parsed.get("published_at"),
                 }, ensure_ascii=False) + "\n")
         if count == 0:
             raise ValueError("No indexable documents with a title or text")

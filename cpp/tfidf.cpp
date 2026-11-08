@@ -1,4 +1,5 @@
 #include "tfidf.hpp"
+#include "search_filters.hpp"
 #include "tokenizer.hpp"
 #include <cmath>
 #include <cstring>
@@ -163,7 +164,8 @@ bool gaming::Tfidf::open(const char* directory,const char* base,const char* posi
         norms_=data.p; data.p=nullptr; documents_=n; return true;
     } catch (const char* e) { *error=e; return false; }
 }
-bool gaming::Tfidf::search(BooleanSearch& engine,const char* query,unsigned limit,RankedResult& result,const char** error) {
+bool gaming::Tfidf::search(BooleanSearch& engine,const char* query,unsigned limit,RankedResult& result,const char** error,
+                           const SearchFilters* filters) {
     *error=nullptr; result={};
     try {
         if (!norms_ || engine.index().documents()!=documents_) throw "TF-IDF norms not open";
@@ -211,13 +213,18 @@ bool gaming::Tfidf::search(BooleanSearch& engine,const char* query,unsigned limi
         for (U64 doc=0;doc<documents_;++doc) {
             if (scores.p[doc]<=0) continue;
             if (norms_[base+doc]<=0) throw "Nonempty document has zero TF-IDF norm";
+            DocumentInfo info;
+            if (filters) {
+                require(engine.index().document_at(doc,info,error),*error);
+                if (!info.id || !filters->match(info.id)) continue;
+            }
             ++result.total;
             if (!limit) continue;
             const double score=scores.p[doc]/norms_[base+doc];
             if (!std::isfinite(score)) throw "Invalid TF-IDF score";
             // Only documents that can enter the bounded heap need metadata lookup.
             if (result.count==limit && score<result.hits[0].score) continue;
-            DocumentInfo info; require(engine.index().document_at(doc,info,error),*error);
+            if (!filters) require(engine.index().document_at(doc,info,error),*error);
             if (!info.id) throw "TF-IDF result missing from document table";
             RankedHit hit{info.id,score};
             if (result.count<limit) {

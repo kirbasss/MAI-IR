@@ -120,4 +120,22 @@ TEST_F(Snippets,LongSentenceKeepsContextOnBothSidesOfMatch) {
     EXPECT_EQ(row["snippet_matches"].size(),1U);
     EXPECT_EQ(snippet.front(),'l'); EXPECT_EQ(snippet.back(),'r');
 }
+TEST_F(Snippets,FiltersBeforeLimitingAndCountsMatchingDocuments) {
+    std::ofstream filters(root/"filters.bin",std::ios::binary);
+    filters.write("MAIFLT1\0",8); number(filters,5);
+    // year, publication type (news=1, review=3), site (gamemag=1, pcgamer=6)
+    const unsigned char rows[5][4]={{231,7,1,1},{232,7,3,6},{232,7,3,6},{231,7,1,1},{0,0,1,6}};
+    for (const auto& row : rows)
+        filters.write(reinterpret_cast<const char*>(row),4);
+    filters.close();
+    const auto [code,text]=cli({"--query","doom","--limit","1","--filters",(root/"filters.bin").string(),
+                                "--filter-source","pcgamer","--filter-type","review","--filter-year","2024"});
+    ASSERT_EQ(code,0)<<text;
+    const auto result=nlohmann::json::parse(text);
+    EXPECT_EQ(result["total"],2);
+    ASSERT_EQ(result["results"].size(),1U);
+    EXPECT_EQ(result["results"][0]["id"],2);
+    const auto [bad,error]=cli({"--query","doom","--filter-year","2024"});
+    EXPECT_NE(bad,0); EXPECT_NE(error.find("Filters require"),std::string::npos);
+}
 }

@@ -2,6 +2,7 @@
 #include "boolean_search.hpp"
 
 namespace gaming {
+class SearchFilters;
 struct RankedHit { std::uint64_t id=0; double score=0; };
 struct RankedResult {
     RankedHit hits[1000];
@@ -17,7 +18,8 @@ public:
     Tfidf(const Tfidf&)=delete;
     Tfidf& operator=(const Tfidf&)=delete;
     bool open(const char* norms,const char* index,const char* positions,BooleanSearch& engine,const char** error);
-    bool search(BooleanSearch& engine,const char* query,unsigned limit,RankedResult& result,const char** error);
+    bool search(BooleanSearch& engine,const char* query,unsigned limit,RankedResult& result,const char** error,
+                const SearchFilters* filters=nullptr);
 private:
     double* norms_=nullptr;
     std::uint64_t documents_=0;

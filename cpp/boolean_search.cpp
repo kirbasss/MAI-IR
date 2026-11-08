@@ -1,6 +1,7 @@
 #include "boolean_search.hpp"
 #include "tfidf.hpp"
 #include "snippet.hpp"
+#include "search_filters.hpp"
 #include "tokenizer.hpp"
 #include <chrono>
 #include <cstring>
@@ -306,7 +307,8 @@ bool gaming::BooleanQuery::next(U64& id,const char** error) {
 
 namespace {
 void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FILE* output,bool stats=false,
-               gaming::Tfidf* tfidf=nullptr,gaming::SnippetStore* snippets=nullptr) {
+               gaming::Tfidf* tfidf=nullptr,gaming::SnippetStore* snippets=nullptr,
+               const gaming::SearchFilters* filters=nullptr) {
     engine.stats()={};
     const auto begin=std::chrono::steady_clock::now();
     gaming::BooleanQuery search; const char* error=nullptr;
@@ -317,10 +319,15 @@ void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FI
     gaming::SnippetQuery terms;
     if (snippets) terms.prepare(query,engine,tfidf==nullptr);
     if (tfidf) {
-        check(tfidf->search(engine,query,limit,ranked,&error),error); total=ranked.total;
+        check(tfidf->search(engine,query,limit,ranked,&error,filters),error); total=ranked.total;
     } else {
         check(search.compile(engine,query,&error),error);
-        while (search.next(id,&error)) { if (total<limit) ids[total]=id; ++total; digest=(digest^id)*1099511628211ULL; }
+        while (search.next(id,&error)) {
+            if (filters && !filters->match(id)) continue;
+            if (total<limit) ids[total]=id;
+            ++total;
+            digest=(digest^id)*1099511628211ULL;
+        }
         if (error) throw error;
     }
     const double ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-begin).count();
@@ -354,13 +361,13 @@ void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FI
 }
 int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE* output,FILE* errors) {
     try {
-        const char *directory=nullptr,*dictionary=nullptr,*query=nullptr,*positions=nullptr,*compact=nullptr,*skips=nullptr,*norms=nullptr,*corpus=nullptr,*snippet_index=nullptr,*build_snippet_index=nullptr;
+        const char *directory=nullptr,*dictionary=nullptr,*query=nullptr,*positions=nullptr,*compact=nullptr,*skips=nullptr,*norms=nullptr,*corpus=nullptr,*snippet_index=nullptr,*build_snippet_index=nullptr,*filters_path=nullptr,*filter_source=nullptr,*filter_type=nullptr,*filter_year=nullptr;
         bool ranked=false;
         TermSpace space=TermSpace::surface; unsigned limit=10; bool stats=false,optimized=true;
         for (int i=1;i<argc;++i) {
             const char* arg=argv[i];
             if (!std::strcmp(arg,"--help")) {
-                std::fputs("UTF-8 Boolean/phrase/TF-IDF search: boolean_search --index DIR [--positions DIR] [--compact DIR] [--skips DIR] [--execution linear|optimized] [--stats] [--space surface|lemma] [--dict FILE] [--limit 0..1000] [--query QUERY] [--ranking boolean|tfidf] [--norms DIR] [--corpus MAIIR3 --snippet-index OFFSETS] [--build-snippet-index OFFSETS]\n"
+                std::fputs("UTF-8 Boolean/phrase/TF-IDF search: boolean_search --index DIR [--positions DIR] [--compact DIR] [--skips DIR] [--execution linear|optimized] [--stats] [--space surface|lemma] [--dict FILE] [--limit 0..1000] [--query QUERY] [--ranking boolean|tfidf] [--norms DIR] [--corpus MAIIR3 --snippet-index OFFSETS] [--build-snippet-index OFFSETS] [--filters FILE --filter-source SITE --filter-type TYPE --filter-year YYYY]\n"
                            "Without --query: one query per stdin line; one JSON result per stdout line.\n"
                            "Operators: NOT > AND > OR, parentheses, aliases ! & |. Explicit operators required.\n"
                            "Double quotes require adjacent tokens in order within one field; --positions is required.\n"
@@ -378,6 +385,10 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
             else if (!std::strcmp(arg,"--corpus")) corpus=value;
             else if (!std::strcmp(arg,"--snippet-index")) snippet_index=value;
             else if (!std::strcmp(arg,"--build-snippet-index")) build_snippet_index=value;
+            else if (!std::strcmp(arg,"--filters")) filters_path=value;
+            else if (!std::strcmp(arg,"--filter-source")) filter_source=value;
+            else if (!std::strcmp(arg,"--filter-type")) filter_type=value;
+            else if (!std::strcmp(arg,"--filter-year")) filter_year=value;
             else if (!std::strcmp(arg,"--ranking")) {
                 if (!std::strcmp(value,"tfidf")) ranked=true;
                 else if (!std::strcmp(value,"boolean")) ranked=false;
@@ -403,6 +414,7 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
         if (!directory) throw "--index is required";
         if ((snippet_index || build_snippet_index) && !corpus) throw "Snippet offsets require --corpus";
         if (snippet_index && build_snippet_index) throw "Cannot read and build snippet offsets together";
+        if ((filter_source || filter_type || filter_year) && !filters_path) throw "Filters require --filters FILE";
         BooleanSearch engine; const char* error=nullptr; check(engine.open(directory,space,dictionary,&error,positions,compact,skips,optimized),error);
         Tfidf tfidf;
         if (ranked) {
@@ -411,6 +423,8 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
         }
         gaming::SnippetStore snippets;
         if (corpus) check(snippets.open(corpus,engine.index().documents(),&error,snippet_index),error);
+        gaming::SearchFilters filters;
+        if (filters_path) { check(filters.open(filters_path,engine.index().documents(),&error),error); filters.select(filter_source,filter_type,filter_year); }
         if (build_snippet_index) {
             check(snippets.save(build_snippet_index,&error),error);
             std::fprintf(output,"Built snippet offsets for %llu documents\n",
@@ -419,7 +433,8 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
         }
         bool failed=false;
         auto process=[&](const char* text) {
-            try { run_query(engine,text,limit,output,stats,ranked ? &tfidf : nullptr,corpus ? &snippets : nullptr); }
+            try { run_query(engine,text,limit,output,stats,ranked ? &tfidf : nullptr,corpus ? &snippets : nullptr,
+                            (filter_source || filter_type || filter_year) ? &filters : nullptr); }
             catch (const char* e) {
                 failed=true; std::fputs("{\"error\":",output); json(output,e,std::strlen(e)); std::fputs("}\n",output); std::fflush(output);
             }
