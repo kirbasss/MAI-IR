@@ -1,7 +1,7 @@
 # Тесты по лабораторным
 
 Все команды выполняются из корня проекта с активированной `.venv`.
-Для C++-проверок ЛР3–ЛР5, ЛР7, ЛР8, ЛР10 и ЛР11 нужен запущенный Docker Desktop. Если тестовый образ ещё
+Для C++-проверок ЛР3–ЛР5, ЛР7, ЛР8, ЛР10–ЛР13 и ЛР17 нужен запущенный Docker Desktop. Если тестовый образ ещё
 не собран: `docker compose --profile tests build tokenizer-tests`.
 
 ## Основные команды
@@ -18,6 +18,8 @@
 | ЛР10 | Координаты, внешняя сортировка, фразы, поля, леммы, CLI и передача кавычек из формы | `python run_tests.py --lab 10` |
 | ЛР11 | Кодирование разностей, целостность сжатого индекса, совпадение булева и цитатного поиска | `python run_tests.py --lab 11 --cpp-only` |
 | ЛР12 | Прыжки VB-курсоров, булевы/фразовые запросы, целостность указателей, веб-параметры | `python run_tests.py --lab 12` |
+| ЛР13 | TF-IDF, нормы, top-k и веб-форма | `python run_tests.py --lab 13` |
+| ЛР17 | Дополнительные модульные свойства VB, токенизатора, URL и JSON-LD | `python run_tests.py --lab 17` |
 | Все работы | Все группы C++ и Python | `python run_tests.py --lab all` |
 
 Эти команды одинаковы в **Git Bash и PowerShell**. Скрипт сам запускает
@@ -58,6 +60,8 @@ python -m unittest discover -s tests/python -t . -v
 | ЛР10 | `tests/cpp/phrase_search_test_lab10.cpp` | `lab10` |
 | ЛР11 | `tests/cpp/compression_test_lab11.cpp` | `lab11` |
 | ЛР12 | `tests/cpp/skip_test_lab12.cpp` | `lab12` |
+| ЛР13 | `tests/cpp/tfidf_test_lab13.cpp` | `lab13` |
+| ЛР17 | `tests/cpp/unit_test_lab17.cpp` | `lab17` |
 
 ## Прямой запуск GoogleTest без Python
 
