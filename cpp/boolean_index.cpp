@@ -1,4 +1,5 @@
 #include "boolean_index.hpp"
+#include "compact_index.hpp"
 #include "tokenizer.hpp"
 #include "lemmatizer.hpp"
 #include <chrono>
@@ -124,13 +125,14 @@ struct Header {
 const char* const names[]={"terms.bin","postings.bin","documents.bin","strings.bin"};
 const char* const magics[]={"MAIIT7\0\1","MAIIP7\0\1","MAIID7\0\1","MAIIS7\0\1"};
 constexpr U64 record_sizes[]={40,8,64,1};
-Header get_header(FILE* f,unsigned kind) {
+Header get_header(FILE* f,unsigned kind,bool allow_compressed_postings=false) {
     seek(f,0); unsigned char p[80]; read(f,p,sizeof(p));
     if (std::memcmp(p,magics[kind],8)) throw "Invalid index header/version";
     Header h{decode(p+8),decode(p+16),decode(p+24),decode(p+32),decode(p+40),decode(p+48),decode(p+56),decode(p+64),decode(p+72)};
     if (h.record_size!=record_sizes[kind] || h.flags>3 || h.tokenizer!=hash_bytes(fnv_start,gaming::rules_version,std::strlen(gaming::rules_version)) ||
         h.count>UINT64_MAX/h.record_size || h.bytes!=h.count*h.record_size || h.bytes>INT64_MAX-header_size ||
-        file_size(f)!=header_size+h.bytes) throw "Index header/size/tokenizer mismatch";
+        (file_size(f)!=header_size+h.bytes && !(allow_compressed_postings && (kind==0 || kind==1) && file_size(f)==header_size)))
+        throw "Index header/size/tokenizer mismatch";
     return h;
 }
 struct Writer {
@@ -466,15 +468,15 @@ void gaming::BooleanIndex::close() {
     if (term_file_) std::fclose(term_file_);
     if (doc_file_) std::fclose(doc_file_);
     if (string_file_) std::fclose(string_file_);
-    term_file_=doc_file_=string_file_=nullptr; docs_=terms_=postings_=strings_=dictionary_hash_=flags_=0; directory_[0]=0;
+    term_file_=doc_file_=string_file_=nullptr; docs_=terms_=postings_=strings_=dictionary_hash_=flags_=0; directory_[0]=0; compressed_=nullptr;
 }
-bool gaming::BooleanIndex::open(const char* directory,const char** error) {
+bool gaming::BooleanIndex::open(const char* directory,const char** error,bool allow_compressed_postings) {
     close(); *error=nullptr;
     try {
         char p[4096]; path(p,directory,"INCOMPLETE");
         if (FILE* marker=std::fopen(p,"rb")) { std::fclose(marker); throw "Index is INCOMPLETE"; }
         Header h[4];
-        for (unsigned i=0;i<4;++i) { path(p,directory,names[i]); File f(p); h[i]=get_header(f.f,i); }
+        for (unsigned i=0;i<4;++i) { path(p,directory,names[i]); File f(p); h[i]=get_header(f.f,i,allow_compressed_postings); }
         for (unsigned i=1;i<4;++i)
             if (h[i].corpus!=h[0].corpus || h[i].dictionary!=h[0].dictionary || h[i].flags!=h[0].flags || h[i].catalog!=h[0].catalog)
                 throw "Index files belong to different builds";
@@ -493,6 +495,11 @@ bool gaming::BooleanIndex::lookup(const char* word,std::size_t size,TermSpace sp
         if (!term_file_) throw "Index is not open";
         if (!word || !size || size>max_field || !utf8(word,size)) throw "Invalid lookup token";
         if (static_cast<unsigned>(space)>1 || (space==TermSpace::lemma && !has_lemmas())) throw "Requested term representation is unavailable";
+        if (compressed_ && compressed_->has_vocabulary()) {
+            if (!compressed_->lookup(word,size,space,result,error)) throw *error;
+            if (term_number) *term_number=result.ordinal;
+            return true;
+        }
         Buffer buffer; U64 left=0,right=terms_;
         while (left<right) {
             const auto mid=left+(right-left)/2; const auto r=term_record(term_file_,mid);
@@ -500,7 +507,7 @@ bool gaming::BooleanIndex::lookup(const char* word,std::size_t size,TermSpace sp
             bounds(r.string,r.size,strings_); bounds(r.offset,r.count*8,postings_*8);
             buffer.resize(r.size); seek(string_file_,header_size+r.string); read(string_file_,buffer.data,buffer.size);
             const Pair p{r.space,r.size,0,buffer.data}; const int c=term_compare(static_cast<unsigned>(space),word,size,p);
-            if (!c) { result={r.offset,r.count}; if (term_number) *term_number=mid; return true; }
+            if (!c) { result={r.offset,r.count,mid}; if (term_number) *term_number=mid; return true; }
             if (c<0) right=mid; else left=mid+1;
         }
         return true; // a valid absent term has an empty posting list
@@ -546,13 +553,27 @@ FILE* gaming::BooleanIndex::open_postings(const PostingList& list,const char** e
 gaming::PostingCursor::~PostingCursor() { if (file_) std::fclose(file_); }
 bool gaming::PostingCursor::open(const BooleanIndex& index,const PostingList& list,const char** error) {
     if (file_) std::fclose(file_);
-    file_=nullptr; previous_=remaining_=0;
-    file_=index.open_postings(list,error); if (!file_) return false; remaining_=list.count; return true;
+    file_=nullptr; previous_=remaining_=bytes_left_=0; compressed_=index.compressed()!=nullptr;
+    if (compressed_ && list.ordinal!=UINT64_MAX)
+        file_=index.compressed()->stream(CompactKind::postings,list.ordinal,bytes_left_,error);
+    else { compressed_=false; file_=index.open_postings(list,error); }
+    if (!file_) return false;
+    remaining_=list.count; return true;
 }
 bool gaming::PostingCursor::next(U64& id,const char** error) {
     *error=nullptr; id=0;
     if (!remaining_) return false;
-    try { id=integer(file_); if (id<=previous_) throw "Posting IDs must strictly increase"; previous_=id; --remaining_; return true; }
+    try {
+        if (compressed_) {
+            U64 delta=0;
+            if (!read_compact_uint(file_,bytes_left_,delta) || !delta || delta>UINT64_MAX-previous_) throw "Invalid compressed posting";
+            id=previous_+delta;
+        } else id=integer(file_);
+        if (id<=previous_) throw "Posting IDs must strictly increase";
+        previous_=id; --remaining_;
+        if (compressed_ && !remaining_ && bytes_left_) throw "Trailing compressed posting bytes";
+        return true;
+    }
     catch (const char* e) { *error=e; remaining_=0; return false; }
 }
 bool gaming::BooleanIndex::verify(const char** error) {

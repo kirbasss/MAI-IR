@@ -1,0 +1,1120 @@
+{
+  "date": "2026-11-08T03:03:21.305078",
+  "documents": 478833,
+  "terms": 2545616,
+  "raw_posting_bytes": 1455879472,
+  "raw_coordinate_bytes": 2684388592,
+  "raw_total_bytes": 4140268064,
+  "whole_raw_index_bytes": 4443342346,
+  "compressed_files": {
+    "compact_posting_terms.bin": {
+      "bytes": 40729936,
+      "sha256": "eefec02b0c455d774b6ca336544012edfb7819bafde2cf57da5071cc2d0f58af"
+    },
+    "compact_postings.bin": {
+      "bytes": 224280074,
+      "sha256": "1f870927e159ff1a3a94815cbce79eacda8624203c09ec9cb74410c4ac680887"
+    },
+    "compact_position_terms.bin": {
+      "bytes": 40729936,
+      "sha256": "d6d31a6ea0a247a10daad0e6bc40ded7ee285b73bc15b1e687fbf4061bc29b00"
+    },
+    "compact_positions.bin": {
+      "bytes": 904799589,
+      "sha256": "133e8162bac17de30a01c36901344381f9af9467033f874259ee6b947a7c482e"
+    }
+  },
+  "compressed_total_bytes": 1210539535,
+  "total_ratio": 3.420184095020077,
+  "space_saved_percent": 70.76180777941049,
+  "verification": {
+    "wall_ms": 85955.74489999854,
+    "exit_code": 0
+  },
+  "compact_binary_sha256": "fd80eb8763de6ed7c2f28fafbde42fc2077ad06150f5d02a41652aa67bf0b09d",
+  "search_binary_sha256": "dddb2a6257ee8b5ca8ed960131a66776dd42fa02a24b638dca6f910c58f2b5ae",
+  "dictionary_sha256": "9cb2227a073a4ed33cec6e60c9fe43593d1d7750800de7d3ebd5c71b132d27ff",
+  "modes": {
+    "surface_raw": {
+      "queries": [
+        {
+          "query": "doom",
+          "total": 7469,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "samples_ms": [
+            1.493,
+            0.861,
+            0.532,
+            0.706,
+            0.631
+          ],
+          "median_ms": 0.706
+        },
+        {
+          "query": "doom AND eternal",
+          "total": 1392,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            1.812,
+            1.656,
+            1.279,
+            0.744,
+            0.687
+          ],
+          "median_ms": 1.279
+        },
+        {
+          "query": "\"doom eternal\"",
+          "total": 1274,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            6.832,
+            8.624,
+            7.329,
+            5.665,
+            4.497
+          ],
+          "median_ms": 6.832
+        },
+        {
+          "query": "\"eternal doom\"",
+          "total": 18,
+          "first_ids": [
+            16788,
+            73896,
+            74986,
+            99683,
+            110268
+          ],
+          "samples_ms": [
+            1.518,
+            3.923,
+            1.562,
+            1.74,
+            1.676
+          ],
+          "median_ms": 1.676
+        },
+        {
+          "query": "\"god of war\"",
+          "total": 5804,
+          "first_ids": [
+            352,
+            430,
+            434,
+            470,
+            657
+          ],
+          "samples_ms": [
+            121.971,
+            125.524,
+            121.413,
+            118.003,
+            115.585
+          ],
+          "median_ms": 121.413
+        },
+        {
+          "query": "god AND of AND war",
+          "total": 6498,
+          "first_ids": [
+            352,
+            373,
+            430,
+            434,
+            470
+          ],
+          "samples_ms": [
+            14.759,
+            12.785,
+            12.248,
+            12.697,
+            12.132
+          ],
+          "median_ms": 12.697
+        },
+        {
+          "query": "\"даты выхода\"",
+          "total": 2819,
+          "first_ids": [
+            241,
+            471,
+            1079,
+            1245,
+            1481
+          ],
+          "samples_ms": [
+            11.075,
+            11.764,
+            10.416,
+            10.462,
+            11.137
+          ],
+          "median_ms": 11.075
+        },
+        {
+          "query": "игры AND NOT doom",
+          "total": 146828,
+          "first_ids": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "samples_ms": [
+            1096.109,
+            1009.042,
+            932.293,
+            979.241,
+            936.848
+          ],
+          "median_ms": 979.241
+        },
+        {
+          "query": "\"red dead redemption\"",
+          "total": 4675,
+          "first_ids": [
+            8,
+            1539,
+            2062,
+            2078,
+            2228
+          ],
+          "samples_ms": [
+            38.383,
+            18.101,
+            16.779,
+            17.625,
+            18.119
+          ],
+          "median_ms": 18.101
+        }
+      ],
+      "wall_ms": 5925.847599995905,
+      "peak_working_set_bytes": 4947968
+    },
+    "surface_compressed": {
+      "queries": [
+        {
+          "query": "doom",
+          "total": 7469,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "samples_ms": [
+            0.783,
+            0.714,
+            0.634,
+            0.502,
+            0.485
+          ],
+          "median_ms": 0.634
+        },
+        {
+          "query": "doom AND eternal",
+          "total": 1392,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            1.057,
+            1.971,
+            0.81,
+            1.645,
+            0.998
+          ],
+          "median_ms": 1.057
+        },
+        {
+          "query": "\"doom eternal\"",
+          "total": 1274,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            6.566,
+            8.006,
+            5.646,
+            5.591,
+            6.072
+          ],
+          "median_ms": 6.072
+        },
+        {
+          "query": "\"eternal doom\"",
+          "total": 18,
+          "first_ids": [
+            16788,
+            73896,
+            74986,
+            99683,
+            110268
+          ],
+          "samples_ms": [
+            3.179,
+            3.591,
+            4.281,
+            3.356,
+            2.414
+          ],
+          "median_ms": 3.356
+        },
+        {
+          "query": "\"god of war\"",
+          "total": 5804,
+          "first_ids": [
+            352,
+            430,
+            434,
+            470,
+            657
+          ],
+          "samples_ms": [
+            157.675,
+            159.408,
+            173.279,
+            161.67,
+            152.411
+          ],
+          "median_ms": 159.408
+        },
+        {
+          "query": "god AND of AND war",
+          "total": 6498,
+          "first_ids": [
+            352,
+            373,
+            430,
+            434,
+            470
+          ],
+          "samples_ms": [
+            11.587,
+            9.373,
+            10.062,
+            9.202,
+            10.809
+          ],
+          "median_ms": 10.062
+        },
+        {
+          "query": "\"даты выхода\"",
+          "total": 2819,
+          "first_ids": [
+            241,
+            471,
+            1079,
+            1245,
+            1481
+          ],
+          "samples_ms": [
+            13.246,
+            12.13,
+            12.166,
+            11.824,
+            12.65
+          ],
+          "median_ms": 12.166
+        },
+        {
+          "query": "игры AND NOT doom",
+          "total": 146828,
+          "first_ids": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "samples_ms": [
+            1072.758,
+            1063.391,
+            987.93,
+            1038.126,
+            963.596
+          ],
+          "median_ms": 1038.126
+        },
+        {
+          "query": "\"red dead redemption\"",
+          "total": 4675,
+          "first_ids": [
+            8,
+            1539,
+            2062,
+            2078,
+            2228
+          ],
+          "samples_ms": [
+            31.196,
+            20.483,
+            21.182,
+            24.041,
+            19.575
+          ],
+          "median_ms": 21.182
+        }
+      ],
+      "wall_ms": 6294.287199998507,
+      "peak_working_set_bytes": 4968448
+    },
+    "surface_packed": {
+      "queries": [
+        {
+          "query": "doom",
+          "total": 7469,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "samples_ms": [
+            1.084,
+            0.9,
+            0.776,
+            0.689,
+            0.459
+          ],
+          "median_ms": 0.776
+        },
+        {
+          "query": "doom AND eternal",
+          "total": 1392,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            1.22,
+            0.971,
+            0.796,
+            0.797,
+            0.698
+          ],
+          "median_ms": 0.797
+        },
+        {
+          "query": "\"doom eternal\"",
+          "total": 1274,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            7.954,
+            5.988,
+            6.026,
+            5.781,
+            6.332
+          ],
+          "median_ms": 6.026
+        },
+        {
+          "query": "\"eternal doom\"",
+          "total": 18,
+          "first_ids": [
+            16788,
+            73896,
+            74986,
+            99683,
+            110268
+          ],
+          "samples_ms": [
+            4.283,
+            2.303,
+            2.68,
+            2.689,
+            2.564
+          ],
+          "median_ms": 2.68
+        },
+        {
+          "query": "\"god of war\"",
+          "total": 5804,
+          "first_ids": [
+            352,
+            430,
+            434,
+            470,
+            657
+          ],
+          "samples_ms": [
+            160.176,
+            159.637,
+            176.177,
+            155.743,
+            156.377
+          ],
+          "median_ms": 159.637
+        },
+        {
+          "query": "god AND of AND war",
+          "total": 6498,
+          "first_ids": [
+            352,
+            373,
+            430,
+            434,
+            470
+          ],
+          "samples_ms": [
+            10.047,
+            9.815,
+            10.297,
+            10.347,
+            9.352
+          ],
+          "median_ms": 10.047
+        },
+        {
+          "query": "\"даты выхода\"",
+          "total": 2819,
+          "first_ids": [
+            241,
+            471,
+            1079,
+            1245,
+            1481
+          ],
+          "samples_ms": [
+            14.447,
+            11.701,
+            12.066,
+            11.902,
+            12.002
+          ],
+          "median_ms": 12.002
+        },
+        {
+          "query": "игры AND NOT doom",
+          "total": 146828,
+          "first_ids": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "samples_ms": [
+            1108.68,
+            994.684,
+            959.466,
+            976.979,
+            976.307
+          ],
+          "median_ms": 976.979
+        },
+        {
+          "query": "\"red dead redemption\"",
+          "total": 4675,
+          "first_ids": [
+            8,
+            1539,
+            2062,
+            2078,
+            2228
+          ],
+          "samples_ms": [
+            24.331,
+            20.147,
+            20.916,
+            19.267,
+            23.419
+          ],
+          "median_ms": 20.916
+        }
+      ],
+      "wall_ms": 6178.017099999124,
+      "peak_working_set_bytes": 4980736
+    },
+    "lemma_raw": {
+      "queries": [
+        {
+          "query": "doom",
+          "total": 8112,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "samples_ms": [
+            1.524,
+            0.535,
+            0.438,
+            0.672,
+            0.723
+          ],
+          "median_ms": 0.672
+        },
+        {
+          "query": "doom AND eternal",
+          "total": 1408,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            1.764,
+            0.901,
+            0.714,
+            0.753,
+            1.008
+          ],
+          "median_ms": 0.901
+        },
+        {
+          "query": "\"doom eternal\"",
+          "total": 1274,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            9.349,
+            5.445,
+            5.091,
+            4.567,
+            5.147
+          ],
+          "median_ms": 5.147
+        },
+        {
+          "query": "\"eternal doom\"",
+          "total": 18,
+          "first_ids": [
+            16788,
+            73896,
+            74986,
+            99683,
+            110268
+          ],
+          "samples_ms": [
+            4.394,
+            2.353,
+            2.059,
+            1.456,
+            2.03
+          ],
+          "median_ms": 2.059
+        },
+        {
+          "query": "\"god of war\"",
+          "total": 5809,
+          "first_ids": [
+            352,
+            430,
+            434,
+            470,
+            657
+          ],
+          "samples_ms": [
+            233.897,
+            120.129,
+            119.517,
+            119.216,
+            110.16
+          ],
+          "median_ms": 119.517
+        },
+        {
+          "query": "god AND of AND war",
+          "total": 7097,
+          "first_ids": [
+            352,
+            373,
+            430,
+            434,
+            470
+          ],
+          "samples_ms": [
+            23.564,
+            19.129,
+            14.041,
+            17.694,
+            14.414
+          ],
+          "median_ms": 17.694
+        },
+        {
+          "query": "\"даты выхода\"",
+          "total": 12666,
+          "first_ids": [
+            14,
+            64,
+            106,
+            122,
+            133
+          ],
+          "samples_ms": [
+            51.796,
+            44.342,
+            35.032,
+            38.276,
+            34.76
+          ],
+          "median_ms": 38.276
+        },
+        {
+          "query": "игры AND NOT doom",
+          "total": 226372,
+          "first_ids": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "samples_ms": [
+            1054.043,
+            1003.314,
+            970.74,
+            934.614,
+            989.238
+          ],
+          "median_ms": 989.238
+        },
+        {
+          "query": "\"red dead redemption\"",
+          "total": 4675,
+          "first_ids": [
+            8,
+            1539,
+            2062,
+            2078,
+            2228
+          ],
+          "samples_ms": [
+            18.296,
+            17.174,
+            17.208,
+            21.811,
+            18.294
+          ],
+          "median_ms": 18.294
+        }
+      ],
+      "wall_ms": 7310.737699997844,
+      "peak_working_set_bytes": 171220992
+    },
+    "lemma_compressed": {
+      "queries": [
+        {
+          "query": "doom",
+          "total": 8112,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "samples_ms": [
+            1.092,
+            0.534,
+            0.657,
+            0.708,
+            0.645
+          ],
+          "median_ms": 0.657
+        },
+        {
+          "query": "doom AND eternal",
+          "total": 1408,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            1.424,
+            0.854,
+            0.876,
+            1.042,
+            0.836
+          ],
+          "median_ms": 0.876
+        },
+        {
+          "query": "\"doom eternal\"",
+          "total": 1274,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            7.526,
+            5.77,
+            6.356,
+            7.383,
+            5.786
+          ],
+          "median_ms": 6.356
+        },
+        {
+          "query": "\"eternal doom\"",
+          "total": 18,
+          "first_ids": [
+            16788,
+            73896,
+            74986,
+            99683,
+            110268
+          ],
+          "samples_ms": [
+            3.288,
+            2.823,
+            2.129,
+            2.724,
+            2.592
+          ],
+          "median_ms": 2.724
+        },
+        {
+          "query": "\"god of war\"",
+          "total": 5809,
+          "first_ids": [
+            352,
+            430,
+            434,
+            470,
+            657
+          ],
+          "samples_ms": [
+            277.158,
+            151.623,
+            191.917,
+            165.984,
+            158.358
+          ],
+          "median_ms": 165.984
+        },
+        {
+          "query": "god AND of AND war",
+          "total": 7097,
+          "first_ids": [
+            352,
+            373,
+            430,
+            434,
+            470
+          ],
+          "samples_ms": [
+            9.253,
+            9.539,
+            15.022,
+            11.562,
+            11.665
+          ],
+          "median_ms": 11.562
+        },
+        {
+          "query": "\"даты выхода\"",
+          "total": 12666,
+          "first_ids": [
+            14,
+            64,
+            106,
+            122,
+            133
+          ],
+          "samples_ms": [
+            46.185,
+            42.841,
+            51.106,
+            45.684,
+            38.728
+          ],
+          "median_ms": 45.684
+        },
+        {
+          "query": "игры AND NOT doom",
+          "total": 226372,
+          "first_ids": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "samples_ms": [
+            999.618,
+            972.979,
+            982.351,
+            1008.165,
+            943.494
+          ],
+          "median_ms": 982.351
+        },
+        {
+          "query": "\"red dead redemption\"",
+          "total": 4675,
+          "first_ids": [
+            8,
+            1539,
+            2062,
+            2078,
+            2228
+          ],
+          "samples_ms": [
+            24.91,
+            21.941,
+            23.37,
+            20.41,
+            19.858
+          ],
+          "median_ms": 21.941
+        }
+      ],
+      "wall_ms": 7449.909600007231,
+      "peak_working_set_bytes": 171556864
+    },
+    "lemma_packed": {
+      "queries": [
+        {
+          "query": "doom",
+          "total": 8112,
+          "first_ids": [
+            72,
+            133,
+            165,
+            595,
+            747
+          ],
+          "samples_ms": [
+            1.108,
+            0.75,
+            0.775,
+            0.504,
+            0.603
+          ],
+          "median_ms": 0.75
+        },
+        {
+          "query": "doom AND eternal",
+          "total": 1408,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            1.007,
+            0.681,
+            1.123,
+            0.961,
+            0.76
+          ],
+          "median_ms": 0.961
+        },
+        {
+          "query": "\"doom eternal\"",
+          "total": 1274,
+          "first_ids": [
+            72,
+            10846,
+            11011,
+            11229,
+            11250
+          ],
+          "samples_ms": [
+            7.009,
+            5.264,
+            7.266,
+            5.885,
+            5.694
+          ],
+          "median_ms": 5.885
+        },
+        {
+          "query": "\"eternal doom\"",
+          "total": 18,
+          "first_ids": [
+            16788,
+            73896,
+            74986,
+            99683,
+            110268
+          ],
+          "samples_ms": [
+            4.061,
+            2.402,
+            2.54,
+            2.321,
+            3.398
+          ],
+          "median_ms": 2.54
+        },
+        {
+          "query": "\"god of war\"",
+          "total": 5809,
+          "first_ids": [
+            352,
+            430,
+            434,
+            470,
+            657
+          ],
+          "samples_ms": [
+            283.046,
+            173.707,
+            157.881,
+            155.96,
+            163.392
+          ],
+          "median_ms": 163.392
+        },
+        {
+          "query": "god AND of AND war",
+          "total": 7097,
+          "first_ids": [
+            352,
+            373,
+            430,
+            434,
+            470
+          ],
+          "samples_ms": [
+            10.802,
+            10.283,
+            9.915,
+            12.323,
+            11.477
+          ],
+          "median_ms": 10.802
+        },
+        {
+          "query": "\"даты выхода\"",
+          "total": 12666,
+          "first_ids": [
+            14,
+            64,
+            106,
+            122,
+            133
+          ],
+          "samples_ms": [
+            43.981,
+            42.577,
+            39.375,
+            39.126,
+            38.24
+          ],
+          "median_ms": 39.375
+        },
+        {
+          "query": "игры AND NOT doom",
+          "total": 226372,
+          "first_ids": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "samples_ms": [
+            978.515,
+            956.599,
+            975.629,
+            1005.264,
+            998.478
+          ],
+          "median_ms": 978.515
+        },
+        {
+          "query": "\"red dead redemption\"",
+          "total": 4675,
+          "first_ids": [
+            8,
+            1539,
+            2062,
+            2078,
+            2228
+          ],
+          "samples_ms": [
+            21.927,
+            20.221,
+            25.878,
+            32.929,
+            22.065
+          ],
+          "median_ms": 22.065
+        }
+      ],
+      "wall_ms": 7432.771599997068,
+      "peak_working_set_bytes": 171560960
+    }
+  },
+  "packed_files": {
+    "index/terms.bin": 80,
+    "index/postings.bin": 80,
+    "index/documents.bin": 30645392,
+    "index/strings.bin": 92868494,
+    "positions/position_terms.bin": 40729936,
+    "positions/positions.bin": 80,
+    "compact/compact_posting_terms.bin": 40729936,
+    "compact/compact_postings.bin": 224280074,
+    "compact/compact_position_terms.bin": 40729936,
+    "compact/compact_positions.bin": 904799589,
+    "compact/compact_vocabulary_blocks.bin": 1272888,
+    "compact/compact_vocabulary.bin": 24500509
+  },
+  "packed_total_bytes": 1400556994,
+  "whole_index_saved_percent": 68.47965146640537,
+  "original_vocabulary_bytes": 138830460,
+  "packed_vocabulary_bytes": 25773397,
+  "vocabulary_saved_percent": 81.43534423209431
+}

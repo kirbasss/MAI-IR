@@ -83,17 +83,22 @@ void print_document(FILE* out,gaming::BooleanIndex& index,U64 id) {
 }
 }
 
-bool gaming::BooleanSearch::open(const char* directory,TermSpace space,const char* dictionary,const char** error,const char* positions) {
+bool gaming::BooleanSearch::open(const char* directory,TermSpace space,const char* dictionary,const char** error,const char* positions,const char* compact) {
     *error=nullptr;
     try {
-        check(index_.open(directory,error),*error);
+        check(index_.open(directory,error,compact!=nullptr),*error);
         if (space==TermSpace::lemma) {
             if (!index_.has_lemmas()) throw "Index has no lemma namespace";
             if (!dictionary) throw "Lemma search requires --dict used to build the index";
             if (hash_file(dictionary)!=index_.dictionary_hash()) throw "Dictionary fingerprint differs from index";
             check(morphology_.load(dictionary,error),*error);
         }
-        if (positions) check(positions_.open(positions,directory,index_,error),*error);
+        if (positions) check(positions_.open(positions,directory,index_,error,compact!=nullptr),*error);
+        if (compact) {
+            if (!positions) throw "Compressed search requires --positions DIR";
+            check(compact_.open(compact,directory,positions,index_,positions_,error),*error);
+            index_.use_compressed(&compact_); positions_.use_compressed(&compact_);
+        }
         space_=space; return true;
     } catch (const char* e) { *error=e; return false; }
 }
@@ -271,11 +276,11 @@ void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FI
 }
 int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE* output,FILE* errors) {
     try {
-        const char *directory=nullptr,*dictionary=nullptr,*query=nullptr,*positions=nullptr; TermSpace space=TermSpace::surface; unsigned limit=10;
+        const char *directory=nullptr,*dictionary=nullptr,*query=nullptr,*positions=nullptr,*compact=nullptr; TermSpace space=TermSpace::surface; unsigned limit=10;
         for (int i=1;i<argc;++i) {
             const char* arg=argv[i];
             if (!std::strcmp(arg,"--help")) {
-                std::fputs("UTF-8 Boolean/phrase search: boolean_search --index DIR [--positions DIR] [--space surface|lemma] [--dict FILE] [--limit 0..1000] [--query QUERY]\n"
+                std::fputs("UTF-8 Boolean/phrase search: boolean_search --index DIR [--positions DIR] [--compact DIR] [--space surface|lemma] [--dict FILE] [--limit 0..1000] [--query QUERY]\n"
                            "Without --query: one query per stdin line; one JSON result per stdout line.\n"
                            "Operators: NOT > AND > OR, parentheses, aliases ! & |. Explicit operators required.\n"
                            "Double quotes require adjacent tokens in order within one field; --positions is required.\n",output); return 0;
@@ -284,6 +289,7 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
             const char* value=argv[++i];
             if (!std::strcmp(arg,"--index")) directory=value;
             else if (!std::strcmp(arg,"--positions")) positions=value;
+            else if (!std::strcmp(arg,"--compact")) compact=value;
             else if (!std::strcmp(arg,"--dict")) dictionary=value;
             else if (!std::strcmp(arg,"--query")) query=value;
             else if (!std::strcmp(arg,"--space")) {
@@ -297,7 +303,7 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
             } else throw "Unknown option";
         }
         if (!directory) throw "--index is required";
-        BooleanSearch engine; const char* error=nullptr; check(engine.open(directory,space,dictionary,&error,positions),error);
+        BooleanSearch engine; const char* error=nullptr; check(engine.open(directory,space,dictionary,&error,positions,compact),error);
         bool failed=false;
         auto process=[&](const char* text) {
             try { run_query(engine,text,limit,output); }

@@ -1,4 +1,5 @@
 #include "positional_index.hpp"
+#include "compact_index.hpp"
 #include "tokenizer.hpp"
 #include <chrono>
 #include <cstdlib>
@@ -103,12 +104,13 @@ U64 hash_file(const char* name) {
     return h;
 }
 struct Header { U64 count=0,bytes=0,checksum=basis,binding=0,corpus=0,dictionary=0,documents=0,width=0,terms=0; };
-Header header(FILE* f,unsigned kind) {
+Header header(FILE* f,unsigned kind,bool allow_compressed_positions=false) {
     seek(f,0); unsigned char p[80]; read(f,p,80);
     if (std::memcmp(p,magics[kind],8)) throw "Invalid positional index format";
     Header h{decode(p+8),decode(p+16),decode(p+24),decode(p+32),decode(p+40),decode(p+48),decode(p+56),decode(p+64),decode(p+72)};
     if (h.width!=(kind ? 8U : 16U) || h.count>UINT64_MAX/h.width || h.bytes!=h.count*h.width ||
-        h.bytes>INT64_MAX-80 || file_size(f)!=80+h.bytes) throw "Positional header/size mismatch";
+        h.bytes>INT64_MAX-80 || (file_size(f)!=80+h.bytes && !(allow_compressed_positions && kind==1 && file_size(f)==80)))
+        throw "Positional header/size mismatch";
     return h;
 }
 struct Writer {
@@ -338,13 +340,13 @@ void build(const char* corpus_path,const char* base,const char* output,const cha
 }
 
 gaming::PositionalIndex::~PositionalIndex() { if (terms_) std::fclose(terms_); }
-bool gaming::PositionalIndex::open(const char* directory,const char* boolean_directory,BooleanIndex& index,const char** error) {
-    *error=nullptr; if (terms_) std::fclose(terms_); terms_=nullptr; index_=nullptr;
+bool gaming::PositionalIndex::open(const char* directory,const char* boolean_directory,BooleanIndex& index,const char** error,bool allow_compressed_positions) {
+    *error=nullptr; if (terms_) std::fclose(terms_); terms_=nullptr; index_=nullptr; compressed_=nullptr;
     try {
         char p[4096]; path(p,directory,"INCOMPLETE"); FILE* mark=std::fopen(p,"rb"); if (mark) { std::fclose(mark); throw "Positional index is incomplete"; }
         const auto b=binding(boolean_directory); Header h[2];
         for (unsigned k=0;k<2;++k) {
-            path(p,directory,names[k]); File file(p); h[k]=header(file.f,k);
+            path(p,directory,names[k]); File file(p); h[k]=header(file.f,k,allow_compressed_positions);
             if (h[k].binding!=b.fingerprint || h[k].corpus!=b.corpus || h[k].dictionary!=b.dictionary || h[k].documents!=b.documents || h[k].terms!=b.terms)
                 throw "Positional index belongs to a different Boolean index";
         }
@@ -360,7 +362,7 @@ bool gaming::PositionalIndex::lookup(const char* term,std::size_t size,TermSpace
         PostingList posting; U64 ordinal=UINT64_MAX; require(index_->lookup(term,size,space,posting,error,&ordinal),*error);
         if (ordinal==UINT64_MAX) return true;
         if (ordinal>=count_) throw "Invalid term ordinal";
-        seek(terms_,80+ordinal*16); unsigned char p[16]; read(terms_,p,16); list={decode(p),decode(p+8)};
+        seek(terms_,80+ordinal*16); unsigned char p[16]; read(terms_,p,16); list={decode(p),decode(p+8),ordinal};
         if (list.offset>occurrences_ || list.count>occurrences_-list.offset) throw "Position list exceeds file";
         return true;
     } catch (const char* e) { *error=e; return false; }
@@ -403,15 +405,35 @@ bool gaming::PositionalIndex::verify(const char** error) {
 gaming::PositionCursor::~PositionCursor() { if (file_) std::fclose(file_); }
 bool gaming::PositionCursor::open(const PositionalIndex& index,const PositionList& list,const char** error) {
     if (file_) std::fclose(file_);
-    file_=index.stream(list,error); remaining_=file_ ? list.count : 0; first_=true; return file_!=nullptr;
+    file_=nullptr;
+    if (index.compressed() && !list.count && list.ordinal==UINT64_MAX) {
+        *error=nullptr; remaining_=0; first_=true; return true;
+    }
+    compressed_=index.compressed()!=nullptr && list.ordinal!=UINT64_MAX;
+    bytes_left_=previous_doc_=previous_position_=previous_=0; previous_field_=0;
+    if (compressed_) file_=index.compressed()->stream(CompactKind::coordinates,list.ordinal,bytes_left_,error);
+    else file_=index.stream(list,error);
+    remaining_=file_ ? list.count : 0; first_=true; return file_!=nullptr;
 }
 bool gaming::PositionCursor::next(U64& coordinate,const char** error) {
     *error=nullptr; coordinate=0;
     try {
         if (!remaining_) return false;
-        unsigned char p[8]; read(file_,p,8); --remaining_;
-        coordinate=(decode(p,4)<<32)|decode(p+4,4);
+        if (compressed_) {
+            U64 doc_delta=0,code=0;
+            if (!read_compact_uint(file_,bytes_left_,doc_delta) || !read_compact_uint(file_,bytes_left_,code)) throw "Invalid compressed coordinate";
+            if (doc_delta>UINT32_MAX-previous_doc_) throw "Compressed document ordinal overflow";
+            const U64 doc=previous_doc_+doc_delta,position_delta=code>>1;
+            const unsigned field=static_cast<unsigned>(code&1);
+            const U64 base=first_ || doc_delta || field!=previous_field_ ? 0 : previous_position_;
+            if (position_delta>0x7fffffffU-base) throw "Compressed position overflow";
+            const U64 position=base+position_delta;
+            coordinate=(doc<<32)|(U64(field)<<31)|position;
+            previous_doc_=doc; previous_field_=field; previous_position_=position;
+        } else { unsigned char p[8]; read(file_,p,8); coordinate=(decode(p,4)<<32)|decode(p+4,4); }
+        --remaining_;
         if (!first_ && coordinate<=previous_) throw "Position coordinates must strictly increase";
+        if (compressed_ && !remaining_ && bytes_left_) throw "Trailing compressed coordinate bytes";
         first_=false; previous_=coordinate; return true;
     } catch (const char* e) { *error=e; remaining_=0; return false; }
 }

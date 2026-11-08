@@ -26,4 +26,6 @@ Python используется для экспорта и рисунков.
 
 ЛР10: [координаты слов и цитатный поиск](doc/lab10_run.md),
 [результаты](doc/lab10/README.md), [отчёт PDF](doc/report_lab10.pdf).
+ЛР11: [сжатие индекса](doc/lab11_run.md),
+[измерения](doc/lab11/README.md), [отчёт PDF](doc/report_lab11.pdf).
 Прямые GoogleTest: `docker compose run --rm --no-deps tokenizer-tests phrase_search_tests`.
