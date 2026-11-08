@@ -150,3 +150,13 @@ python run_lab4.py --output data/lemmatization/checks_003
 только проверки ЛР4 и сохраняет `tests.txt` и `tests_summary.json`.
 Проверенный прогон отдельной группы от 07.11.2026 сохранён в
 `lab4/verification_grouped_2026-11-07/`: 32 CTest и 17 Python-тестов.
+
+## ЛР13: TF-IDF
+
+`python run_tests.py --lab 13` запускает 11 GoogleTest, CLI help и 3 Python-теста
+веб-формы. Прямой запуск: `docker compose run --rm --no-deps tokenizer-tests tfidf_tests`.
+Проверяются оценки по независимому полному расчёту, нормы всего словаря,
+top-k на 1200 документах, равенства оценок, произвольные ID, леммы, пустые
+случаи, повреждения норм, stdin JSONL и совместимость с упакованным индексом.
+Полная регрессия от 08.11.2026: 144 CTest, 286 Python (6 MongoDB skipped).
+Журнал: `lab13/tests.txt`; воспроизведение экспериментов: `lab13_run.md`.

@@ -1,0 +1,170 @@
+{
+  "scope": "Illustrative title-topic assessment by the coding assistant, 3 named-game queries, pooled top-5 from AND/ID and TF-IDF surface. Grade 1: title explicitly names the requested game, including Russian spelling; grade 0: title does not establish that topic. Full bodies were not judged. This measures visible topic match, not general document relevance. Queries and labels are not a representative independent benchmark.",
+  "topics": [
+    {
+      "query": "doom eternal",
+      "judgments": [
+        {
+          "id": 72,
+          "title": "Прохождение игры Дум Этернал на 100%",
+          "grade": 1
+        },
+        {
+          "id": 10846,
+          "title": "Объявлены итоги Game Critics Awards 2018 - журналисты назвали лучшие игры прошедшей E3",
+          "grade": 0
+        },
+        {
+          "id": 11011,
+          "title": "Bethesda: Prey, Dishonored, Wolfenstein и The Evil Within не могут продаваться такими же тиражами, как Fallout и The Elder Scrolls",
+          "grade": 0
+        },
+        {
+          "id": 11229,
+          "title": "DOOM - Microsoft рассылает пользователям письма с сообщением о скором появлении шутера в каталоге Xbox Game Pass",
+          "grade": 0
+        },
+        {
+          "id": 11250,
+          "title": "QuakeCon 2018: DOOM Eternal - первый геймплей, скриншоты, подробности и анонс версии для Switch (Обновлено)",
+          "grade": 1
+        },
+        {
+          "id": 417324,
+          "title": "Doom Eternal - Мнение",
+          "grade": 1
+        },
+        {
+          "id": 417345,
+          "title": "Сравнение графики Doom vs Doom Eternal",
+          "grade": 1
+        },
+        {
+          "id": 417318,
+          "title": "5 подтвержденных оружий в Doom Eternal",
+          "grade": 1
+        },
+        {
+          "id": 417322,
+          "title": "Doom Eternal - 20 минут захватывающего геймплея",
+          "grade": 1
+        },
+        {
+          "id": 423738,
+          "title": "Fallout 76 - Новая система перков и отличный DOOM Eternal",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "query": "god of war",
+      "judgments": [
+        {
+          "id": 352,
+          "title": "В PS Store стартовала новая распродажа: God of War, Metro Redux, WWE 2K15 и другие",
+          "grade": 1
+        },
+        {
+          "id": 373,
+          "title": "Atlus сообщила о проведении большой распродажи в PSN",
+          "grade": 0
+        },
+        {
+          "id": 430,
+          "title": "СМИ: God of War III Remastered Edition выйдет на PlayStation 4 (UPD.)",
+          "grade": 1
+        },
+        {
+          "id": 434,
+          "title": "Первое видео переиздания God Of War 3 для PS4, игра выйдет 14 июля",
+          "grade": 1
+        },
+        {
+          "id": 470,
+          "title": "God of War III Remastered - в планы разработчиков не входит переиздание других игр серии",
+          "grade": 1
+        },
+        {
+          "id": 429149,
+          "title": "God of War - Шедевр PS4",
+          "grade": 1
+        },
+        {
+          "id": 429103,
+          "title": "Это оскар! God of War 2018",
+          "grade": 1
+        },
+        {
+          "id": 429152,
+          "title": "God of War - Все рунические атаки",
+          "grade": 1
+        },
+        {
+          "id": 429198,
+          "title": "Секретная концовка God of War 2018",
+          "grade": 1
+        },
+        {
+          "id": 429105,
+          "title": "God of War (2017) | Игровые факты",
+          "grade": 1
+        }
+      ]
+    },
+    {
+      "query": "cyberpunk 2077",
+      "judgments": [
+        {
+          "id": 241,
+          "title": "CD Projekt RED: Мы не поспешили с анонсом Cyberpunk 2077; игра не запланирована к показу на E32015",
+          "grade": 1
+        },
+        {
+          "id": 1045,
+          "title": "The Witcher 3: Wild Hunt - много новых деталей об игре",
+          "grade": 0
+        },
+        {
+          "id": 2328,
+          "title": "Слух: Electronic Arts рассматривает возможность приобретения CD Projekt RED [Обновлено]",
+          "grade": 0
+        },
+        {
+          "id": 2610,
+          "title": "Cyberpunk 2077 - основная часть сотрудников CD Projekt RED сфокусировалась на создании следующей крупной RPG",
+          "grade": 1
+        },
+        {
+          "id": 2780,
+          "title": "СМИ: CD Projekt RED стремится завершить Cyberpunk 2077 к концу 2016 года",
+          "grade": 1
+        },
+        {
+          "id": 412789,
+          "title": "Cyberpunk 2077 - История мира",
+          "grade": 1
+        },
+        {
+          "id": 412804,
+          "title": "Cyberpunk 2077 - не киберпанк?",
+          "grade": 1
+        },
+        {
+          "id": 412817,
+          "title": "Cyberpunk 2077 - первые впечатления",
+          "grade": 1
+        },
+        {
+          "id": 412919,
+          "title": "Киберпанк 2077 Саундтрек | Cyberpunk 2077 Soundtrack",
+          "grade": 1
+        },
+        {
+          "id": 412732,
+          "title": "10 фактов о Cyberpunk 2077",
+          "grade": 1
+        }
+      ]
+    }
+  ]
+}

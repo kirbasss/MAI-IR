@@ -1,4 +1,5 @@
 #include "boolean_search.hpp"
+#include "tfidf.hpp"
 #include "tokenizer.hpp"
 #include <chrono>
 #include <cstring>
@@ -72,10 +73,11 @@ struct Text {
         check(index.text(offset,static_cast<std::size_t>(size),data,&error),error); data[size]=0;
     }
 };
-void print_document(FILE* out,gaming::BooleanIndex& index,U64 id) {
+void print_document(FILE* out,gaming::BooleanIndex& index,U64 id,double score=-1) {
     const char* error=nullptr; gaming::DocumentInfo d;
     check(index.document(id,d,&error),error); if (!d.id) throw "Result ID absent from index";
     std::fprintf(out,"{\"id\":%llu",static_cast<unsigned long long>(id)); Text t;
+    if (score>=0) std::fprintf(out,",\"score\":%.12g",score);
     const char* names[]={"title","url","source"};
     const U64 offsets[]={d.title_offset,d.url_offset,d.source_offset},sizes[]={d.title_size,d.url_size,d.source_size};
     for (unsigned i=0;i<3;++i) { t.read(index,offsets[i],sizes[i]); std::fprintf(out,",\"%s\":",names[i]); json(out,t.data,static_cast<std::size_t>(sizes[i])); }
@@ -290,15 +292,21 @@ bool gaming::BooleanQuery::next(U64& id,const char** error) {
 }
 
 namespace {
-void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FILE* output,bool stats=false) {
+void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FILE* output,bool stats=false,gaming::Tfidf* tfidf=nullptr) {
     engine.stats()={};
     const auto begin=std::chrono::steady_clock::now();
     gaming::BooleanQuery search; const char* error=nullptr;
-    check(search.compile(engine,query,&error),error);
+    if (!utf8(query)) throw "Query must be valid UTF-8";
     // At most 1000 displayed IDs, independent of total result size.
     U64 ids[1000],id=0,total=0,digest=14695981039346656037ULL;
-    while (search.next(id,&error)) { if (total<limit) ids[total]=id; ++total; digest=(digest^id)*1099511628211ULL; }
-    if (error) throw error;
+    gaming::RankedResult ranked;
+    if (tfidf) {
+        check(tfidf->search(engine,query,limit,ranked,&error),error); total=ranked.total;
+    } else {
+        check(search.compile(engine,query,&error),error);
+        while (search.next(id,&error)) { if (total<limit) ids[total]=id; ++total; digest=(digest^id)*1099511628211ULL; }
+        if (error) throw error;
+    }
     const double ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-begin).count();
     // Buffer one response so a metadata/read error cannot leave half a JSON line.
     FILE* buffer=temporary_file(); if (!buffer) throw "Cannot create response buffer";
@@ -306,9 +314,14 @@ void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FI
         std::fputs("{\"query\":",buffer); json(buffer,query,std::strlen(query));
         std::fprintf(buffer,",\"space\":\"%s\",\"total\":%llu,\"elapsed_ms\":%.3f,\"results\":[",
                      engine.space()==gaming::TermSpace::lemma ? "lemma" : "surface",static_cast<unsigned long long>(total),ms);
-        for (U64 i=0;i<total && i<limit;++i) { if (i) std::fputc(',',buffer); print_document(buffer,engine.index(),ids[i]); }
+        for (U64 i=0;i<total && i<limit;++i) {
+            if (i) std::fputc(',',buffer);
+            if (tfidf) print_document(buffer,engine.index(),ranked.hits[i].id,ranked.hits[i].score);
+            else print_document(buffer,engine.index(),ids[i]);
+        }
         std::fputc(']',buffer);
-        if (stats) {
+        if (tfidf) std::fprintf(buffer,",\"ranking\":\"tfidf\",\"weighting\":\"lnc.ltc\",\"query_terms\":%u,\"decoded_coordinates\":%llu",ranked.terms,static_cast<unsigned long long>(ranked.coordinates));
+        if (stats && !tfidf) {
             const auto& s=engine.stats();
             std::fprintf(buffer,",\"stats\":{\"decoded_postings\":%llu,\"decoded_coordinates\":%llu,\"jumps\":%llu,\"skipped\":%llu,\"universe_documents\":%llu,\"result_digest\":\"%016llx\"}",
                          static_cast<unsigned long long>(s.decoded_postings),static_cast<unsigned long long>(s.decoded_coordinates),
@@ -325,15 +338,17 @@ void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FI
 }
 int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE* output,FILE* errors) {
     try {
-        const char *directory=nullptr,*dictionary=nullptr,*query=nullptr,*positions=nullptr,*compact=nullptr,*skips=nullptr;
+        const char *directory=nullptr,*dictionary=nullptr,*query=nullptr,*positions=nullptr,*compact=nullptr,*skips=nullptr,*norms=nullptr;
+        bool ranked=false;
         TermSpace space=TermSpace::surface; unsigned limit=10; bool stats=false,optimized=true;
         for (int i=1;i<argc;++i) {
             const char* arg=argv[i];
             if (!std::strcmp(arg,"--help")) {
-                std::fputs("UTF-8 Boolean/phrase search: boolean_search --index DIR [--positions DIR] [--compact DIR] [--skips DIR] [--execution linear|optimized] [--stats] [--space surface|lemma] [--dict FILE] [--limit 0..1000] [--query QUERY]\n"
+                std::fputs("UTF-8 Boolean/phrase/TF-IDF search: boolean_search --index DIR [--positions DIR] [--compact DIR] [--skips DIR] [--execution linear|optimized] [--stats] [--space surface|lemma] [--dict FILE] [--limit 0..1000] [--query QUERY] [--ranking boolean|tfidf] [--norms DIR]\n"
                            "Without --query: one query per stdin line; one JSON result per stdout line.\n"
                            "Operators: NOT > AND > OR, parentheses, aliases ! & |. Explicit operators required.\n"
-                           "Double quotes require adjacent tokens in order within one field; --positions is required.\n",output); return 0;
+                           "Double quotes require adjacent tokens in order within one field; --positions is required.\n"
+                           "TF-IDF: plain bag-of-words, lnc.ltc cosine, positive scores only, tie by ID; requires --positions and --norms.\n",output); return 0;
             }
             if (!std::strcmp(arg,"--stats")) { stats=true; continue; }
             if (i+1==argc) throw "Missing option value";
@@ -342,6 +357,12 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
             else if (!std::strcmp(arg,"--positions")) positions=value;
             else if (!std::strcmp(arg,"--compact")) compact=value;
             else if (!std::strcmp(arg,"--skips")) skips=value;
+            else if (!std::strcmp(arg,"--norms")) norms=value;
+            else if (!std::strcmp(arg,"--ranking")) {
+                if (!std::strcmp(value,"tfidf")) ranked=true;
+                else if (!std::strcmp(value,"boolean")) ranked=false;
+                else throw "--ranking must be boolean or tfidf";
+            }
             else if (!std::strcmp(arg,"--execution")) {
                 if (!std::strcmp(value,"linear")) optimized=false;
                 else if (!std::strcmp(value,"optimized")) optimized=true;
@@ -361,9 +382,14 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
         }
         if (!directory) throw "--index is required";
         BooleanSearch engine; const char* error=nullptr; check(engine.open(directory,space,dictionary,&error,positions,compact,skips,optimized),error);
+        Tfidf tfidf;
+        if (ranked) {
+            if (!norms || !positions) throw "TF-IDF requires --norms DIR and --positions DIR";
+            check(tfidf.open(norms,directory,positions,engine,&error),error);
+        }
         bool failed=false;
         auto process=[&](const char* text) {
-            try { run_query(engine,text,limit,output,stats); }
+            try { run_query(engine,text,limit,output,stats,ranked ? &tfidf : nullptr); }
             catch (const char* e) {
                 failed=true; std::fputs("{\"error\":",output); json(output,e,std::strlen(e)); std::fputs("}\n",output); std::fflush(output);
             }
