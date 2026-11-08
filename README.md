@@ -32,6 +32,8 @@ Python используется для экспорта и рисунков.
 [замеры трёх режимов](doc/lab12/README.md), [отчёт PDF](doc/report_lab12.pdf).
 ЛР13: [TF-IDF и ранжирование](doc/lab13_run.md),
 [замеры и примеры](doc/lab13/README.md), [отчёт PDF](doc/report_lab13.pdf).
+ЛР14: [сниппеты выдачи](doc/lab14_run.md),
+[примеры](doc/lab14/README.md), [отчёт PDF](doc/report_lab14.pdf).
 ЛР17: [модульные автотесты](doc/lab17_run.md),
 [журнал и сводка](doc/lab17/README.md), [отчёт PDF](doc/report_lab17.pdf).
 Прямые GoogleTest: `docker compose run --rm --no-deps tokenizer-tests phrase_search_tests`.

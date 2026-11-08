@@ -1,7 +1,7 @@
 # Тесты по лабораторным
 
 Все команды выполняются из корня проекта с активированной `.venv`.
-Для C++-проверок ЛР3–ЛР5, ЛР7, ЛР8, ЛР10–ЛР13 и ЛР17 нужен запущенный Docker Desktop. Если тестовый образ ещё
+Для C++-проверок ЛР3–ЛР5, ЛР7, ЛР8, ЛР10–ЛР14 и ЛР17 нужен запущенный Docker Desktop. Если тестовый образ ещё
 не собран: `docker compose --profile tests build tokenizer-tests`.
 
 ## Основные команды
@@ -19,6 +19,7 @@
 | ЛР11 | Кодирование разностей, целостность сжатого индекса, совпадение булева и цитатного поиска | `python run_tests.py --lab 11 --cpp-only` |
 | ЛР12 | Прыжки VB-курсоров, булевы/фразовые запросы, целостность указателей, веб-параметры | `python run_tests.py --lab 12` |
 | ЛР13 | TF-IDF, нормы, top-k и веб-форма | `python run_tests.py --lab 13` |
+| ЛР14 | Сниппеты, UTF-8 диапазоны, файл смещений и безопасная HTML-подсветка | `python run_tests.py --lab 14` |
 | ЛР17 | Дополнительные модульные свойства VB, токенизатора, URL и JSON-LD | `python run_tests.py --lab 17` |
 | Все работы | Все группы C++ и Python | `python run_tests.py --lab all` |
 
@@ -61,6 +62,7 @@ python -m unittest discover -s tests/python -t . -v
 | ЛР11 | `tests/cpp/compression_test_lab11.cpp` | `lab11` |
 | ЛР12 | `tests/cpp/skip_test_lab12.cpp` | `lab12` |
 | ЛР13 | `tests/cpp/tfidf_test_lab13.cpp` | `lab13` |
+| ЛР14 | `tests/cpp/snippet_test_lab14.cpp` | `lab14` |
 | ЛР17 | `tests/cpp/unit_test_lab17.cpp` | `lab17` |
 
 ## Прямой запуск GoogleTest без Python
@@ -164,3 +166,11 @@ top-k на 1200 документах, равенства оценок, прои�
 случаи, повреждения норм, stdin JSONL и совместимость с упакованным индексом.
 Полная регрессия от 08.11.2026: 144 CTest, 286 Python (6 MongoDB skipped).
 Журнал: `lab13/tests.txt`; воспроизведение экспериментов: `lab13_run.md`.
+
+## ЛР14: сниппеты
+
+`python run_tests.py --lab 14` запускает 6 GoogleTest и 3 Python unittest.
+Проверяются выбор предложения, байтовые границы UTF-8, обрезка,
+файл смещений, сверка снимка с индексом и безопасная HTML-подсветка.
+Полная регрессия: 153 CTest и 294 Python-теста без пропусков;
+журнал: `lab14/full/tests.txt`. Команды для реального снимка: `lab14_run.md`.

@@ -13,12 +13,14 @@ ROOT = Path(__file__).resolve().parent
 
 
 class NativeSearch:
-    def __init__(self, binary: Path, index: Path, dictionary: Path | None, positions: Path | None = None, compact: Path | None = None, skips: Path | None = None, norms: Path | None = None):
+    def __init__(self, binary: Path, index: Path, dictionary: Path | None, positions: Path | None = None, compact: Path | None = None, skips: Path | None = None, norms: Path | None = None, corpus: Path | None = None, snippet_index: Path | None = None):
         self.binary, self.index, self.dictionary = binary, index, dictionary
         self.positions = positions
         self.compact = compact
         self.skips = skips
         self.norms = norms
+        self.corpus = corpus
+        self.snippet_index = snippet_index
 
     def search(self, query: str, space: str, ranking: str = "boolean"):
         if ranking not in ("boolean", "tfidf"):
@@ -40,6 +42,10 @@ class NativeSearch:
             command += ["--compact", str(self.compact)]
         if self.skips:
             command += ["--skips", str(self.skips)]
+        if self.corpus:
+            command += ["--corpus", str(self.corpus)]
+        if self.snippet_index:
+            command += ["--snippet-index", str(self.snippet_index)]
         if space == "lemma":
             command += ["--dict", str(self.dictionary)]
         # stdin preserves UTF-8 on Windows and avoids command-shell interpretation.
@@ -61,6 +67,29 @@ class NativeSearch:
         return row
 
 
+def render_snippet(doc):
+    value = doc.get("snippet")
+    if not isinstance(value, str) or not value:
+        return ""
+    data = value.encode("utf-8")
+    parts = []
+    previous = 0
+    try:
+        for pair in doc.get("snippet_matches", []):
+            begin, end = pair
+            if not isinstance(begin, int) or not isinstance(end, int) or not previous <= begin < end <= len(data):
+                raise ValueError("Invalid snippet span")
+            parts.append(escape(data[previous:begin].decode("utf-8")))
+            parts.append("<mark>" + escape(data[begin:end].decode("utf-8")) + "</mark>")
+            previous = end
+        parts.append(escape(data[previous:].decode("utf-8")))
+    except (ValueError, TypeError, UnicodeDecodeError):
+        parts = [escape(value)]
+    prefix = "… " if doc.get("snippet_left") else ""
+    suffix = " …" if doc.get("snippet_right") else ""
+    return '<p class="snippet">' + prefix + "".join(parts) + suffix + "</p>"
+
+
 def page(query="", space="surface", result=None, error=None, ranking="boolean"):
     selected = lambda value: " selected" if value == space else ""
     body = ""
@@ -75,7 +104,7 @@ def page(query="", space="surface", result=None, error=None, ranking="boolean"):
             if urlsplit(url).scheme.lower() in ("http", "https"):
                 title = '<a href="'+escape(url, quote=True)+'" rel="noreferrer">'+title+'</a>'
             score = f' · TF-IDF {float(doc["score"]):.5f}' if "score" in doc else ""
-            body += '<li>'+title+'<p class="meta">ID '+str(int(doc["id"]))+' · '+escape(doc["source"])+score+'</p></li>'
+            body += '<li>'+title+render_snippet(doc)+'<p class="meta">ID '+str(int(doc["id"]))+' · '+escape(doc["source"])+score+'</p></li>'
         body += '</ol>'
         if result["total"] > len(result["results"]):
             body += '<p>Показаны первые '+str(len(result["results"]))+' документов.</p>'
@@ -83,7 +112,7 @@ def page(query="", space="surface", result=None, error=None, ranking="boolean"):
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>Поиск по игровым публикациям</title>
 <style>body{{font:17px/1.5 system-ui,sans-serif;max-width:900px;margin:50px auto;padding:0 20px;color:#202b38;background:#f8fafc}}
 h1{{font-size:30px}}form{{display:flex;gap:10px;flex-wrap:wrap}}input,select,button{{font:inherit;padding:10px;border:1px solid #acb8c6;border-radius:6px}}
-input{{flex:1;min-width:260px}}button{{background:#194da0;color:white;cursor:pointer}}a{{color:#194da0}}li{{padding:9px 0}}.meta{{font-size:14px;color:#536273;margin:3px 0}}.error{{color:#a62222}}</style>
+input{{flex:1;min-width:260px}}button{{background:#194da0;color:white;cursor:pointer}}a{{color:#194da0}}li{{padding:9px 0}}.meta{{font-size:14px;color:#536273;margin:3px 0}}.snippet{{font-size:15px;color:#637181;margin:5px 0;line-height:1.45}}mark{{background:#ffea8a;color:#202b38;border-radius:2px;padding:0 1px}}.error{{color:#a62222}}</style>
 <h1>Поиск по игровым публикациям</h1><form method="get" action="/">
 <input name="q" aria-label="Запрос" value="{escape(query, quote=True)}" placeholder="doom AND (ремейк OR remake)">
 <select name="space" aria-label="Режим"><option value="surface"{selected("surface")}>Словоформы</option><option value="lemma"{selected("lemma")}>Леммы</option></select>
@@ -134,17 +163,25 @@ def main():
     parser.add_argument("--compact", type=Path, help="compressed postings and positions from Lab 11")
     parser.add_argument("--skips", type=Path, help="skip checkpoints from Lab 12")
     parser.add_argument("--norms", type=Path, help="TF-IDF document norms from Lab 13")
+    parser.add_argument("--corpus", type=Path, help="MAIIR3 snapshot for query-dependent snippets")
+    parser.add_argument("--snippet-index", type=Path, help="snippet offsets from boolean_search --build-snippet-index")
     parser.add_argument("--binary", type=Path, default=ROOT/"build/boolean-native/boolean_search.exe")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8080)
     args = parser.parse_args()
     if not args.binary.is_file() or not (args.index/"terms.bin").is_file():
         parser.error("Сначала соберите boolean_search и укажите готовый индекс ЛР7")
+    if args.corpus and not args.corpus.is_file():
+        parser.error("Укажите существующий MAIIR3 corpus.bin для сниппетов")
+    if args.snippet_index and (not args.corpus or not args.snippet_index.is_file()):
+        parser.error("Для смещений сниппетов нужны --corpus и готовый --snippet-index")
     backend = NativeSearch(args.binary.resolve(), args.index.resolve(), args.dict.resolve() if args.dict else None,
                            args.positions.resolve() if args.positions else None,
                            args.compact.resolve() if args.compact else None,
                            args.skips.resolve() if args.skips else None,
-                           args.norms.resolve() if args.norms else None)
+                           args.norms.resolve() if args.norms else None,
+                           args.corpus.resolve() if args.corpus else None,
+                           args.snippet_index.resolve() if args.snippet_index else None)
     # Sequential server bounds simultaneous native workers and dictionary memory.
     with HTTPServer((args.host, args.port), handler(backend)) as server:
         print(f"Поиск: http://{args.host}:{server.server_port}/", flush=True)
