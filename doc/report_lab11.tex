@@ -4,12 +4,16 @@
 \usepackage[T1,T2A]{fontenc}
 \usepackage[english,russian]{babel}
 \usepackage{amsmath,booktabs,array}
+\usepackage{caption,float,qrcode}
 \usepackage{geometry,hyperref,indentfirst}
 \geometry{margin=25mm}
 \hypersetup{unicode=true,colorlinks=true,urlcolor=blue,linkcolor=black}
 \setlength{\parindent}{1.25cm}
 \setlength{\parskip}{0pt}
 \setlength{\emergencystretch}{2em}
+\DeclareCaptionLabelSeparator{emdash}{\space---\space}
+\captionsetup[figure]{justification=centering,singlelinecheck=false,labelsep=emdash}
+\addto\captionsrussian{\renewcommand{\figurename}{Рис.}}
 \linespread{0.96}
 \makeatletter
 \newcommand{\inputrows}[1]{\@@input #1 }
@@ -29,6 +33,7 @@
 \vfill
 {\large\textbf{Лабораторная работа №11 по курсу\\ «Информационный поиск»}}
 \vspace{12mm}
+
 {\large\textbf{Сжатие индекса}}
 \vfill
 \begin{flushright}
@@ -259,6 +264,17 @@ $2\Delta p+f$, где $f\in\{0,1\}$ обозначает заголовок ил
 проходов нельзя складывать для получения времени запроса.
 Исходные ответы, все повторения и замеры обоих пространств сохранены
 в \path{lab11/profile/}; запуск описан в \path{lab11_run.md}.
+
+Исходный код:
+\href{https://github.com/kirbasss/MAI-IR/tree/lab11}{github.com/kirbasss/MAI-IR/tree/lab11}.
+\begin{figure}[H]
+\centering
+\begingroup
+\hypersetup{urlcolor=black}
+\qrcode[height=25mm]{https://github.com/kirbasss/MAI-IR/tree/lab11}
+\endgroup
+\caption{Ссылка на ветку лабораторной работы №11}
+\end{figure}
 
 \newpage
 \section{Вывод}

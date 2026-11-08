@@ -5,6 +5,10 @@
 
 namespace gaming {
 class CompactIndex;
+class SkipIndex;
+struct SearchStats {
+    std::uint64_t decoded_postings=0,decoded_coordinates=0,jumps=0,skipped=0,universe_documents=0;
+};
 enum class TermSpace : std::uint32_t { surface=0, lemma=1 };
 struct PostingList { std::uint64_t offset=0, count=0, ordinal=UINT64_MAX; };
 struct DocumentInfo {
@@ -31,6 +35,10 @@ public:
     bool has_lemmas() const { return (flags_&1)!=0; }
     void use_compressed(const CompactIndex* compressed) { compressed_=compressed; }
     const CompactIndex* compressed() const { return compressed_; }
+    void use_skips(const SkipIndex* skips) { skips_=skips; }
+    const SkipIndex* skips() const { return skips_; }
+    void set_stats(SearchStats* stats) { stats_=stats; }
+    SearchStats* stats() const { return stats_; }
     // Returns an independent binary stream; caller owns fclose().
     FILE* open_postings(const PostingList& list,const char** error) const;
 private:
@@ -38,6 +46,8 @@ private:
     char directory_[4096]{};
     std::uint64_t docs_=0,terms_=0,postings_=0,strings_=0,dictionary_hash_=0,flags_=0;
     const CompactIndex* compressed_=nullptr;
+    const SkipIndex* skips_=nullptr;
+    SearchStats* stats_=nullptr;
     void close();
 };
 // Iterator keeps only the current ID; each iterator owns its stream.
@@ -49,10 +59,14 @@ public:
     PostingCursor& operator=(const PostingCursor&)=delete;
     bool open(const BooleanIndex& index,const PostingList& list,const char** error);
     bool next(std::uint64_t& id,const char** error);
+    bool advance(std::uint64_t target,std::uint64_t& id,const char** error);
     std::uint64_t remaining() const { return remaining_; }
 private:
     FILE* file_=nullptr; std::uint64_t remaining_=0,previous_=0,bytes_left_=0;
     bool compressed_=false;
+    struct SkipPoint* skips_=nullptr;
+    std::uint64_t skip_count_=0,total_=0,stream_start_=0,total_bytes_=0;
+    SearchStats* stats_=nullptr;
 };
 int run_boolean_index(int argc,const char* const* argv,FILE* output,FILE* errors);
 }

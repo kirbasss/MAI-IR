@@ -13,10 +13,11 @@ ROOT = Path(__file__).resolve().parent
 
 
 class NativeSearch:
-    def __init__(self, binary: Path, index: Path, dictionary: Path | None, positions: Path | None = None, compact: Path | None = None):
+    def __init__(self, binary: Path, index: Path, dictionary: Path | None, positions: Path | None = None, compact: Path | None = None, skips: Path | None = None):
         self.binary, self.index, self.dictionary = binary, index, dictionary
         self.positions = positions
         self.compact = compact
+        self.skips = skips
 
     def search(self, query: str, space: str):
         if space not in ("surface", "lemma"):
@@ -30,6 +31,8 @@ class NativeSearch:
             command += ["--positions", str(self.positions)]
         if self.compact:
             command += ["--compact", str(self.compact)]
+        if self.skips:
+            command += ["--skips", str(self.skips)]
         if space == "lemma":
             command += ["--dict", str(self.dictionary)]
         # stdin preserves UTF-8 on Windows and avoids command-shell interpretation.
@@ -114,6 +117,7 @@ def main():
     parser.add_argument("--dict", type=Path)
     parser.add_argument("--positions", type=Path, help="positional index for quoted phrases")
     parser.add_argument("--compact", type=Path, help="compressed postings and positions from Lab 11")
+    parser.add_argument("--skips", type=Path, help="skip checkpoints from Lab 12")
     parser.add_argument("--binary", type=Path, default=ROOT/"build/boolean-native/boolean_search.exe")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8080)
@@ -122,7 +126,8 @@ def main():
         parser.error("Сначала соберите boolean_search и укажите готовый индекс ЛР7")
     backend = NativeSearch(args.binary.resolve(), args.index.resolve(), args.dict.resolve() if args.dict else None,
                            args.positions.resolve() if args.positions else None,
-                           args.compact.resolve() if args.compact else None)
+                           args.compact.resolve() if args.compact else None,
+                           args.skips.resolve() if args.skips else None)
     # Sequential server bounds simultaneous native workers and dictionary memory.
     with HTTPServer((args.host, args.port), handler(backend)) as server:
         print(f"Поиск: http://{args.host}:{server.server_port}/", flush=True)

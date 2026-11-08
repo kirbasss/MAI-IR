@@ -1,5 +1,6 @@
 #include "positional_index.hpp"
 #include "compact_index.hpp"
+#include "skip_index.hpp"
 #include "tokenizer.hpp"
 #include <chrono>
 #include <cstdlib>
@@ -402,9 +403,10 @@ bool gaming::PositionalIndex::verify(const char** error) {
         return true;
     } catch (const char* e) { *error=e; return false; }
 }
-gaming::PositionCursor::~PositionCursor() { if (file_) std::fclose(file_); }
+gaming::PositionCursor::~PositionCursor() { if (file_) std::fclose(file_); std::free(skips_); }
 bool gaming::PositionCursor::open(const PositionalIndex& index,const PositionList& list,const char** error) {
     if (file_) std::fclose(file_);
+    std::free(skips_); skips_=nullptr; skip_count_=0; stats_=index.documents().stats(); total_=list.count;
     file_=nullptr;
     if (index.compressed() && !list.count && list.ordinal==UINT64_MAX) {
         *error=nullptr; remaining_=0; first_=true; return true;
@@ -413,7 +415,16 @@ bool gaming::PositionCursor::open(const PositionalIndex& index,const PositionLis
     bytes_left_=previous_doc_=previous_position_=previous_=0; previous_field_=0;
     if (compressed_) file_=index.compressed()->stream(CompactKind::coordinates,list.ordinal,bytes_left_,error);
     else file_=index.stream(list,error);
-    remaining_=file_ ? list.count : 0; first_=true; return file_!=nullptr;
+    remaining_=file_ ? list.count : 0; first_=true; total_bytes_=bytes_left_;
+    if (file_ && compressed_ && index.documents().skips()) {
+#ifdef _WIN32
+        stream_start_=static_cast<U64>(_ftelli64(file_));
+#else
+        stream_start_=static_cast<U64>(ftello(file_));
+#endif
+        if (!index.documents().skips()->load(1,list.ordinal,list.count,total_bytes_,skips_,skip_count_,error)) return false;
+    }
+    return file_!=nullptr;
 }
 bool gaming::PositionCursor::next(U64& coordinate,const char** error) {
     *error=nullptr; coordinate=0;
@@ -432,9 +443,29 @@ bool gaming::PositionCursor::next(U64& coordinate,const char** error) {
             previous_doc_=doc; previous_field_=field; previous_position_=position;
         } else { unsigned char p[8]; read(file_,p,8); coordinate=(decode(p,4)<<32)|decode(p+4,4); }
         --remaining_;
+        if (stats_) ++stats_->decoded_coordinates;
         if (!first_ && coordinate<=previous_) throw "Position coordinates must strictly increase";
         if (compressed_ && !remaining_ && bytes_left_) throw "Trailing compressed coordinate bytes";
         first_=false; previous_=coordinate; return true;
+    } catch (const char* e) { *error=e; remaining_=0; return false; }
+}
+bool gaming::PositionCursor::advance(U64 target,U64& coordinate,const char** error) {
+    *error=nullptr; coordinate=0;
+    try {
+        const U64 used=total_-remaining_;
+        if (used && previous_>=target) { coordinate=previous_; return true; }
+        U64 left=0,right=skip_count_;
+        while (left<right) { const U64 mid=left+(right-left)/2; if (skips_[mid].value<=target) left=mid+1; else right=mid; }
+        if (left && skips_[left-1].consumed>used) {
+            const auto& p=skips_[left-1]; seek(file_,stream_start_+p.bytes);
+            if (stats_) { ++stats_->jumps; stats_->skipped+=p.consumed-used; }
+            previous_=p.value; previous_doc_=previous_>>32; previous_field_=static_cast<unsigned>((previous_>>31)&1);
+            previous_position_=previous_&0x7fffffffU; first_=false;
+            remaining_=total_-p.consumed; bytes_left_=total_bytes_-p.bytes;
+            if (previous_==target) { coordinate=previous_; return true; }
+        }
+        while (next(coordinate,error)) if (coordinate>=target) return true;
+        return false;
     } catch (const char* e) { *error=e; remaining_=0; return false; }
 }
 int gaming::run_positional_index(int argc,const char* const* argv,FILE* output,FILE* errors) {

@@ -17,6 +17,7 @@
 | ЛР8 | C++ булевы выражения, потоковые операции, CLI; HTML-форма | `python run_tests.py --lab 8` |
 | ЛР10 | Координаты, внешняя сортировка, фразы, поля, леммы, CLI и передача кавычек из формы | `python run_tests.py --lab 10` |
 | ЛР11 | Кодирование разностей, целостность сжатого индекса, совпадение булева и цитатного поиска | `python run_tests.py --lab 11 --cpp-only` |
+| ЛР12 | Прыжки VB-курсоров, булевы/фразовые запросы, целостность указателей, веб-параметры | `python run_tests.py --lab 12` |
 | Все работы | Все группы C++ и Python | `python run_tests.py --lab all` |
 
 Эти команды одинаковы в **Git Bash и PowerShell**. Скрипт сам запускает
@@ -56,6 +57,7 @@ python -m unittest discover -s tests/python -t . -v
 | ЛР8 | `tests/cpp/boolean_search_test_lab8.cpp` | `lab8` |
 | ЛР10 | `tests/cpp/phrase_search_test_lab10.cpp` | `lab10` |
 | ЛР11 | `tests/cpp/compression_test_lab11.cpp` | `lab11` |
+| ЛР12 | `tests/cpp/skip_test_lab12.cpp` | `lab12` |
 
 ## Прямой запуск GoogleTest без Python
 
@@ -90,6 +92,9 @@ docker compose run --rm --no-deps tokenizer-tests phrase_search_tests --gtest_co
 
 # ЛР11: GoogleTest сжатия
 docker compose run --rm --no-deps tokenizer-tests compression_tests --gtest_color=yes
+
+# ЛР12: GoogleTest прыжков
+docker compose run --rm --no-deps tokenizer-tests skip_tests --gtest_color=yes
 ```
 
 Команды запуска тестовых бинарников одинаковы в Git Bash и PowerShell: абсолютных Linux-путей

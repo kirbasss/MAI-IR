@@ -24,6 +24,7 @@ services:
       - ./data/boolean:/indexes:ro
       - ./data/positions:/positions:ro
       - ./data/compact:/compact:ro
+      - ./data/skips:/skips:ro
       - tokenizer_test_build:/build
 
 volumes:

@@ -19,6 +19,7 @@ public:
     const CompactIndex* compressed() const { return compressed_; }
     FILE* stream(const PositionList& list,const char** error) const;
     BooleanIndex& documents() { return *index_; }
+    const BooleanIndex& documents() const { return *index_; }
 private:
     FILE* terms_=nullptr; BooleanIndex* index_=nullptr;
     char directory_[4096]{};
@@ -35,11 +36,15 @@ public:
     PositionCursor& operator=(const PositionCursor&)=delete;
     bool open(const PositionalIndex& index,const PositionList& list,const char** error);
     bool next(std::uint64_t& coordinate,const char** error);
+    bool advance(std::uint64_t target,std::uint64_t& coordinate,const char** error);
 private:
     FILE* file_=nullptr; std::uint64_t remaining_=0,previous_=0,bytes_left_=0,previous_doc_=0,previous_position_=0;
     unsigned previous_field_=0;
     bool compressed_=false;
     bool first_=true;
+    struct SkipPoint* skips_=nullptr;
+    std::uint64_t skip_count_=0,total_=0,stream_start_=0,total_bytes_=0;
+    SearchStats* stats_=nullptr;
 };
 class PhraseQuery {
 public:
@@ -48,8 +53,9 @@ public:
     PhraseQuery(const PhraseQuery&)=delete;
     PhraseQuery& operator=(const PhraseQuery&)=delete;
     bool compile(PositionalIndex& index,TermSpace space,const Lemmatizer& dictionary,
-                 const char* phrase,std::size_t size,const char** error);
+                 const char* phrase,std::size_t size,const char** error,bool optimized=true);
     bool next(std::uint64_t& id,const char** error);
+    bool advance(std::uint64_t target,std::uint64_t& id,const char** error);
 private:
     struct State; State* state_=nullptr;
 };

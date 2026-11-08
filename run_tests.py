@@ -24,6 +24,7 @@ PYTHON_SUITES = {
     "8": ("test_lab8",),
     "10": ("test_lab10",),
     "11": (),
+    "12": ("test_lab12",),
 }
 
 
@@ -33,8 +34,8 @@ def python_modules(lab: str) -> list[str]:
 
 
 def cpp_command(lab: str) -> list[str]:
-    if lab not in ("3", "4", "5", "7", "8", "10", "11", "all"):
-        raise ValueError("C++ tests exist for labs 3, 4, 5, 7, 8, 10 and 11")
+    if lab not in ("3", "4", "5", "7", "8", "10", "11", "12", "all"):
+        raise ValueError("C++ tests exist for labs 3, 4, 5, 7, 8, 10, 11 and 12")
     label = "" if lab == "all" else " -L lab" + lab
     # Rebuild before testing so that CTest labels and binaries match the sources.
     script = ("cmake -S /src -B /build -G Ninja -DCMAKE_BUILD_TYPE=Release"
@@ -45,7 +46,7 @@ def cpp_command(lab: str) -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--lab", choices=("1", "2", "3", "4", "5", "7", "8", "10", "11", "all"),
+    parser.add_argument("--lab", choices=("1", "2", "3", "4", "5", "7", "8", "10", "11", "12", "all"),
                         help="selected lab, including its C++ tests when applicable")
     kind = parser.add_mutually_exclusive_group()
     kind.add_argument("--python-only", action="store_true")
@@ -59,16 +60,16 @@ def main() -> int:
         for group in PYTHON_SUITES if lab == "all" else (lab,):
             print(f"Lab {group}: {'Python + C++' if PYTHON_SUITES[group] and group not in ('1','2') else 'Python' if PYTHON_SUITES[group] else 'C++'}")
             for name in PYTHON_SUITES[group]: print("  tests.python." + name)
-            if group in ("3", "4", "5", "7", "8", "10", "11"):
+            if group in ("3", "4", "5", "7", "8", "10", "11", "12"):
                 print(f"  C++/GoogleTest + CLI: CTest label lab{group}")
         return 0
     try:
-        if lab in ("3", "4", "5", "7", "8", "10", "11", "all") and not args.python_only and (args.lab or args.cpp_only):
+        if lab in ("3", "4", "5", "7", "8", "10", "11", "12", "all") and not args.python_only and (args.lab or args.cpp_only):
             print(f"C++ tests: {lab}", flush=True)
             code = subprocess.run(cpp_command(lab), cwd=ROOT).returncode
             if code:
                 return code
-        if not args.cpp_only and (args.lab is None or PYTHON_SUITES[lab]):
+        if not args.cpp_only and (lab == "all" or PYTHON_SUITES[lab]):
             # Discovery keeps the original no-argument behavior for future test files too.
             loader = unittest.defaultTestLoader
             suite = (loader.discover(str(ROOT / "tests" / "python"), top_level_dir=str(ROOT)) if args.lab is None

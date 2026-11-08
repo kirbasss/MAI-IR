@@ -1,0 +1,1982 @@
+{
+  "date_utc": "2026-11-08T11:47:31.926360+00:00",
+  "repeats": 7,
+  "search_sha256": "9bf6da5d7a8ae85c9009cfe7894ca90ced95771fb7e720efe8418455c18a61dd",
+  "skip_sha256": "29abc2fc444d39c72960d99bf5147a23af2bcb0ecbcc985b7b689cf2a9f367b5",
+  "dictionary_sha256": "9cb2227a073a4ed33cec6e60c9fe43593d1d7750800de7d3ebd5c71b132d27ff",
+  "queries": [
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "\"god of war\"",
+      "total": 5804,
+      "result_digest": "866fb909c42a1034",
+      "samples_ms": [
+        162.548,
+        161.725,
+        170.044,
+        168.3,
+        166.542,
+        167.136,
+        191.69
+      ],
+      "median_ms": 167.136,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 2083861,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "866fb909c42a1034"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "\"god of war\"",
+      "total": 5804,
+      "result_digest": "866fb909c42a1034",
+      "samples_ms": [
+        160.705,
+        170.198,
+        143.671,
+        141.411,
+        145.849,
+        151.895,
+        142.25
+      ],
+      "median_ms": 145.849,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 2083869,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "866fb909c42a1034"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "\"god of war\"",
+      "total": 5804,
+      "result_digest": "866fb909c42a1034",
+      "samples_ms": [
+        171.741,
+        110.724,
+        121.207,
+        110.185,
+        126.808,
+        114.014,
+        113.836
+      ],
+      "median_ms": 114.014,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 1529296,
+        "jumps": 1509,
+        "skipped": 554573,
+        "universe_documents": 0,
+        "result_digest": "866fb909c42a1034"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "god AND of AND war",
+      "total": 6498,
+      "result_digest": "78924dcfd2094b95",
+      "samples_ms": [
+        16.613,
+        10.894,
+        10.972,
+        13.203,
+        10.662,
+        11.192,
+        10.932
+      ],
+      "median_ms": 10.972,
+      "stats": {
+        "decoded_postings": 262607,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "78924dcfd2094b95"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "god AND of AND war",
+      "total": 6498,
+      "result_digest": "78924dcfd2094b95",
+      "samples_ms": [
+        8.143,
+        9.928,
+        8.256,
+        8.998,
+        8.389,
+        8.472,
+        8.279
+      ],
+      "median_ms": 8.389,
+      "stats": {
+        "decoded_postings": 262608,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "78924dcfd2094b95"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "god AND of AND war",
+      "total": 6498,
+      "result_digest": "78924dcfd2094b95",
+      "samples_ms": [
+        10.754,
+        8.685,
+        8.854,
+        9.361,
+        12.639,
+        8.997,
+        8.908
+      ],
+      "median_ms": 8.997,
+      "stats": {
+        "decoded_postings": 238814,
+        "decoded_coordinates": 0,
+        "jumps": 576,
+        "skipped": 23794,
+        "universe_documents": 0,
+        "result_digest": "78924dcfd2094b95"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "\"doom eternal\"",
+      "total": 1274,
+      "result_digest": "440904be21458ace",
+      "samples_ms": [
+        10.369,
+        5.963,
+        5.749,
+        6.756,
+        6.293,
+        5.701,
+        6.786
+      ],
+      "median_ms": 6.293,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 26316,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "440904be21458ace"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "\"doom eternal\"",
+      "total": 1274,
+      "result_digest": "440904be21458ace",
+      "samples_ms": [
+        6.534,
+        7.864,
+        6.386,
+        6.209,
+        5.56,
+        5.957,
+        6.454
+      ],
+      "median_ms": 6.386,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 26316,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "440904be21458ace"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "\"doom eternal\"",
+      "total": 1274,
+      "result_digest": "440904be21458ace",
+      "samples_ms": [
+        7.737,
+        6.821,
+        5.519,
+        6.043,
+        9.805,
+        5.646,
+        6.097
+      ],
+      "median_ms": 6.097,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 23827,
+        "jumps": 149,
+        "skipped": 2489,
+        "universe_documents": 0,
+        "result_digest": "440904be21458ace"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "\"eternal doom\"",
+      "total": 18,
+      "result_digest": "97cc7217315bac6b",
+      "samples_ms": [
+        3.946,
+        2.733,
+        2.402,
+        2.56,
+        2.362,
+        2.474,
+        2.468
+      ],
+      "median_ms": 2.474,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 26316,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "97cc7217315bac6b"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "\"eternal doom\"",
+      "total": 18,
+      "result_digest": "97cc7217315bac6b",
+      "samples_ms": [
+        2.525,
+        2.656,
+        2.157,
+        2.473,
+        2.326,
+        2.412,
+        2.174
+      ],
+      "median_ms": 2.412,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 26316,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "97cc7217315bac6b"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "\"eternal doom\"",
+      "total": 18,
+      "result_digest": "97cc7217315bac6b",
+      "samples_ms": [
+        2.618,
+        2.577,
+        2.812,
+        2.302,
+        2.728,
+        2.701,
+        2.511
+      ],
+      "median_ms": 2.618,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 23837,
+        "jumps": 142,
+        "skipped": 2479,
+        "universe_documents": 0,
+        "result_digest": "97cc7217315bac6b"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "\"red dead redemption\"",
+      "total": 4675,
+      "result_digest": "8236b14721bc9542",
+      "samples_ms": [
+        47.737,
+        21.635,
+        23.852,
+        21.265,
+        21.316,
+        22.337,
+        21.034
+      ],
+      "median_ms": 21.635,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 106192,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "8236b14721bc9542"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "\"red dead redemption\"",
+      "total": 4675,
+      "result_digest": "8236b14721bc9542",
+      "samples_ms": [
+        19.007,
+        29.113,
+        20.135,
+        19.681,
+        20.409,
+        21.823,
+        20.136
+      ],
+      "median_ms": 20.136,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 106203,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "8236b14721bc9542"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "\"red dead redemption\"",
+      "total": 4675,
+      "result_digest": "8236b14721bc9542",
+      "samples_ms": [
+        23.021,
+        20.753,
+        21.797,
+        20.319,
+        20.515,
+        20.857,
+        20.955
+      ],
+      "median_ms": 20.857,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 95258,
+        "jumps": 334,
+        "skipped": 10945,
+        "universe_documents": 0,
+        "result_digest": "8236b14721bc9542"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "\"даты выхода\"",
+      "total": 2819,
+      "result_digest": "3567c285e1fdee20",
+      "samples_ms": [
+        28.594,
+        12.415,
+        12.76,
+        12.432,
+        16.11,
+        12.055,
+        11.847
+      ],
+      "median_ms": 12.432,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 50071,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "3567c285e1fdee20"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "\"даты выхода\"",
+      "total": 2819,
+      "result_digest": "3567c285e1fdee20",
+      "samples_ms": [
+        13.553,
+        12.251,
+        11.804,
+        11.875,
+        11.879,
+        11.941,
+        11.516
+      ],
+      "median_ms": 11.879,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 50071,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "3567c285e1fdee20"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "\"даты выхода\"",
+      "total": 2819,
+      "result_digest": "3567c285e1fdee20",
+      "samples_ms": [
+        12.561,
+        11.963,
+        12.529,
+        11.744,
+        11.844,
+        12.271,
+        12.44
+      ],
+      "median_ms": 12.271,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 47602,
+        "jumps": 194,
+        "skipped": 2469,
+        "universe_documents": 0,
+        "result_digest": "3567c285e1fdee20"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "doom AND eternal",
+      "total": 1392,
+      "result_digest": "c255a5e7b717d655",
+      "samples_ms": [
+        1.216,
+        1.058,
+        0.811,
+        0.895,
+        0.82,
+        0.813,
+        1.322
+      ],
+      "median_ms": 0.895,
+      "stats": {
+        "decoded_postings": 10562,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "c255a5e7b717d655"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "doom AND eternal",
+      "total": 1392,
+      "result_digest": "c255a5e7b717d655",
+      "samples_ms": [
+        1.102,
+        0.755,
+        0.981,
+        0.987,
+        0.748,
+        1.497,
+        0.93
+      ],
+      "median_ms": 0.981,
+      "stats": {
+        "decoded_postings": 10562,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "c255a5e7b717d655"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "doom AND eternal",
+      "total": 1392,
+      "result_digest": "c255a5e7b717d655",
+      "samples_ms": [
+        1.552,
+        0.949,
+        1.193,
+        1.215,
+        0.954,
+        0.951,
+        1.046
+      ],
+      "median_ms": 1.046,
+      "stats": {
+        "decoded_postings": 10198,
+        "decoded_coordinates": 0,
+        "jumps": 80,
+        "skipped": 364,
+        "universe_documents": 0,
+        "result_digest": "c255a5e7b717d655"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "doom AND of",
+      "total": 4808,
+      "result_digest": "0e5d5fe1864ffc08",
+      "samples_ms": [
+        15.036,
+        10.114,
+        9.178,
+        10.855,
+        9.339,
+        9.06,
+        10.099
+      ],
+      "median_ms": 10.099,
+      "stats": {
+        "decoded_postings": 231973,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "0e5d5fe1864ffc08"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "doom AND of",
+      "total": 4808,
+      "result_digest": "0e5d5fe1864ffc08",
+      "samples_ms": [
+        10.186,
+        6.605,
+        6.881,
+        8.53,
+        7.255,
+        7.372,
+        6.422
+      ],
+      "median_ms": 7.255,
+      "stats": {
+        "decoded_postings": 231973,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "0e5d5fe1864ffc08"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "doom AND of",
+      "total": 4808,
+      "result_digest": "0e5d5fe1864ffc08",
+      "samples_ms": [
+        8.008,
+        6.532,
+        6.756,
+        6.674,
+        9.237,
+        6.882,
+        7.215
+      ],
+      "median_ms": 6.882,
+      "stats": {
+        "decoded_postings": 199984,
+        "decoded_coordinates": 0,
+        "jumps": 462,
+        "skipped": 31989,
+        "universe_documents": 0,
+        "result_digest": "0e5d5fe1864ffc08"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "игры AND NOT doom",
+      "total": 146828,
+      "result_digest": "5b524624a0fc5b72",
+      "samples_ms": [
+        1047.472,
+        963.297,
+        969.682,
+        1005.84,
+        995.97,
+        1026.795,
+        981.49
+      ],
+      "median_ms": 995.97,
+      "stats": {
+        "decoded_postings": 156964,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 478833,
+        "result_digest": "5b524624a0fc5b72"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "игры AND NOT doom",
+      "total": 146828,
+      "result_digest": "5b524624a0fc5b72",
+      "samples_ms": [
+        11.475,
+        8.484,
+        9.803,
+        8.46,
+        8.564,
+        12.156,
+        8.675
+      ],
+      "median_ms": 8.675,
+      "stats": {
+        "decoded_postings": 156964,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "5b524624a0fc5b72"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "игры AND NOT doom",
+      "total": 146828,
+      "result_digest": "5b524624a0fc5b72",
+      "samples_ms": [
+        9.006,
+        6.704,
+        8.786,
+        8.796,
+        8.258,
+        15.665,
+        8.086
+      ],
+      "median_ms": 8.786,
+      "stats": {
+        "decoded_postings": 154101,
+        "decoded_coordinates": 0,
+        "jumps": 9,
+        "skipped": 2863,
+        "universe_documents": 0,
+        "result_digest": "5b524624a0fc5b72"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "NOT doom",
+      "total": 471364,
+      "result_digest": "9dd9af5ba25a474e",
+      "samples_ms": [
+        968.53,
+        956.485,
+        939.75,
+        1106.15,
+        1040.284,
+        980.02,
+        997.559
+      ],
+      "median_ms": 980.02,
+      "stats": {
+        "decoded_postings": 7469,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 478833,
+        "result_digest": "9dd9af5ba25a474e"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "NOT doom",
+      "total": 471364,
+      "result_digest": "9dd9af5ba25a474e",
+      "samples_ms": [
+        942.614,
+        1092.898,
+        950.154,
+        964.376,
+        989.023,
+        1031.565,
+        979.218
+      ],
+      "median_ms": 979.218,
+      "stats": {
+        "decoded_postings": 7469,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 478833,
+        "result_digest": "9dd9af5ba25a474e"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "NOT doom",
+      "total": 471364,
+      "result_digest": "9dd9af5ba25a474e",
+      "samples_ms": [
+        941.159,
+        951.297,
+        1088.762,
+        943.428,
+        960.251,
+        960.31,
+        924.761
+      ],
+      "median_ms": 951.297,
+      "stats": {
+        "decoded_postings": 7469,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 478833,
+        "result_digest": "9dd9af5ba25a474e"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "doom OR eternal",
+      "total": 9170,
+      "result_digest": "e36910e90a2f27e3",
+      "samples_ms": [
+        0.921,
+        0.911,
+        1.449,
+        0.711,
+        0.888,
+        0.859,
+        1.25
+      ],
+      "median_ms": 0.911,
+      "stats": {
+        "decoded_postings": 10562,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "e36910e90a2f27e3"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "doom OR eternal",
+      "total": 9170,
+      "result_digest": "e36910e90a2f27e3",
+      "samples_ms": [
+        0.851,
+        1.113,
+        1.136,
+        0.849,
+        0.878,
+        1.145,
+        0.903
+      ],
+      "median_ms": 0.903,
+      "stats": {
+        "decoded_postings": 10562,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "e36910e90a2f27e3"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "doom OR eternal",
+      "total": 9170,
+      "result_digest": "e36910e90a2f27e3",
+      "samples_ms": [
+        1.211,
+        0.889,
+        1.36,
+        0.965,
+        0.963,
+        1.553,
+        0.919
+      ],
+      "median_ms": 0.965,
+      "stats": {
+        "decoded_postings": 10562,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "e36910e90a2f27e3"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "doom",
+      "total": 7469,
+      "result_digest": "eaa98aad2eacb743",
+      "samples_ms": [
+        0.481,
+        0.495,
+        0.771,
+        0.467,
+        0.465,
+        0.47,
+        0.752
+      ],
+      "median_ms": 0.481,
+      "stats": {
+        "decoded_postings": 7469,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "eaa98aad2eacb743"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "doom",
+      "total": 7469,
+      "result_digest": "eaa98aad2eacb743",
+      "samples_ms": [
+        0.688,
+        0.674,
+        0.691,
+        0.511,
+        0.47,
+        0.511,
+        0.462
+      ],
+      "median_ms": 0.511,
+      "stats": {
+        "decoded_postings": 7469,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "eaa98aad2eacb743"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "doom",
+      "total": 7469,
+      "result_digest": "eaa98aad2eacb743",
+      "samples_ms": [
+        0.673,
+        0.578,
+        0.747,
+        0.683,
+        0.527,
+        0.751,
+        0.641
+      ],
+      "median_ms": 0.673,
+      "stats": {
+        "decoded_postings": 7469,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "eaa98aad2eacb743"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "linear",
+      "query": "absentxyzz AND of",
+      "total": 0,
+      "result_digest": "cbf29ce484222325",
+      "samples_ms": [
+        0.293,
+        0.392,
+        0.602,
+        0.321,
+        0.273,
+        0.408,
+        0.514
+      ],
+      "median_ms": 0.392,
+      "stats": {
+        "decoded_postings": 1,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "cbf29ce484222325"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "advance",
+      "query": "absentxyzz AND of",
+      "total": 0,
+      "result_digest": "cbf29ce484222325",
+      "samples_ms": [
+        0.504,
+        0.316,
+        0.342,
+        0.434,
+        0.271,
+        0.44,
+        0.271
+      ],
+      "median_ms": 0.342,
+      "stats": {
+        "decoded_postings": 1,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "cbf29ce484222325"
+      }
+    },
+    {
+      "space": "surface",
+      "mode": "skips",
+      "query": "absentxyzz AND of",
+      "total": 0,
+      "result_digest": "cbf29ce484222325",
+      "samples_ms": [
+        0.405,
+        0.386,
+        0.362,
+        0.344,
+        0.315,
+        0.532,
+        0.503
+      ],
+      "median_ms": 0.386,
+      "stats": {
+        "decoded_postings": 1,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "cbf29ce484222325"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "\"god of war\"",
+      "total": 5809,
+      "result_digest": "40046a6eba801d41",
+      "samples_ms": [
+        163.399,
+        211.017,
+        189.945,
+        171.529,
+        179.857,
+        180.744,
+        172.89
+      ],
+      "median_ms": 179.857,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 2124603,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "40046a6eba801d41"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "\"god of war\"",
+      "total": 5809,
+      "result_digest": "40046a6eba801d41",
+      "samples_ms": [
+        140.431,
+        143.368,
+        135.83,
+        165.581,
+        154.892,
+        433.194,
+        144.402
+      ],
+      "median_ms": 144.402,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 2124611,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "40046a6eba801d41"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "\"god of war\"",
+      "total": 5809,
+      "result_digest": "40046a6eba801d41",
+      "samples_ms": [
+        122.809,
+        126.302,
+        119.479,
+        125.549,
+        139.226,
+        123.401,
+        118.093
+      ],
+      "median_ms": 123.401,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 1675608,
+        "jumps": 1641,
+        "skipped": 449003,
+        "universe_documents": 0,
+        "result_digest": "40046a6eba801d41"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "god AND of AND war",
+      "total": 7097,
+      "result_digest": "2b63b4172e8eb6f5",
+      "samples_ms": [
+        12.788,
+        9.579,
+        12.261,
+        12.598,
+        11.586,
+        10.88,
+        12.264
+      ],
+      "median_ms": 12.261,
+      "stats": {
+        "decoded_postings": 276947,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "2b63b4172e8eb6f5"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "god AND of AND war",
+      "total": 7097,
+      "result_digest": "2b63b4172e8eb6f5",
+      "samples_ms": [
+        8.379,
+        8.726,
+        8.596,
+        8.438,
+        10.081,
+        8.855,
+        9.792
+      ],
+      "median_ms": 8.726,
+      "stats": {
+        "decoded_postings": 276948,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "2b63b4172e8eb6f5"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "god AND of AND war",
+      "total": 7097,
+      "result_digest": "2b63b4172e8eb6f5",
+      "samples_ms": [
+        8.435,
+        9.827,
+        9.953,
+        11.679,
+        11.77,
+        9.962,
+        11.561
+      ],
+      "median_ms": 9.962,
+      "stats": {
+        "decoded_postings": 257390,
+        "decoded_coordinates": 0,
+        "jumps": 609,
+        "skipped": 19558,
+        "universe_documents": 0,
+        "result_digest": "2b63b4172e8eb6f5"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "\"doom eternal\"",
+      "total": 1274,
+      "result_digest": "440904be21458ace",
+      "samples_ms": [
+        6.904,
+        6.721,
+        6.074,
+        5.495,
+        6.832,
+        6.08,
+        7.308
+      ],
+      "median_ms": 6.721,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 27122,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "440904be21458ace"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "\"doom eternal\"",
+      "total": 1274,
+      "result_digest": "440904be21458ace",
+      "samples_ms": [
+        6.767,
+        5.497,
+        5.731,
+        7.237,
+        6.535,
+        6.828,
+        5.553
+      ],
+      "median_ms": 6.535,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 27122,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "440904be21458ace"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "\"doom eternal\"",
+      "total": 1274,
+      "result_digest": "440904be21458ace",
+      "samples_ms": [
+        6.63,
+        5.994,
+        5.838,
+        7.304,
+        9.892,
+        5.758,
+        7.437
+      ],
+      "median_ms": 6.63,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 24752,
+        "jumps": 146,
+        "skipped": 2370,
+        "universe_documents": 0,
+        "result_digest": "440904be21458ace"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "\"eternal doom\"",
+      "total": 18,
+      "result_digest": "97cc7217315bac6b",
+      "samples_ms": [
+        2.769,
+        2.7,
+        2.828,
+        2.865,
+        2.425,
+        2.517,
+        2.571
+      ],
+      "median_ms": 2.7,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 27122,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "97cc7217315bac6b"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "\"eternal doom\"",
+      "total": 18,
+      "result_digest": "97cc7217315bac6b",
+      "samples_ms": [
+        2.242,
+        2.634,
+        2.44,
+        2.345,
+        2.248,
+        2.507,
+        2.222
+      ],
+      "median_ms": 2.345,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 27122,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "97cc7217315bac6b"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "\"eternal doom\"",
+      "total": 18,
+      "result_digest": "97cc7217315bac6b",
+      "samples_ms": [
+        2.515,
+        2.606,
+        2.568,
+        2.596,
+        2.911,
+        2.622,
+        2.889
+      ],
+      "median_ms": 2.606,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 24764,
+        "jumps": 143,
+        "skipped": 2358,
+        "universe_documents": 0,
+        "result_digest": "97cc7217315bac6b"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "\"red dead redemption\"",
+      "total": 4675,
+      "result_digest": "8236b14721bc9542",
+      "samples_ms": [
+        21.292,
+        20.418,
+        20.52,
+        22.879,
+        20.996,
+        21.268,
+        24.719
+      ],
+      "median_ms": 21.268,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 106406,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "8236b14721bc9542"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "\"red dead redemption\"",
+      "total": 4675,
+      "result_digest": "8236b14721bc9542",
+      "samples_ms": [
+        19.596,
+        24.095,
+        20.601,
+        19.932,
+        20.094,
+        23.499,
+        21.465
+      ],
+      "median_ms": 20.601,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 106417,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "8236b14721bc9542"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "\"red dead redemption\"",
+      "total": 4675,
+      "result_digest": "8236b14721bc9542",
+      "samples_ms": [
+        20.549,
+        21.164,
+        23.419,
+        20.722,
+        20.993,
+        24.321,
+        20.643
+      ],
+      "median_ms": 20.993,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 96441,
+        "jumps": 336,
+        "skipped": 9976,
+        "universe_documents": 0,
+        "result_digest": "8236b14721bc9542"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "\"даты выхода\"",
+      "total": 12666,
+      "result_digest": "7f3ee26712c4d587",
+      "samples_ms": [
+        39.159,
+        41.652,
+        43.352,
+        44.712,
+        44.456,
+        38.297,
+        38.066
+      ],
+      "median_ms": 41.652,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 113383,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "7f3ee26712c4d587"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "\"даты выхода\"",
+      "total": 12666,
+      "result_digest": "7f3ee26712c4d587",
+      "samples_ms": [
+        41.519,
+        39.361,
+        53.238,
+        39.404,
+        43.457,
+        54.232,
+        38.232
+      ],
+      "median_ms": 41.519,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 113383,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "7f3ee26712c4d587"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "\"даты выхода\"",
+      "total": 12666,
+      "result_digest": "7f3ee26712c4d587",
+      "samples_ms": [
+        42.583,
+        40.633,
+        39.245,
+        40.665,
+        41.618,
+        54.904,
+        41.003
+      ],
+      "median_ms": 41.003,
+      "stats": {
+        "decoded_postings": 0,
+        "decoded_coordinates": 112386,
+        "jumps": 212,
+        "skipped": 997,
+        "universe_documents": 0,
+        "result_digest": "7f3ee26712c4d587"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "doom AND eternal",
+      "total": 1408,
+      "result_digest": "1c83a50e2002bc1b",
+      "samples_ms": [
+        0.878,
+        0.888,
+        1.165,
+        0.897,
+        0.826,
+        0.902,
+        0.885
+      ],
+      "median_ms": 0.888,
+      "stats": {
+        "decoded_postings": 11205,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "1c83a50e2002bc1b"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "doom AND eternal",
+      "total": 1408,
+      "result_digest": "1c83a50e2002bc1b",
+      "samples_ms": [
+        0.997,
+        0.825,
+        1.081,
+        0.672,
+        0.825,
+        0.815,
+        1.024
+      ],
+      "median_ms": 0.825,
+      "stats": {
+        "decoded_postings": 11205,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "1c83a50e2002bc1b"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "doom AND eternal",
+      "total": 1408,
+      "result_digest": "1c83a50e2002bc1b",
+      "samples_ms": [
+        0.858,
+        1.336,
+        1.245,
+        0.945,
+        1.227,
+        1.226,
+        1.051
+      ],
+      "median_ms": 1.226,
+      "stats": {
+        "decoded_postings": 10749,
+        "decoded_coordinates": 0,
+        "jumps": 75,
+        "skipped": 456,
+        "universe_documents": 0,
+        "result_digest": "1c83a50e2002bc1b"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "doom AND of",
+      "total": 5447,
+      "result_digest": "e1630825f9a75925",
+      "samples_ms": [
+        10.337,
+        9.483,
+        7.46,
+        10.211,
+        8.223,
+        10.291,
+        10.538
+      ],
+      "median_ms": 10.211,
+      "stats": {
+        "decoded_postings": 232616,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "e1630825f9a75925"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "doom AND of",
+      "total": 5447,
+      "result_digest": "e1630825f9a75925",
+      "samples_ms": [
+        6.78,
+        6.714,
+        8.689,
+        5.758,
+        6.307,
+        6.912,
+        7.145
+      ],
+      "median_ms": 6.78,
+      "stats": {
+        "decoded_postings": 232616,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "e1630825f9a75925"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "doom AND of",
+      "total": 5447,
+      "result_digest": "e1630825f9a75925",
+      "samples_ms": [
+        9.182,
+        7.115,
+        7.481,
+        8.685,
+        6.584,
+        7.469,
+        6.949
+      ],
+      "median_ms": 7.469,
+      "stats": {
+        "decoded_postings": 206097,
+        "decoded_coordinates": 0,
+        "jumps": 460,
+        "skipped": 26519,
+        "universe_documents": 0,
+        "result_digest": "e1630825f9a75925"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "игры AND NOT doom",
+      "total": 226372,
+      "result_digest": "af581e4adaecee70",
+      "samples_ms": [
+        1085.593,
+        960.51,
+        993.815,
+        1015.693,
+        978.408,
+        988.692,
+        1144.893
+      ],
+      "median_ms": 993.815,
+      "stats": {
+        "decoded_postings": 238187,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 478833,
+        "result_digest": "af581e4adaecee70"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "игры AND NOT doom",
+      "total": 226372,
+      "result_digest": "af581e4adaecee70",
+      "samples_ms": [
+        12.895,
+        11.155,
+        15.252,
+        13.62,
+        12.525,
+        13.72,
+        12.043
+      ],
+      "median_ms": 12.895,
+      "stats": {
+        "decoded_postings": 238187,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "af581e4adaecee70"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "игры AND NOT doom",
+      "total": 226372,
+      "result_digest": "af581e4adaecee70",
+      "samples_ms": [
+        10.71,
+        12.541,
+        11.941,
+        12.83,
+        15.391,
+        12.272,
+        14.784
+      ],
+      "median_ms": 12.541,
+      "stats": {
+        "decoded_postings": 234744,
+        "decoded_coordinates": 0,
+        "jumps": 7,
+        "skipped": 3443,
+        "universe_documents": 0,
+        "result_digest": "af581e4adaecee70"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "NOT doom",
+      "total": 470721,
+      "result_digest": "0f1aa100dfc8bd4f",
+      "samples_ms": [
+        1087.265,
+        984.787,
+        960.984,
+        984.33,
+        969.414,
+        1096.531,
+        971.571
+      ],
+      "median_ms": 984.33,
+      "stats": {
+        "decoded_postings": 8112,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 478833,
+        "result_digest": "0f1aa100dfc8bd4f"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "NOT doom",
+      "total": 470721,
+      "result_digest": "0f1aa100dfc8bd4f",
+      "samples_ms": [
+        964.746,
+        1074.617,
+        950.431,
+        974.106,
+        956.673,
+        1040.186,
+        1073.505
+      ],
+      "median_ms": 974.106,
+      "stats": {
+        "decoded_postings": 8112,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 478833,
+        "result_digest": "0f1aa100dfc8bd4f"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "NOT doom",
+      "total": 470721,
+      "result_digest": "0f1aa100dfc8bd4f",
+      "samples_ms": [
+        964.084,
+        967.959,
+        950.295,
+        936.345,
+        954.389,
+        977.875,
+        1146.873
+      ],
+      "median_ms": 964.084,
+      "stats": {
+        "decoded_postings": 8112,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 478833,
+        "result_digest": "0f1aa100dfc8bd4f"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "doom OR eternal",
+      "total": 9797,
+      "result_digest": "531cac4bfdb91792",
+      "samples_ms": [
+        0.964,
+        0.96,
+        0.905,
+        1.132,
+        1.309,
+        1.001,
+        0.925
+      ],
+      "median_ms": 0.964,
+      "stats": {
+        "decoded_postings": 11205,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "531cac4bfdb91792"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "doom OR eternal",
+      "total": 9797,
+      "result_digest": "531cac4bfdb91792",
+      "samples_ms": [
+        1.198,
+        0.979,
+        1.081,
+        1.04,
+        0.986,
+        1.327,
+        0.948
+      ],
+      "median_ms": 1.04,
+      "stats": {
+        "decoded_postings": 11205,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "531cac4bfdb91792"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "doom OR eternal",
+      "total": 9797,
+      "result_digest": "531cac4bfdb91792",
+      "samples_ms": [
+        1.085,
+        0.961,
+        0.922,
+        1.12,
+        1.015,
+        0.954,
+        1.326
+      ],
+      "median_ms": 1.015,
+      "stats": {
+        "decoded_postings": 11205,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "531cac4bfdb91792"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "doom",
+      "total": 8112,
+      "result_digest": "524ea26bb4c3b40c",
+      "samples_ms": [
+        0.534,
+        0.589,
+        0.642,
+        0.6,
+        0.668,
+        0.57,
+        0.542
+      ],
+      "median_ms": 0.589,
+      "stats": {
+        "decoded_postings": 8112,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "524ea26bb4c3b40c"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "doom",
+      "total": 8112,
+      "result_digest": "524ea26bb4c3b40c",
+      "samples_ms": [
+        0.546,
+        0.572,
+        0.428,
+        0.56,
+        0.54,
+        0.788,
+        0.5
+      ],
+      "median_ms": 0.546,
+      "stats": {
+        "decoded_postings": 8112,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "524ea26bb4c3b40c"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "doom",
+      "total": 8112,
+      "result_digest": "524ea26bb4c3b40c",
+      "samples_ms": [
+        0.726,
+        0.538,
+        0.71,
+        0.553,
+        0.569,
+        0.58,
+        0.72
+      ],
+      "median_ms": 0.58,
+      "stats": {
+        "decoded_postings": 8112,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "524ea26bb4c3b40c"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "linear",
+      "query": "absentxyzz AND of",
+      "total": 0,
+      "result_digest": "cbf29ce484222325",
+      "samples_ms": [
+        0.323,
+        1.058,
+        0.32,
+        0.351,
+        0.43,
+        0.443,
+        0.334
+      ],
+      "median_ms": 0.351,
+      "stats": {
+        "decoded_postings": 1,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "cbf29ce484222325"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "advance",
+      "query": "absentxyzz AND of",
+      "total": 0,
+      "result_digest": "cbf29ce484222325",
+      "samples_ms": [
+        0.419,
+        0.345,
+        0.413,
+        0.474,
+        0.418,
+        0.466,
+        0.413
+      ],
+      "median_ms": 0.418,
+      "stats": {
+        "decoded_postings": 1,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "cbf29ce484222325"
+      }
+    },
+    {
+      "space": "lemma",
+      "mode": "skips",
+      "query": "absentxyzz AND of",
+      "total": 0,
+      "result_digest": "cbf29ce484222325",
+      "samples_ms": [
+        0.454,
+        0.495,
+        0.341,
+        0.576,
+        0.342,
+        0.956,
+        0.492
+      ],
+      "median_ms": 0.492,
+      "stats": {
+        "decoded_postings": 1,
+        "decoded_coordinates": 0,
+        "jumps": 0,
+        "skipped": 0,
+        "universe_documents": 0,
+        "result_digest": "cbf29ce484222325"
+      }
+    }
+  ],
+  "method": "Each round starts a fresh process per mode, warms all queries once, then measures one batch. Mode order rotates each round; query order alternates. OS cache retained. Timing excludes index opening, morphology loading and metadata rendering; includes query compilation, skip point loading and complete result enumeration. All modes use the same VB index and counters.",
+  "verify_seconds": 43.60757710001781,
+  "files": {
+    "skip_position_terms.bin": {
+      "bytes": 40729936,
+      "sha256": "369e3d0ac864dc1acde0a8f093d5888dedc796ff141fcabc330d017155748867"
+    },
+    "skip_positions.bin": {
+      "bytes": 66343784,
+      "sha256": "d7339355d3a868abab40a1626e5e9338803a92a0fbe9c933442fc3abdf0234cf"
+    },
+    "skip_posting_terms.bin": {
+      "bytes": 40729936,
+      "sha256": "41cde6d17b68f155dd69a428ad6308469bdc9242db482a4c9086da33047f6eb5"
+    },
+    "skip_postings.bin": {
+      "bytes": 52755224,
+      "sha256": "10d1d54334e7d7092236b96d057151aff378114beb150b049101274591910325"
+    }
+  },
+  "skip_bytes": 200558880,
+  "packed_bytes": 1400556994,
+  "overhead_percent": 14.319937057841717
+}

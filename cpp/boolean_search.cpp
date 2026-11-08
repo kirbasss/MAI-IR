@@ -83,9 +83,10 @@ void print_document(FILE* out,gaming::BooleanIndex& index,U64 id) {
 }
 }
 
-bool gaming::BooleanSearch::open(const char* directory,TermSpace space,const char* dictionary,const char** error,const char* positions,const char* compact) {
+bool gaming::BooleanSearch::open(const char* directory,TermSpace space,const char* dictionary,const char** error,const char* positions,const char* compact,const char* skips,bool optimized) {
     *error=nullptr;
     try {
+        optimized_=optimized; stats_={};
         check(index_.open(directory,error,compact!=nullptr),*error);
         if (space==TermSpace::lemma) {
             if (!index_.has_lemmas()) throw "Index has no lemma namespace";
@@ -99,6 +100,12 @@ bool gaming::BooleanSearch::open(const char* directory,TermSpace space,const cha
             check(compact_.open(compact,directory,positions,index_,positions_,error),*error);
             index_.use_compressed(&compact_); positions_.use_compressed(&compact_);
         }
+        if (skips) {
+            if (!compact) throw "Skip search requires --compact DIR";
+            check(skips_.open(skips,compact,index_,error),*error);
+            if (optimized) index_.use_skips(&skips_);
+        }
+        index_.set_stats(&stats_);
         space_=space; return true;
     } catch (const char* e) { *error=e; return false; }
 }
@@ -159,7 +166,7 @@ struct gaming::BooleanQuery::State {
         if (++operands>max_operands) throw "Too many operands (maximum 64)";
         if (lex==quoted) {
             const int n=node(phrase); nodes[n].phrase_query=new PhraseQuery; const char* error=nullptr;
-            check(nodes[n].phrase_query->compile(engine.positions(),engine.space(),engine.morphology(),start,size,&error),error);
+            check(nodes[n].phrase_query->compile(engine.positions(),engine.space(),engine.morphology(),start,size,&error,engine.optimized()),error);
             scan(); return n;
         }
         char normalized[max_query+1]; std::size_t length=0; unsigned count=0;
@@ -185,7 +192,14 @@ struct gaming::BooleanQuery::State {
     }
     int conjunction(unsigned depth) {
         int n=unary(depth);
-        while (lex==land) { scan(); const int b=unary(depth); n=node(intersection,n,b); }
+        while (lex==land) {
+            scan(); const int b=unary(depth);
+            if (engine.optimized() && nodes[b].kind==difference && nodes[nodes[b].left].kind==universe)
+                n=node(difference,n,nodes[b].right);
+            else if (engine.optimized() && nodes[n].kind==difference && nodes[nodes[n].left].kind==universe)
+                n=node(difference,b,nodes[n].right);
+            else n=node(intersection,n,b);
+        }
         return n;
     }
     int expression(unsigned depth) {
@@ -201,6 +215,7 @@ struct gaming::BooleanQuery::State {
         else if (n.kind==universe) {
             if (n.position<engine.index().documents()) {
                 DocumentInfo d; check(engine.index().document_at(n.position++,d,&error),error);
+                ++engine.stats().universe_documents;
                 if (!d.id) throw "Invalid universe document";
                 value=d.id; found=true;
             }
@@ -219,11 +234,37 @@ struct gaming::BooleanQuery::State {
                 if (l.head==r.head) {
                     value=l.head; l.ready=r.ready=false;
                     if (n.kind==intersection) { found=true; break; }
-                } else if (l.head<r.head) l.ready=false;
-                else r.ready=false;
+                } else if (l.head<r.head) {
+                    if (engine.optimized()) advance(n.left,r.head); else l.ready=false;
+                } else {
+                    if (engine.optimized()) advance(n.right,l.head); else r.ready=false;
+                }
             }
         }
         n.ready=found; n.ended=!found; n.head=value; return found;
+    }
+    bool advance(int id,U64 target) {
+        Node& n=nodes[id];
+        if (n.ended) return false;
+        if (n.ready && n.head>=target) return true;
+        n.ready=false; const char* error=nullptr;
+        if (n.kind==term || n.kind==phrase) {
+            const bool found=n.kind==term ? n.cursor.advance(target,n.head,&error) : n.phrase_query->advance(target,n.head,&error);
+            if (error) throw error;
+            n.ready=found; n.ended=!found; return found;
+        }
+        if (n.kind==universe) {
+            U64 left=n.position,right=engine.index().documents();
+            while (left<right) {
+                const U64 mid=left+(right-left)/2; DocumentInfo d;
+                check(engine.index().document_at(mid,d,&error),error);
+                if (d.id<target) left=mid+1; else right=mid;
+            }
+            n.position=left;
+        } else {
+            advance(n.left,target); advance(n.right,target);
+        }
+        return fill(id);
     }
 };
 gaming::BooleanQuery::~BooleanQuery() { delete state_; }
@@ -249,13 +290,14 @@ bool gaming::BooleanQuery::next(U64& id,const char** error) {
 }
 
 namespace {
-void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FILE* output) {
+void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FILE* output,bool stats=false) {
+    engine.stats()={};
     const auto begin=std::chrono::steady_clock::now();
     gaming::BooleanQuery search; const char* error=nullptr;
     check(search.compile(engine,query,&error),error);
     // At most 1000 displayed IDs, independent of total result size.
-    U64 ids[1000],id=0,total=0;
-    while (search.next(id,&error)) { if (total<limit) ids[total]=id; ++total; }
+    U64 ids[1000],id=0,total=0,digest=14695981039346656037ULL;
+    while (search.next(id,&error)) { if (total<limit) ids[total]=id; ++total; digest=(digest^id)*1099511628211ULL; }
     if (error) throw error;
     const double ms=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-begin).count();
     // Buffer one response so a metadata/read error cannot leave half a JSON line.
@@ -265,7 +307,14 @@ void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FI
         std::fprintf(buffer,",\"space\":\"%s\",\"total\":%llu,\"elapsed_ms\":%.3f,\"results\":[",
                      engine.space()==gaming::TermSpace::lemma ? "lemma" : "surface",static_cast<unsigned long long>(total),ms);
         for (U64 i=0;i<total && i<limit;++i) { if (i) std::fputc(',',buffer); print_document(buffer,engine.index(),ids[i]); }
-        std::fputs("]}\n",buffer);
+        std::fputc(']',buffer);
+        if (stats) {
+            const auto& s=engine.stats();
+            std::fprintf(buffer,",\"stats\":{\"decoded_postings\":%llu,\"decoded_coordinates\":%llu,\"jumps\":%llu,\"skipped\":%llu,\"universe_documents\":%llu,\"result_digest\":\"%016llx\"}",
+                         static_cast<unsigned long long>(s.decoded_postings),static_cast<unsigned long long>(s.decoded_coordinates),
+                         static_cast<unsigned long long>(s.jumps),static_cast<unsigned long long>(s.skipped),static_cast<unsigned long long>(s.universe_documents),static_cast<unsigned long long>(digest));
+        }
+        std::fputs("}\n",buffer);
         if (std::ferror(buffer) || std::fflush(buffer)) throw "Cannot buffer response";
         std::rewind(buffer); char block[8192]; std::size_t n;
         while ((n=std::fread(block,1,sizeof(block),buffer))) if (std::fwrite(block,1,n,output)!=n) throw "Cannot write response";
@@ -276,20 +325,28 @@ void run_query(gaming::BooleanSearch& engine,const char* query,unsigned limit,FI
 }
 int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE* output,FILE* errors) {
     try {
-        const char *directory=nullptr,*dictionary=nullptr,*query=nullptr,*positions=nullptr,*compact=nullptr; TermSpace space=TermSpace::surface; unsigned limit=10;
+        const char *directory=nullptr,*dictionary=nullptr,*query=nullptr,*positions=nullptr,*compact=nullptr,*skips=nullptr;
+        TermSpace space=TermSpace::surface; unsigned limit=10; bool stats=false,optimized=true;
         for (int i=1;i<argc;++i) {
             const char* arg=argv[i];
             if (!std::strcmp(arg,"--help")) {
-                std::fputs("UTF-8 Boolean/phrase search: boolean_search --index DIR [--positions DIR] [--compact DIR] [--space surface|lemma] [--dict FILE] [--limit 0..1000] [--query QUERY]\n"
+                std::fputs("UTF-8 Boolean/phrase search: boolean_search --index DIR [--positions DIR] [--compact DIR] [--skips DIR] [--execution linear|optimized] [--stats] [--space surface|lemma] [--dict FILE] [--limit 0..1000] [--query QUERY]\n"
                            "Without --query: one query per stdin line; one JSON result per stdout line.\n"
                            "Operators: NOT > AND > OR, parentheses, aliases ! & |. Explicit operators required.\n"
                            "Double quotes require adjacent tokens in order within one field; --positions is required.\n",output); return 0;
             }
+            if (!std::strcmp(arg,"--stats")) { stats=true; continue; }
             if (i+1==argc) throw "Missing option value";
             const char* value=argv[++i];
             if (!std::strcmp(arg,"--index")) directory=value;
             else if (!std::strcmp(arg,"--positions")) positions=value;
             else if (!std::strcmp(arg,"--compact")) compact=value;
+            else if (!std::strcmp(arg,"--skips")) skips=value;
+            else if (!std::strcmp(arg,"--execution")) {
+                if (!std::strcmp(value,"linear")) optimized=false;
+                else if (!std::strcmp(value,"optimized")) optimized=true;
+                else throw "--execution must be linear or optimized";
+            }
             else if (!std::strcmp(arg,"--dict")) dictionary=value;
             else if (!std::strcmp(arg,"--query")) query=value;
             else if (!std::strcmp(arg,"--space")) {
@@ -303,10 +360,10 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
             } else throw "Unknown option";
         }
         if (!directory) throw "--index is required";
-        BooleanSearch engine; const char* error=nullptr; check(engine.open(directory,space,dictionary,&error,positions,compact),error);
+        BooleanSearch engine; const char* error=nullptr; check(engine.open(directory,space,dictionary,&error,positions,compact,skips,optimized),error);
         bool failed=false;
         auto process=[&](const char* text) {
-            try { run_query(engine,text,limit,output); }
+            try { run_query(engine,text,limit,output,stats); }
             catch (const char* e) {
                 failed=true; std::fputs("{\"error\":",output); json(output,e,std::strlen(e)); std::fputs("}\n",output); std::fflush(output);
             }

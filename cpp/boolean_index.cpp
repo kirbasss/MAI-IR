@@ -1,5 +1,6 @@
 #include "boolean_index.hpp"
 #include "compact_index.hpp"
+#include "skip_index.hpp"
 #include "tokenizer.hpp"
 #include "lemmatizer.hpp"
 #include <chrono>
@@ -468,7 +469,7 @@ void gaming::BooleanIndex::close() {
     if (term_file_) std::fclose(term_file_);
     if (doc_file_) std::fclose(doc_file_);
     if (string_file_) std::fclose(string_file_);
-    term_file_=doc_file_=string_file_=nullptr; docs_=terms_=postings_=strings_=dictionary_hash_=flags_=0; directory_[0]=0; compressed_=nullptr;
+    term_file_=doc_file_=string_file_=nullptr; docs_=terms_=postings_=strings_=dictionary_hash_=flags_=0; directory_[0]=0; compressed_=nullptr; skips_=nullptr; stats_=nullptr;
 }
 bool gaming::BooleanIndex::open(const char* directory,const char** error,bool allow_compressed_postings) {
     close(); *error=nullptr;
@@ -550,15 +551,25 @@ FILE* gaming::BooleanIndex::open_postings(const PostingList& list,const char** e
         return file;
     } catch (const char* e) { *error=e; return nullptr; }
 }
-gaming::PostingCursor::~PostingCursor() { if (file_) std::fclose(file_); }
+gaming::PostingCursor::~PostingCursor() { if (file_) std::fclose(file_); std::free(skips_); }
 bool gaming::PostingCursor::open(const BooleanIndex& index,const PostingList& list,const char** error) {
     if (file_) std::fclose(file_);
+    std::free(skips_); skips_=nullptr; skip_count_=0; stats_=index.stats(); total_=list.count;
     file_=nullptr; previous_=remaining_=bytes_left_=0; compressed_=index.compressed()!=nullptr;
     if (compressed_ && list.ordinal!=UINT64_MAX)
         file_=index.compressed()->stream(CompactKind::postings,list.ordinal,bytes_left_,error);
     else { compressed_=false; file_=index.open_postings(list,error); }
     if (!file_) return false;
-    remaining_=list.count; return true;
+    remaining_=list.count; total_bytes_=bytes_left_;
+    if (compressed_ && index.skips()) {
+#ifdef _WIN32
+        stream_start_=static_cast<U64>(_ftelli64(file_));
+#else
+        stream_start_=static_cast<U64>(ftello(file_));
+#endif
+        if (!index.skips()->load(0,list.ordinal,list.count,total_bytes_,skips_,skip_count_,error)) return false;
+    }
+    return true;
 }
 bool gaming::PostingCursor::next(U64& id,const char** error) {
     *error=nullptr; id=0;
@@ -571,10 +582,28 @@ bool gaming::PostingCursor::next(U64& id,const char** error) {
         } else id=integer(file_);
         if (id<=previous_) throw "Posting IDs must strictly increase";
         previous_=id; --remaining_;
+        if (stats_) ++stats_->decoded_postings;
         if (compressed_ && !remaining_ && bytes_left_) throw "Trailing compressed posting bytes";
         return true;
     }
     catch (const char* e) { *error=e; remaining_=0; return false; }
+}
+bool gaming::PostingCursor::advance(U64 target,U64& id,const char** error) {
+    *error=nullptr; id=0;
+    try {
+        const U64 used=total_-remaining_;
+        if (used && previous_>=target) { id=previous_; return true; }
+        U64 left=0,right=skip_count_;
+        while (left<right) { const U64 mid=left+(right-left)/2; if (skips_[mid].value<=target) left=mid+1; else right=mid; }
+        if (left && skips_[left-1].consumed>used) {
+            const auto& p=skips_[left-1]; seek(file_,stream_start_+p.bytes);
+            if (stats_) { ++stats_->jumps; stats_->skipped+=p.consumed-used; }
+            previous_=p.value; remaining_=total_-p.consumed; bytes_left_=total_bytes_-p.bytes;
+            if (previous_==target) { id=previous_; return true; }
+        }
+        while (next(id,error)) if (id>=target) return true;
+        return false;
+    } catch (const char* e) { *error=e; remaining_=0; return false; }
 }
 bool gaming::BooleanIndex::verify(const char** error) {
     *error=nullptr;

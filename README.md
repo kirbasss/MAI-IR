@@ -28,4 +28,6 @@ Python используется для экспорта и рисунков.
 [результаты](doc/lab10/README.md), [отчёт PDF](doc/report_lab10.pdf).
 ЛР11: [сжатие индекса](doc/lab11_run.md),
 [измерения](doc/lab11/README.md), [отчёт PDF](doc/report_lab11.pdf).
+ЛР12: [ускорение и прыжки по индексу](doc/lab12_run.md),
+[замеры трёх режимов](doc/lab12/README.md), [отчёт PDF](doc/report_lab12.pdf).
 Прямые GoogleTest: `docker compose run --rm --no-deps tokenizer-tests phrase_search_tests`.
