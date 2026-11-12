@@ -11,6 +11,7 @@ struct RankedResult {
 };
 // lnc.ltc: document log-TF/cosine; query log-TF * IDF/cosine.
 // Norms use the entire vocabulary of each namespace, not just query terms.
+// Quoted spans are mandatory positional filters before top-k selection.
 class Tfidf {
 public:
     ~Tfidf();

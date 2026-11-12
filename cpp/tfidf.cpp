@@ -170,6 +170,20 @@ bool gaming::Tfidf::search(BooleanSearch& engine,const char* query,unsigned limi
     try {
         if (!norms_ || engine.index().documents()!=documents_) throw "TF-IDF norms not open";
         if (!query || std::strlen(query)>8192 || limit>1000) throw "Invalid TF-IDF query/limit";
+        // Quoted spans are mandatory phrase filters; their words still contribute
+        // to the ordinary TF-IDF query vector below.
+        PhraseQuery phrases[64]; U64 phrase_heads[64]{}; bool phrase_ready[64]{};
+        unsigned phrase_count=0;
+        for (const char* cursor=query;*cursor;++cursor) {
+            if (*cursor!='"') continue;
+            const char* begin=++cursor;
+            while (*cursor && *cursor!='"') ++cursor;
+            if (!*cursor) throw "Missing closing quote";
+            if (phrase_count==64) throw "Too many quoted phrases";
+            require(phrases[phrase_count].compile(engine.positions(),engine.space(),engine.morphology(),
+                    begin,static_cast<std::size_t>(cursor-begin),error,engine.optimized()),*error);
+            ++phrase_count;
+        }
         struct Term { PositionList list; U64 tf=0,df=0; double weight=0; } terms[512]; unsigned used=0,tokens=0;
         tokenize(query,[&](const Token& token) {
             if (++tokens>64) throw "TF-IDF query exceeds 64 tokens";
@@ -214,17 +228,29 @@ bool gaming::Tfidf::search(BooleanSearch& engine,const char* query,unsigned limi
             if (scores.p[doc]<=0) continue;
             if (norms_[base+doc]<=0) throw "Nonempty document has zero TF-IDF norm";
             DocumentInfo info;
-            if (filters) {
+            if (filters || phrase_count) {
                 require(engine.index().document_at(doc,info,error),*error);
-                if (!info.id || !filters->match(info.id)) continue;
+                if (!info.id) throw "TF-IDF result missing from document table";
+                if (filters && !filters->match(info.id)) continue;
             }
+            bool contains_phrases=true;
+            for (unsigned i=0;i<phrase_count;++i) {
+                if (!phrase_ready[i] || phrase_heads[i]<info.id) {
+                    phrase_ready[i]=phrases[i].advance(info.id,phrase_heads[i],error);
+                    if (*error) throw *error;
+                }
+                if (!phrase_ready[i] || phrase_heads[i]!=info.id) {
+                    contains_phrases=false; break;
+                }
+            }
+            if (!contains_phrases) continue;
             ++result.total;
             if (!limit) continue;
             const double score=scores.p[doc]/norms_[base+doc];
             if (!std::isfinite(score)) throw "Invalid TF-IDF score";
             // Only documents that can enter the bounded heap need metadata lookup.
             if (result.count==limit && score<result.hits[0].score) continue;
-            if (!filters) require(engine.index().document_at(doc,info,error),*error);
+            if (!filters && !phrase_count) require(engine.index().document_at(doc,info,error),*error);
             if (!info.id) throw "TF-IDF result missing from document table";
             RankedHit hit{info.id,score};
             if (result.count<limit) {

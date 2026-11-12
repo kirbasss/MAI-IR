@@ -51,6 +51,8 @@ def main():
     parser.add_argument("--binary", type=Path, default=ROOT/"build/boolean-native/boolean_search.exe")
     parser.add_argument("--output", type=Path, default=ROOT/"doc/lab13")
     parser.add_argument("--repeats", type=int, default=7)
+    parser.add_argument("--skip-title-quality", action="store_true",
+                        help="omit historical title judgments when running on a different corpus")
     args = parser.parse_args()
     if args.repeats < 1:
         parser.error("--repeats must be positive")
@@ -109,7 +111,7 @@ def main():
               "norm_bytes": (args.norms/"norms.bin").stat().st_size,
               "timing": "Median after a warm-up batch in each fresh process; OS cache retained; native time excludes opening indices, loading morphology/norms, metadata and JSON output."}
     judgments = ROOT/"tests/fixtures/lab13_title_judgments.json"
-    if judgments.is_file():
+    if judgments.is_file() and not args.skip_title_quality:
         report["title_topic_precision"] = evaluate_titles(summary, json.loads(judgments.read_text(encoding="utf-8")))
     (args.output/"summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     tex_rows = [f"{row['query']} & {row['total']:,} & {row['boolean_ms']:.3f} & {row['tfidf_ms']:.3f} \\\\".replace(",", r"\,")

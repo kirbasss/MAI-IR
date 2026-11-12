@@ -29,19 +29,27 @@ def main() -> None:
     parser.add_argument("--dict", type=Path, required=True)
     parser.add_argument("--report-dir", type=Path, default=ROOT/"doc/lab11")
     parser.add_argument("--bin-dir", type=Path, default=ROOT/"build/boolean-native")
+    parser.add_argument("--skip-verify-packed", action="store_true",
+                        help="reuse a packed index after independently verifying the compressed sidecar")
     args = parser.parse_args()
     target = args.report_dir.resolve(); target.mkdir(parents=True, exist_ok=True)
     suffix = ".exe" if sys.platform == "win32" else ""
     compact_binary = (args.bin_dir/("compact_index"+suffix)).resolve()
     search_binary = (args.bin_dir/("boolean_search"+suffix)).resolve()
     base = ["--index",str(args.index.resolve()),"--positions",str(args.positions.resolve())]
-    verify_start = time.perf_counter()
-    verified = subprocess.run([str(compact_binary),"verify-packed",*base,"--packed",str(args.packed.resolve())],
-                              stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-    (target/"verify.txt").write_bytes(verified.stdout.replace(b"\r\n",b"\n"))
-    if verified.returncode:
-        raise ValueError(verified.stdout.decode("utf-8",errors="replace"))
-    check = {"wall_ms":(time.perf_counter()-verify_start)*1000,"exit_code":verified.returncode}
+    if args.skip_verify_packed:
+        check = {"status": "skipped", "wall_ms": None}
+        (target/"verify.txt").write_text("Separate verify-packed skipped; compressed sidecar verified before pack.\n",
+                                          encoding="utf-8")
+    else:
+        verify_start = time.perf_counter()
+        verified = subprocess.run([str(compact_binary),"verify-packed",*base,"--packed",str(args.packed.resolve())],
+                                  stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+        (target/"verify.txt").write_bytes(verified.stdout.replace(b"\r\n",b"\n"))
+        if verified.returncode:
+            raise ValueError(verified.stdout.decode("utf-8",errors="replace"))
+        check = {"status": "passed", "wall_ms": (time.perf_counter()-verify_start)*1000,
+                 "exit_code": verified.returncode}
     modes = {}
     for space in ("surface","lemma"):
         common = [str(search_binary),*base,"--space",space,"--limit","5"]
@@ -103,7 +111,7 @@ def main() -> None:
         "LabElevenCompactMB":f"{total_compact/1e6:.2f}".replace(".",","),
         "LabElevenSavings":f"{summary['space_saved_percent']:.1f}".replace(".",","),
         "LabElevenDocs":fmt(summary["documents"]),"LabElevenTerms":fmt(summary["terms"]),
-        "LabElevenVerifySec":f"{check['wall_ms']/1000:.1f}".replace(".",","),
+        "LabElevenVerifySec":f"{check['wall_ms']/1000:.1f}".replace(".",",") if check["wall_ms"] is not None else "---",
         "LabElevenWholeRawMB":f"{whole_raw/1e6:.2f}".replace(".",","),
         "LabElevenPackedMB":f"{summary.get('packed_total_bytes',0)/1e6:.2f}".replace(".",","),
         "LabElevenWholeSavings":f"{summary.get('whole_index_saved_percent',0):.1f}".replace(".",","),
@@ -114,7 +122,9 @@ def main() -> None:
     (target/"report_data.tex").write_text(tex,encoding="utf-8")
     lines = ["# ЛР11: измерения сжатия", "", f"Документов: {summary['documents']:,}; терминов: {summary['terms']:,}.",
              f"Исходные списки и координаты: {total_raw:,} байт; сжатые данные с таблицами смещений: {total_compact:,} байт.",
-             f"Экономия: {summary['space_saved_percent']:.1f}%. Полная проверка декодирования: {check['wall_ms']/1000:.1f} с.",
+             f"Экономия: {summary['space_saved_percent']:.1f}%. " +
+             (f"Полная проверка декодирования: {check['wall_ms']/1000:.1f} с."
+              if check["wall_ms"] is not None else "Отдельный verify-packed пропущен; sidecar проверен до упаковки."),
              f"Полный индекс: {whole_raw:,} байт; отдельная сжатая рабочая копия: {summary.get('packed_total_bytes',0):,} байт; экономия {summary.get('whole_index_saved_percent',0):.1f}%.",
              f"Словарь терминов (таблица и строки): {summary.get('original_vocabulary_bytes',0):,} → {summary.get('packed_vocabulary_bytes',0):,} байт; экономия {summary.get('vocabulary_saved_percent',0):.1f}%.",
              "", "| Пространство | Запрос | Совпадений | Исходный, мс | Сжатый, мс | Рабочая копия, мс |", "|---|---|---:|---:|---:|---:|"]

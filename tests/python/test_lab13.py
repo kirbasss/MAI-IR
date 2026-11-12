@@ -32,18 +32,19 @@ class TfidfWebTests(unittest.TestCase):
         self.assertIn("0.45670", html)
         self.assertIn("Doom &lt;test&gt;", html)
         self.assertIn('value="tfidf" selected', html)
+        self.assertIn('Фраза в двойных кавычках обязательна целиком', html)
         self.assertNotIn("ID по возрастанию", html)
 
     def test_http_tfidf_selection_reaches_backend(self):
         class Backend:
             def search(self, query, space, ranking):
-                assert (query, space, ranking) == ("игры doom", "surface", "tfidf")
+                assert (query, space, ranking) == ('"игры ps plus"', "surface", "tfidf")
                 return {"total": 0, "elapsed_ms": 1, "ranking": ranking, "results": []}
         with HTTPServer(("127.0.0.1", 0), handler(Backend())) as server:
             worker = threading.Thread(target=server.serve_forever, daemon=True)
             worker.start()
             try:
-                url = f"http://127.0.0.1:{server.server_port}/?" + urlencode({"q": "игры doom", "ranking": "tfidf"})
+                url = f"http://127.0.0.1:{server.server_port}/?" + urlencode({"q": '"игры ps plus"', "ranking": "tfidf"})
                 with urlopen(url) as response:
                     self.assertIn("TF-IDF по убыванию", response.read().decode())
             finally:

@@ -371,7 +371,7 @@ int gaming::run_boolean_search(int argc,const char* const* argv,FILE* input,FILE
                            "Without --query: one query per stdin line; one JSON result per stdout line.\n"
                            "Operators: NOT > AND > OR, parentheses, aliases ! & |. Explicit operators required.\n"
                            "Double quotes require adjacent tokens in order within one field; --positions is required.\n"
-                           "TF-IDF: plain bag-of-words, lnc.ltc cosine, positive scores only, tie by ID; requires --positions and --norms.\n"
+                           "TF-IDF: lnc.ltc cosine, positive scores only; quoted phrases are mandatory exact filters, unquoted words form a bag, tie by ID; requires --positions and --norms.\n"
                            "--corpus adds query-dependent text snippets and UTF-8 byte match spans to every result.\n",output); return 0;
             }
             if (!std::strcmp(arg,"--stats")) { stats=true; continue; }

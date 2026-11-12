@@ -38,6 +38,7 @@ benchmark_*.py
 demo_lab4.py
 evaluate_lab11_quality.py
 make_lab4_report.py
+tests/fixtures/lab11_article_judgments.json
 
 # LaTeX byproducts
 *.aux

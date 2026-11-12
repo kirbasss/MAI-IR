@@ -163,8 +163,8 @@ input{{flex:1;min-width:260px}}button{{background:#194da0;color:white;cursor:poi
 <select name="year" aria-label="Год публикации"{" disabled" if not choices["years"] else ""}>{year_options}</select>
 <button>Найти</button><a href="/" class="reset">Сбросить</a></form><p class="meta">Операторы: NOT → AND → OR, скобки. Между словами указывайте оператор.
 Пример: (doom OR quake) AND NOT minecraft. Фразы в двойных кавычках требуют соседства слов в указанном порядке.
-Поиск по леммам учитывает все словарные разборы.</p><p class="meta">В режиме TF-IDF вводите обычные слова, например: doom eternal.
-Порядок слов и кавычки не ограничивают совпадения; AND, OR, NOT считаются словами запроса.</p>{body}</html>'''
+Поиск по леммам учитывает все словарные разборы.</p><p class="meta">В режиме TF-IDF обычные слова, например doom eternal, влияют на оценку релевантности.
+Фраза в двойных кавычках обязательна целиком, например "doom eternal". Несколько фраз также обязательны; остальные слова влияют на оценку. AND, OR, NOT считаются словами запроса.</p>{body}</html>'''
 
 
 def handler(backend):

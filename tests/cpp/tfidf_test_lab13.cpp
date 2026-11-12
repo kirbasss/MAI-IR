@@ -137,6 +137,11 @@ TEST_F(TfidfTests,PackedAndRawHaveIdenticalScoresAndNormBinding) {
     const auto row=nlohmann::json::parse(output); const auto expected=reference("car insurance");
     ASSERT_EQ(row["results"].size(),expected.size());
     for (unsigned i=0;i<expected.size();++i) { EXPECT_EQ(row["results"][i]["id"],expected[i].id); EXPECT_NEAR(row["results"][i]["score"].get<double>(),expected[i].score,1e-11); }
+    auto quoted=cli(true); quoted.insert(quoted.end(),{"--compact",p("packed/compact"),"--query","\"car common\""});
+    ASSERT_EQ(command(quoted,3,&output),0);
+    const auto phrase=nlohmann::json::parse(output);
+    EXPECT_EQ(phrase["total"],2);
+    EXPECT_EQ(phrase["results"][0]["id"],19);
 }
 TEST_F(TfidfTests,StdinJsonlRecoversAfterErrorsAndValidatesUtf8AndLimits) {
     auto args=cli(); std::string output;
@@ -154,6 +159,25 @@ TEST_F(TfidfTests,QueryBagOfWordsIgnoresOrderAndCountsRepeatedTerms) {
     for (unsigned i=0;i<a.count;++i) { EXPECT_EQ(a.hits[i].id,b.hits[i].id); EXPECT_DOUBLE_EQ(a.hits[i].score,b.hits[i].score); }
     const auto repeated=search("car car insurance"); EXPECT_NE(repeated.hits[0].score,b.hits[0].score);
     auto args=cli(); std::string many; for (unsigned i=0;i<65;++i) many+="car "; args.insert(args.end(),{"--query",many}); EXPECT_EQ(command(args,3),1);
+}
+TEST_F(TfidfTests,QuotedPhrasesRequireWholeOrderedMatchWithinOneField) {
+    const auto words=search("car common");
+    ASSERT_EQ(words.total,4U); // Unquoted terms still use TF-IDF bag-of-words.
+    const auto phrase=search("\"car common\"");
+    ASSERT_EQ(phrase.total,2U);
+    ASSERT_EQ(phrase.count,2U);
+    EXPECT_EQ(phrase.hits[0].id,19U);
+    EXPECT_EQ(phrase.hits[1].id,UINT64_MAX-1);
+    EXPECT_EQ(search("\"common car\"").total,0U);
+    EXPECT_EQ(search("\"car insurance\"").total,0U); // Title/body boundary.
+    const auto mixed=search("\"insurance auto\" car");
+    ASSERT_EQ(mixed.total,1U);
+    EXPECT_EQ(mixed.hits[0].id,3U);
+    EXPECT_EQ(search("\"insurance auto\" \"rare common\"").total,0U);
+    EXPECT_EQ(search("\"car common\"",1).count,1U);
+    EXPECT_EQ(search("\"car common\"",0).total,2U);
+    auto args=cli(); args.insert(args.end(),{"--query","\"car common"});
+    EXPECT_NE(command(args,3),0); // Missing closing quote is an error.
 }
 TEST_F(TfidfTests,RejectsIncompleteCorruptTruncatedAndForeignNorms) {
     auto args=cli(); args.insert(args.end(),{"--query","car"});
@@ -184,6 +208,8 @@ TEST_F(TfidfTests,LemmaAlternativesUseSeparateFullNormsAndDeduplicateQueryTerms)
     // car df=2, auto df=1: both alternatives contribute once at the shared position.
     const double a=std::log10(4.0),c=std::log10(2.0);
     EXPECT_NEAR(result.hits[0].score,(a+c)/std::sqrt(2*(a*a+c*c)),1e-12);
+    ASSERT_TRUE(rank.search(engine,"\"cars\"",10,result,&error));
+    EXPECT_EQ(result.total,2U); // Phrase matching uses the same lemma alternatives.
 }
 TEST_F(TfidfTests,HeapMatchesFullSortAcrossManyDocuments) {
     fs::remove_all(root); fs::create_directory(root); docs.clear();
