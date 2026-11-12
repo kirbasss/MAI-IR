@@ -1,5 +1,13 @@
+# Application, data preparation, report experiments, and Python tests.
 requests>=2.32
 beautifulsoup4>=4.12
 lxml>=5.0
 pymongo>=4.9,<5
 PyYAML>=6.0,<7
+mongomock>=4.3,<5
+matplotlib>=3.9,<4
+pymupdf>=1.24
+
+# Dictionary data and storage reader; no third-party morphology analyzer.
+pymorphy3-dicts-ru==2.4.417150.4580142
+DAWG2-Python==0.9.0

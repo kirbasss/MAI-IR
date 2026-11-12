@@ -1,1 +1,0 @@
-Skip index verified: checksums and every checkpoint match VB source

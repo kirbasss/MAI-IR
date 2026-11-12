@@ -1,4 +1,0 @@
-# Preparation only: dictionary DATA and a read-only decoder of its storage format.
-# No pymorphy3 analyzer is used or installed by these requirements.
-pymorphy3-dicts-ru==2.4.417150.4580142
-DAWG2-Python==0.9.0

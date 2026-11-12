@@ -1,1 +1,0 @@
-Using existing test image: mai-ir-tokenizer-tests:latest

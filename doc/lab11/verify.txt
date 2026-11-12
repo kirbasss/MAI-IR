@@ -1,1 +1,0 @@
-Packed index verified: postings, coordinates, vocabulary and metadata match original

@@ -1,29 +1,49 @@
 .venv/
 __pycache__/
+*.py[cod]
 data/
 build/
-*.py[cod]
-*.aux
-*.log
-*.out
-*.toc
-report_example.pdf
-CONTEXT.md
+*.part
+
+# Local settings and caches
 .agents/
 .codex/
 .aws/
 .env
 .env.local
-*.part
-
-# Local IDE settings and tool caches
 .vscode/
 .idea/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 
-# Auxiliary LaTeX output (keep report sources and PDFs)
+# Only course information, homework, final report and published images.
+doc/*
+!doc/course_info.md
+!doc/homework_*.md
+!doc/report_all.pdf
+!doc/img/
+doc/img/*
+!doc/img/*.png
+!doc/img/*.jpg
+!doc/img/*.jpeg
+!doc/img/*.svg
+!doc/img/*.webp
+
+# Local exports and auxiliary report/benchmark scripts
+*.zip
+results/
+build_combined_report.py
+benchmark_*.py
+demo_lab4.py
+evaluate_lab11_quality.py
+make_lab4_report.py
+
+# LaTeX byproducts
+*.aux
+*.log
+*.out
+*.toc
 *.synctex.gz
 *.fls
 *.fdb_latexmk

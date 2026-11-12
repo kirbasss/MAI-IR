@@ -1,3 +1,0 @@
-f6d0b35138b6d451d283673ae74c7afa883a4cc2288cff9a5f7f2856b16a4fce
-Ready on 127.0.0.1:61439; isolated ephemeral container
-Stopped: True

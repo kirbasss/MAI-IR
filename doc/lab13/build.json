@@ -1,8 +1,0 @@
-{
-  "documents": 478833,
-  "terms": 2545616,
-  "coordinates": 335548564,
-  "bytes": 7661408,
-  "elapsed_ms": 51139.849,
-  "includes": "Source index and coordinates verification, norm computation and writing; single native build run."
-}
